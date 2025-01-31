@@ -4,21 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.aronid.weighttrackertft.ui.theme.WeightTrackerTFTTheme
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+//        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
         setContent {
             WeightTrackerTFTTheme {
                 MyApp()
@@ -29,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MyApp(){
+fun MyApp() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         HomeScreen(innerPadding)
     }
@@ -37,7 +41,12 @@ fun MyApp(){
 
 @Composable
 fun HomeScreen(innerPadding: PaddingValues) {
-    Column(Modifier.padding(innerPadding)){
+    Column(Modifier.padding(innerPadding)) {
+        Text(
+            text = "Hello, World!",
+            modifier = Modifier.clickable {
+                throw RuntimeException("Crash!")
+            })
 
     }
 }
