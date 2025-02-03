@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!-- This is a placeholder file for the Spanish language. -->
+
+<resources>
+    <string name="app_name">Seguimiento de Peso</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="sign_up_free">Registrarse Gratis</string>
+    <string name="continue_with_google">Continuar con Google</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="invalid_email">Dirección de correo electrónico no válida</string>
+    <string name="password_error">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="complete_questionnaire">Completar Cuestionario</string>
+    <string name="spanish">Español</string>
+    <string name="english">Inglés</string>
+</resources>

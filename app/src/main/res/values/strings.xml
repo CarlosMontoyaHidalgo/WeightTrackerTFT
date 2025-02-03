@@ -1,3 +1,19 @@
+<!-- default: english -->
 <resources>
-    <string name="app_name">WeightTrackerTFT</string>
+    <string name="app_name">Weight Tracker</string>
+    <string name="login">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_free">Sign Up</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="password_error">Password must be at least 6 characters</string>
+
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+
+
+
+    <string name="complete_questionnaire">Complete Questionnaire</string>
 </resources>
