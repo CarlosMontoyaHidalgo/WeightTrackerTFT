@@ -22,8 +22,8 @@ import com.aronid.weighttrackertft.ui.theme.White
 @Composable
 fun CustomButton(
     text: String? = null,
-    containerColor: Color = White,
-    textColor: Color = Black,
+    containerColor: Color = Black,
+    textColor: Color = White,
     imageId: Int? = null,
     borderColor: Color? = null,
     borderWidth: Int = 1,

@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?><!-- This is a placeholder file for the Spanish language. -->
 
 <resources>
-    <string name="app_name">Seguimiento de Peso</string>
-    <string name="login">Iniciar Sesión</string>
+    <string name="app_name">Weight Tracker</string>
+
+    <!-- Botón -->
+    <string name="login">Iniciar sesión</string>
     <string name="sign_up">Registrarse</string>
     <string name="sign_up_free">Registrarse Gratis</string>
     <string name="continue_with_google">Continuar con Google</string>
-    <string name="email">Correo Electrónico</string>
-    <string name="password">Contraseña</string>
-    <string name="invalid_email">Dirección de correo electrónico no válida</string>
-    <string name="password_error">La contraseña debe tener al menos 6 caracteres</string>
-    <string name="complete_questionnaire">Completar Cuestionario</string>
+    <string name="ic_back">Icono de volver</string>
+
+    <!-- Idioma -->
     <string name="spanish">Español</string>
     <string name="english">Inglés</string>
+
+    <!-- Campo de correo electrónico -->
+    <string name="email">Correo electrónico</string>
+    <string name="invalid_email">Dirección de correo no válida</string>
+    <string name="ic_invalid_email">Icono de correo electrónico</string>
+
+    <!-- Campo de contraseña -->
+    <string name="password">Contraseña</string>
+    <string name="password_error">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="ic_invalid_password">Icono de contraseña</string>
+    <string name="hide_password">Ocultar contraseña</string>
+    <string name="show_password">Mostrar contraseña</string>
+
+    <!-- Mensajes de error -->
+    <string name="complete_questionnaire">Completar cuestionario</string>
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="error_invalid_credentials">Datos incorrectos</string>
+    <string name="error_generic">Error genérico</string>
+    <string name="error_email_empty">Correo electrónico vacío</string>
+    <string name="error_email_invalid">Correo electrónico no válido</string>
+    <string name="error_password_empty">Contraseña vacía</string>
+    <string name="error_password_length">Longitud de contraseña incorrecta</string>
 </resources>

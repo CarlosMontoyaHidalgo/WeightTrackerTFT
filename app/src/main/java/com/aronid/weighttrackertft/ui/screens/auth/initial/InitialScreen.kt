@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.presentation.initial
+package com.aronid.weighttrackertft.ui.screens.auth.initial
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -95,6 +95,8 @@ fun InitialScreen(
             stringResource(id = R.string.login),
             containerColor = Color.Transparent,
             textColor = Black,
+            borderColor = Black,
+            borderWidth = 2,
             onClick = navigateToLogin
         )
         Spacer(modifier = Modifier.weight(1f))

@@ -1,6 +1,5 @@
-package com.aronid.weighttrackertft.presentation.login
+package com.aronid.weighttrackertft.ui.screens.auth.signup
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -10,24 +9,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import com.aronid.weighttrackertft.R
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.authForm.AuthForm
-import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
     innerPadding: PaddingValues,
-    auth: FirebaseAuth,
     navHostController: NavHostController
 ) {
+    val viewModel: SignUpViewModel = hiltViewModel()
+
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -46,20 +49,21 @@ fun LoginScreen(
                 .padding(vertical = 16.dp)
                 .clickable { navHostController.popBackStack() }
         )
-        Text(text = stringResource(id = R.string.login), modifier = Modifier.padding(bottom = 16.dp), fontSize = 24.sp)
-        AuthForm(stringResource(id = R.string.login)){
-            email, password ->
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
-                task ->
-                if (task.isSuccessful){
-                    //navegar al home
-                    Log.i("LoginScreen", "Usuario logueado")
-                } else {
-                    //mostrar error
-                    Log.e("LoginScreen", "Error al loguear usuario", task.exception)
-                }
-            }
-        }
+        Text(text = stringResource(id = R.string.sign_up), modifier = Modifier.padding(bottom = 16.dp), fontSize = 24.sp)
+        AuthForm(
+            email = state.email,
+            password = state.password,
+            onEmailChange = viewModel::onEmailChanged,
+            onPasswordChange = viewModel::onPasswordChanged,
+            onSubmit = { viewModel.signUpUser { navHostController.navigate("") }},
+            isEnabled = state.isFormValid,
+            isLoading = state.isLoading,
+            emailError = state.emailError?.let { stringResource(it) },
+            passwordError = state.passwordError?.let { stringResource(it) },
+            formError = state.error?.let { stringResource(it) },
+            buttonText = stringResource(R.string.sign_up)
+        )
 
     }
+
 }

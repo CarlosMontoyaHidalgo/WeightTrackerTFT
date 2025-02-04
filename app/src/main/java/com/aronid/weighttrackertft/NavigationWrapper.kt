@@ -5,12 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.aronid.weighttrackertft.presentation.initial.InitialScreen
-import com.aronid.weighttrackertft.presentation.login.LoginScreen
-import com.aronid.weighttrackertft.presentation.signup.SignUpScreen
+import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
+import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
+import com.aronid.weighttrackertft.ui.screens.auth.login.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
-
-//https://www.youtube.com/watch?v=LxABxtwhrDE&ab_channel=Programaci%C3%B3nAndroidbyAristiDevs
+import com.aronid.weighttrackertft.data.UserRepository
+import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
+//import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 
 @Composable
 fun NavigationWrapper(
@@ -18,6 +19,8 @@ fun NavigationWrapper(
     navHostController: NavHostController,
     auth: FirebaseAuth
 ) {
+    val userRepository = UserRepository(auth)
+    val loginViewModel = LoginViewModel(userRepository)
     NavHost(navController = navHostController, startDestination = "initial") {
         composable("initial") {
             InitialScreen(
@@ -27,10 +30,13 @@ fun NavigationWrapper(
             )
         }
         composable("logIn") {
-            LoginScreen(innerPadding, auth, navHostController)
+            LoginScreen(innerPadding, navHostController)
         }
         composable("signUp") {
-            SignUpScreen(innerPadding, auth, navHostController)
+            SignUpScreen(innerPadding, navHostController)
+        }
+        composable("home") {
+            //HomeScreen(innerPadding, navHostController)
         }
     }
 }

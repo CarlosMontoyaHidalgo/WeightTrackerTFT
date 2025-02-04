@@ -1,112 +1,85 @@
 package com.aronid.weighttrackertft.ui.components.authForm
 
-import android.util.Patterns
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
-
-//TODO: Verify email a traves de un correo electronico
+import com.aronid.weighttrackertft.ui.components.emailField.EmailField
+import com.aronid.weighttrackertft.ui.components.passwordField.PasswordField
+import com.aronid.weighttrackertft.ui.theme.Black
+import com.aronid.weighttrackertft.ui.theme.White
 
 @Composable
 fun AuthForm(
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    isEnabled: Boolean,
+    isLoading: Boolean,
+    emailError: String?,
+    passwordError: String?,
+    formError: String?,
     buttonText: String,
-    onClick: (String, String) -> Unit
+    modifier: Modifier = Modifier
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf(false) }
-    var passwordError by remember { mutableStateOf(false) }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val isFormValid = !emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()
+    Column(modifier = modifier.padding(16.dp)) {
+        EmailField(
+            email = email,
+            onEmailChange = onEmailChange,
+            errorMessage = emailError
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
 
-    OutlinedTextField(
-        value = email,
-        onValueChange = {
-            email = it
-            emailError = !Patterns.EMAIL_ADDRESS.matcher(it).matches()
-        },
-        label = { Text(stringResource(id = R.string.email)) },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = "Email Icon"
+        PasswordField(
+            password = password,
+            onPasswordChange = onPasswordChange,
+            errorMessage = passwordError,
+            passwordVisible = passwordVisible,
+            onPasswordVisibilityChange = { passwordVisible = it }
+        )
+        Spacer(modifier = Modifier.padding(vertical = 20.dp))
+
+        formError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-        },
-        isError = emailError,
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        singleLine = true
-    )
-    if (emailError) {
-        Text(text = stringResource(id = R.string.invalid_email), color = Color.Red)
-    }
+        }
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.primary
 
-    Spacer(modifier = Modifier.padding(8.dp))
-
-    OutlinedTextField(
-        value = password,
-        onValueChange = {
-            password = it
-            passwordError = it.length < 6
-        },
-        label = { Text(stringResource(R.string.password)) },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = "Password Icon"
-            )
-        },
-        trailingIcon = {
-            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                Icon(
-                    imageVector = image,
-                    contentDescription = if (passwordVisible) "Hide password" else "Show password"
                 )
             }
-        },
-        isError = passwordError,
-        modifier = Modifier.fillMaxWidth(),
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        singleLine = true
-    )
-    if (passwordError) {
-        Text(text = stringResource(id = R.string.password_error), color = Color.Red)
+        } else {
+            CustomButton(
+                text = buttonText,
+                onClick = onSubmit,
+                enabled = isEnabled
+            )
+        }
     }
-    Spacer(modifier = Modifier.padding(vertical = 20.dp))
-    CustomButton(
-        text = buttonText,
-        containerColor = Color.Black,
-        textColor = Color.White,
-        onClick = {
-            onClick(email, password)
-        },
-        enabled = isFormValid
-    )
 }
+
+
+
