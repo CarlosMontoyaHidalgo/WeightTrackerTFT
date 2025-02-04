@@ -1,3 +1,39 @@
+<!-- default: english -->
 <resources>
-    <string name="app_name">WeightTrackerTFT</string>
+    <string name="app_name">Weight Tracker</string>
+
+    <!-- Button -->
+    <string name="login">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_free">Sign Up</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="ic_back">Back Icon</string>
+
+    <!-- Language -->
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+
+    <!-- Email Field -->
+    <string name="email">Email</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="ic_invalid_email">Email Icon</string>
+
+    <!-- Password Field -->
+
+    <string name="password">Password</string>
+    <string name="password_error">Password must be at least 6 characters</string>
+    <string name="ic_invalid_password">Password Icon</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+
+    <!-- Error Messages -->
+
+    <string name="complete_questionnaire">Complete Questionnaire</string>
+    <string name="error_user_not_found">User not found</string>
+    <string name="error_invalid_credentials">Wrong data</string>
+    <string name="error_generic">Error generico</string>
+    <string name="error_email_empty">Empty email</string>
+    <string name="error_email_invalid">Invalid email</string>
+    <string name="error_password_empty">Empty password</string>
+    <string name="error_password_length">Password length wrong</string>
 </resources>

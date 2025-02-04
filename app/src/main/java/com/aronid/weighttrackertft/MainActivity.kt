@@ -1,52 +1,59 @@
 package com.aronid.weighttrackertft
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.aronid.weighttrackertft.ui.theme.WeightTrackerTFTTheme
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    //private lateinit var navHostController: NavHostController
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         enableEdgeToEdge()
-//        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
         setContent {
-            WeightTrackerTFTTheme {
-                MyApp()
-            }
+            val navHostController = rememberNavController()
+
+            MyApp(navHostController, auth)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if ( currentUser != null ) {
+            //navegar al home
+            Log.i("MainActivity", "Usuario logueado")
+        } else {
+            // No user is signed in
         }
     }
 }
 
 
+
 @Composable
-fun MyApp() {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        HomeScreen(innerPadding)
+fun MyApp(navHostController: NavHostController, auth: FirebaseAuth) {
+    WeightTrackerTFTTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            NavigationWrapper(innerPadding, navHostController, auth)
+        }
     }
 }
 
-@Composable
-fun HomeScreen(innerPadding: PaddingValues) {
-    Column(Modifier.padding(innerPadding)) {
-        Text(
-            text = "Hello, World!",
-            modifier = Modifier.clickable {
-                throw RuntimeException("Crash!")
-            })
-
-    }
-}
