@@ -1,6 +1,5 @@
 package com.aronid.weighttrackertft.ui.screens.auth.initial
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
 import com.aronid.weighttrackertft.ui.components.languageDropdown.LanguageDropdown
@@ -34,18 +33,13 @@ import com.aronid.weighttrackertft.ui.theme.Blue
 import com.aronid.weighttrackertft.ui.theme.White
 import java.util.Locale
 
-@Preview(showBackground = true)
-@Composable
-fun InitialScreenPreview() {
-    InitialScreen(innerPadding = PaddingValues())
-}
-
 @Composable
 fun InitialScreen(
     innerPadding: PaddingValues,
     navigateToLogin: () -> Unit = {},
-    navigateToSignUp: () -> Unit = {}
+    navigateToSignUp: () -> Unit = {},
 ) {
+    val viewModel: InitialViewModel = hiltViewModel()
     val context = LocalContext.current
     var currentLanguage by remember { mutableStateOf(Locale.getDefault().displayLanguage) }
 
@@ -103,23 +97,9 @@ fun InitialScreen(
         LanguageDropdown(
             currentLanguage = currentLanguage,
             onLanguageSelected = { selectedLanguage ->
-                val languageCode = when (selectedLanguage) {
-                    "English" -> "en"
-                    "Spanish" -> "es"
-                    else -> "en"
-                }
-                setAppLocale(context, languageCode)
+                viewModel.changeLanguage(context, selectedLanguage)
                 currentLanguage = selectedLanguage
             }
         )
     }
-}
-
-fun setAppLocale(context: Context, languageCode: String){
-    val locale = Locale(languageCode)
-    Locale.setDefault(locale)
-    val resources = context.resources
-    val configuration = resources.configuration
-    configuration.setLocale(locale)
-    resources.updateConfiguration(configuration, resources.displayMetrics)
 }

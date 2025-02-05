@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.authForm.AuthForm
 
 @Composable
@@ -49,13 +50,29 @@ fun SignUpScreen(
                 .padding(vertical = 16.dp)
                 .clickable { navHostController.popBackStack() }
         )
-        Text(text = stringResource(id = R.string.sign_up), modifier = Modifier.padding(bottom = 16.dp), fontSize = 24.sp)
+        Text(
+            text = stringResource(id = R.string.sign_up),
+            modifier = Modifier.padding(bottom = 16.dp),
+            fontSize = 24.sp
+        )
         AuthForm(
             email = state.email,
             password = state.password,
             onEmailChange = viewModel::onEmailChanged,
             onPasswordChange = viewModel::onPasswordChanged,
-            onSubmit = { viewModel.signUpUser { navHostController.navigate("") }},
+            onSubmit = {
+                viewModel.signUpUser { hasCompletedQuestionnaire ->
+                    if (hasCompletedQuestionnaire) {
+                            navHostController.navigate(NavigationRoutes.Home.route) {
+                            popUpTo(NavigationRoutes.SignUp.route) { inclusive = true }
+                        }
+                    } else {
+                        navHostController.navigate(NavigationRoutes.Questionnaire.route) {
+                            popUpTo(NavigationRoutes.SignUp.route) { inclusive = true }
+                        }
+                    }
+                }
+            },
             isEnabled = state.isFormValid,
             isLoading = state.isLoading,
             emailError = state.emailError?.let { stringResource(it) },

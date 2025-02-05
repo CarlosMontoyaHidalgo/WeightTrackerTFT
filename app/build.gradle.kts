@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.compose.material.icons.extended)
 
@@ -57,6 +58,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.easy.date.picker)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)

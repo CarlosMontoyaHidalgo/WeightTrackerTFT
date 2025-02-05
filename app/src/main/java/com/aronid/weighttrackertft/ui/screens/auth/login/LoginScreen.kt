@@ -21,14 +21,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.authForm.AuthForm
 
 @Composable
 fun LoginScreen(
     innerPadding: PaddingValues,
     navHostController: NavHostController,
-
-) {
+    ) {
     val viewModel: LoginViewModel = hiltViewModel()
 
     val state by viewModel.state.collectAsState()
@@ -50,13 +50,25 @@ fun LoginScreen(
                 .padding(vertical = 16.dp)
                 .clickable { navHostController.popBackStack() }
         )
-        Text(text = stringResource(id = R.string.login), modifier = Modifier.padding(bottom = 16.dp), fontSize = 24.sp)
+        Text(
+            text = stringResource(id = R.string.login),
+            modifier = Modifier.padding(bottom = 16.dp),
+            fontSize = 24.sp
+        )
         AuthForm(
             email = state.email,
             password = state.password,
             onEmailChange = viewModel::onEmailChanged,
             onPasswordChange = viewModel::onPasswordChanged,
-            onSubmit = { viewModel.loginUser { navHostController.navigate("") }},
+            onSubmit = {
+                viewModel.loginUser { success ->
+                    if (success) {
+                        navHostController.navigate(NavigationRoutes.Home.route) {
+                            popUpTo(NavigationRoutes.Login.route) { inclusive = true }
+                        }
+                    }
+                }
+            },
             isEnabled = state.isFormValid,
             isLoading = state.isLoading,
             emailError = state.emailError?.let { stringResource(it) },
