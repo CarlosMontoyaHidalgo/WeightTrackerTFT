@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
+import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseScreen
 import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
@@ -89,6 +90,10 @@ fun AppNavigation(
         composable(NavigationRoutes.Settings.route) {
             val viewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(innerPadding, navHostController, viewModel)
+        }
+
+        composable(NavigationRoutes.Exercises.route) {
+            ExerciseScreen(innerPadding, navHostController)
         }
 
 

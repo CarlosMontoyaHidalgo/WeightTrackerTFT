@@ -11,6 +11,7 @@ sealed class NavigationRoutes(val route: String){
     object LifeStyle: NavigationRoutes("lifeStyle")
     object Loading: NavigationRoutes("loading")
     object Stats: NavigationRoutes("stats")
+    object Exercises: NavigationRoutes("Exercises")
 
     /*Settings*/
     object Settings: NavigationRoutes("settings")

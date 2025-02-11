@@ -1,7 +1,10 @@
 package com.aronid.weighttrackertft.ui.components.BottomNavigationBar
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +23,7 @@ fun BottomNavigationBar(navHostController: NavHostController) {
     val items = listOf(
         BottomNavItem(NavigationRoutes.Home.route, R.drawable.ic_home, "Inicio"),
         BottomNavItem(NavigationRoutes.Stats.route, R.drawable.ic_stats, "Progreso"),
+        BottomNavItem(NavigationRoutes.Exercises.route, R.drawable.ic_dumbell, "Ejercicios"),
         BottomNavItem(NavigationRoutes.Settings.route, R.drawable.ic_settings, "Ajustes")
     )
 
@@ -39,13 +43,13 @@ fun BottomNavigationBar(navHostController: NavHostController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.label,
-                        tint = if (isSelected) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.outline
+                        tint = if (isSelected) Color.Blue else Color.Black
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
-                        color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.outline
+                        color = if (isSelected) Color.Blue else Color.Black
                     )
                 }
             )

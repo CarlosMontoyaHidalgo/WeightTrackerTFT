@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.easy.date.picker)
+    implementation(libs.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
