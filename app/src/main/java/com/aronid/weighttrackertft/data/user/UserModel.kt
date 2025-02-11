@@ -12,6 +12,7 @@ data class UserModel(
     val activityLevel: String? = null,
     val goal: String? = null,
     val hasCompletedQuestionnaire: Boolean = false
+
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(

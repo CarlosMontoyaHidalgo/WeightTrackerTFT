@@ -16,6 +16,9 @@ import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireVie
 import com.aronid.weighttrackertft.ui.screens.questionnaire.lifeStyle.LifeStyleScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation.PersonalInformationScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.physicalData.PhysicalDataScreen
+import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
+import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
+import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -79,6 +82,16 @@ fun AppNavigation(
             val viewModel: UserQuestionnaireViewModel = hiltViewModel()
             LifeStyleScreen(innerPadding, viewModel = viewModel, navController = navHostController)
         }
+        composable(NavigationRoutes.Stats.route) {
+            StatsScreen(innerPadding, navHostController)
+        }
+
+        composable(NavigationRoutes.Settings.route) {
+            val viewModel: SettingsViewModel = hiltViewModel()
+            SettingsScreen(innerPadding, navHostController, viewModel)
+        }
+
+
 
     }
 }

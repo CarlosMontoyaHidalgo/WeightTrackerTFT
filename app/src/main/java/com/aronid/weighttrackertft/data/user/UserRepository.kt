@@ -17,6 +17,8 @@ class UserRepository @Inject constructor(
 
     private val userCollection = firestore.collection(FirestoreCollections.USERS)
 
+
+
     suspend fun loginUser(email: String, password: String): Result<FirebaseUser> {
         return try {
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
@@ -37,7 +39,9 @@ class UserRepository @Inject constructor(
                 mapOf(
                     "hasCompletedQuestionnaire" to false,
                     "email" to email,
-                    "createdAt" to FieldValue.serverTimestamp()
+                    "createdAt" to FieldValue.serverTimestamp(),
+                    "profileImageUrl" to null,
+                    "name" to "Usuario"
                 )
             ).await()
 
@@ -59,4 +63,70 @@ class UserRepository @Inject constructor(
             throw Exception("Error saving user: ${e.localizedMessage}", e)
         }
     }
+
+    suspend fun getUserName(userId: String): Result<String> {
+        return try {
+            val document = userCollection.document(userId).get().await()
+            val name = document.getString("name") ?: "Usuario"
+            Result.success(name)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateUserName(userId: String, newName: String): Result<Unit> {
+        return try {
+            userCollection.document(userId).update("name", newName).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserProfileImage(userId: String): Result<String?> {
+        return try {
+            val document = userCollection.document(userId).get().await()
+            val profileImageUrl = document.getString("profileImageUrl")
+            Result.success(profileImageUrl ?: "")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /* de pago
+    suspend fun updateUserProfileImage(userId: String, imageUrl: Uri): Result<String> {
+        return try {
+            // Genera nombre único para evitar caché
+            val timestamp = System.currentTimeMillis()
+            val fileRef = storageRef.child("profile_images/${userId}_$timestamp.jpg")
+
+            // Sube el archivo con monitorización de progreso
+            val uploadTask = fileRef.putFile(imageUri).await()
+
+            if (uploadTask.task.isSuccessful) {
+                val downloadUrl = fileRef.downloadUrl.await().toString()
+
+                // Actualiza Firestore con transacción
+                firestore.runTransaction { transaction ->
+                    val docRef = userCollection.document(userId)
+                    transaction.update(docRef, "profileImageUrl", downloadUrl)
+                }.await()
+
+                Result.success(downloadUrl)
+            } else {
+                Result.failure(Exception("Error en subida de archivo"))
+            }
+        } catch (e: Exception) {
+            // Rollback: Elimina imagen subida si falla actualización
+            fileRef?.delete().await()
+            Result.failure(e)
+        }
+    }
+*/
+
+    suspend fun logout() {
+        FirebaseAuth.getInstance().signOut()
+    }
+
+
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.aronid.weighttrackertft.R
 
+
 @Composable
 fun EmailField(
     email: String,
@@ -25,17 +26,23 @@ fun EmailField(
         OutlinedTextField(
             value = email,
             onValueChange = onEmailChange,
-            label = { Text(stringResource(R.string.email)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.email),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
-                    contentDescription = stringResource(R.string.ic_invalid_email)
+                    contentDescription = stringResource(R.string.ic_invalid_email),
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
             isError = errorMessage != null,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true
+            singleLine = true,
         )
 
         errorMessage?.let {

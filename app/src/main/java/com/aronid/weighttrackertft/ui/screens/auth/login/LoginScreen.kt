@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,14 +37,14 @@ fun LoginScreen(
         modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = stringResource(id = R.string.ic_back),
-            tint = Color.Black,
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .align(Alignment.Start)
                 .padding(vertical = 16.dp)
@@ -53,7 +53,8 @@ fun LoginScreen(
         Text(
             text = stringResource(id = R.string.login),
             modifier = Modifier.padding(bottom = 16.dp),
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.onBackground
         )
         AuthForm(
             email = state.email,

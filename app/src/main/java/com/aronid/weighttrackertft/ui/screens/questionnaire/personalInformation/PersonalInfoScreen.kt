@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,9 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.ui.components.button.CustomButton
 import com.aronid.weighttrackertft.ui.components.button.SmallButton
 import com.aronid.weighttrackertft.ui.theme.Black
 import com.aronid.weighttrackertft.ui.theme.White
@@ -38,7 +40,7 @@ fun PersonalInformationScreen(
     var selectedDate by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(innerPadding)) {
-        Text("Información Personal")
+        Text(stringResource(id = R.string.personal_info))
 
         TextField(
             value = viewModel.state.collectAsState().value.personalInfo.name,
@@ -49,11 +51,11 @@ fun PersonalInformationScreen(
                     gender = viewModel.state.value.personalInfo.gender
                 )
             },
-            label = { Text("Nombre") },
+            label = { Text(stringResource(id = R.string.name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Row(){
+        Row() {
             OutlinedTextField(
                 value = viewModel.state.collectAsState().value.personalInfo.birthdate,
                 onValueChange = { newBirthdate ->
@@ -63,7 +65,7 @@ fun PersonalInformationScreen(
                         gender = viewModel.state.value.personalInfo.gender
                     )
                 },
-                label = { Text("Fecha de Nacimiento") },
+                label = { Text(stringResource(id = R.string.birth_date)) },
                 modifier = Modifier.fillMaxWidth()
             )
             SmallButton(
@@ -74,57 +76,18 @@ fun PersonalInformationScreen(
             )
         }
 
-
-
-
-
-        // Botón para navegar a la siguiente pantalla
-        Button(onClick = {
-            navController.navigate("lifeStyle")
-        }) {
-            Text("Siguiente")
-        }
+        CustomButton(
+            text = stringResource(id = R.string.next),
+            textColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            onClick = {
+                navController.navigate("lifeStyle")
+            })
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun Datepicker() {
-//    var showDatePicker by remember { mutableStateOf(false) }
-//    WheelDatePickerView(
-//        showDatePicker = showDatePicker,
-//        height = 200.dp,
-//        dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-//        rowCount = 3,
-//        titleStyle = TextStyle(
-//            fontSize = 20.sp,
-//            color = Black
-//        ),
-//        doneLabelStyle = TextStyle(
-//            fontSize = 20.sp,
-//            color = Black
-//        ),
-//        yearsRange = 1900..LocalDate.now().year,
-//        showShortMonths = true,
-//        onDoneClick = {
-//            showDatePicker = false
-//            println("DONE $it")
-//        },
-//        onDismiss = {
-//            showDatePicker = false
-//            println("DISMISS")
-//        }
-//    )
-//
-//    Button(modifier = Modifier.padding(96.dp), onClick = { showDatePicker = true }) {
-//        Text("Show Date Picker")
-//
-//    }
-//
-//}
-
 @Composable
-fun DatePicker(viewModel: UserQuestionnaireViewModel){
+fun DatePicker(viewModel: UserQuestionnaireViewModel) {
     WheelDatePickerView(
         height = 200.dp,
         onDoneClick = {

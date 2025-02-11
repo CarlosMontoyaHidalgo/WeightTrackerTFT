@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?><!-- This is a placeholder file for the Spanish language. -->
-
 <resources>
     <string name="app_name">Weight Tracker</string>
+    <string name="app_logo_description">Weight Tracker</string>
 
-    <!-- Botón -->
+    <!-- Button -->
     <string name="login">Iniciar sesión</string>
     <string name="sign_up">Registrarse</string>
-    <string name="sign_up_free">Registrarse Gratis</string>
+    <string name="sign_up_free">Regístrate</string>
     <string name="continue_with_google">Continuar con Google</string>
-    <string name="ic_back">Icono de volver</string>
+    <string name="ic_back">Icono de atrás</string>
+    <string name="next">Siguiente</string>
+    <string name="prev">Anterior</string>
+    <string name="skip">Omitir</string>
+    <string name="submit">Enviar</string>
 
-    <!-- Idioma -->
+    <!-- Alert Dialog -->
+    <string name="alert_title">Alerta</string>
+    <string name="alert_message">¿Estás seguro de que deseas salir?</string>
+    <string name="alert_positive">Sí</string>
+    <string name="alert_negative">No</string>
+
+    <!-- Language -->
     <string name="spanish">Español</string>
     <string name="english">Inglés</string>
 
-    <!-- Campo de correo electrónico -->
+    <!-- Email Field -->
     <string name="email">Correo electrónico</string>
-    <string name="invalid_email">Dirección de correo no válida</string>
+    <string name="invalid_email">Dirección de correo electrónico no válida</string>
     <string name="ic_invalid_email">Icono de correo electrónico</string>
 
-    <!-- Campo de contraseña -->
+    <!-- Password Field -->
     <string name="password">Contraseña</string>
     <string name="password_error">La contraseña debe tener al menos 6 caracteres</string>
     <string name="ic_invalid_password">Icono de contraseña</string>
     <string name="hide_password">Ocultar contraseña</string>
     <string name="show_password">Mostrar contraseña</string>
 
-    <!-- Mensajes de error -->
+    <!-- Error Messages -->
     <string name="complete_questionnaire">Completar cuestionario</string>
     <string name="error_user_not_found">Usuario no encontrado</string>
     <string name="error_invalid_credentials">Datos incorrectos</string>
@@ -35,4 +45,49 @@
     <string name="error_email_invalid">Correo electrónico no válido</string>
     <string name="error_password_empty">Contraseña vacía</string>
     <string name="error_password_length">Longitud de contraseña incorrecta</string>
+
+    <!-- LifeStyle Screen -->
+    <string name="life_style">Estilo de vida</string>
+    <string name="activity_level">Nivel de actividad</string>
+    <string name="sedentary">Sedentario</string>
+    <string name="lightly_active">Ligera actividad</string>
+    <string name="moderately_active">Actividad moderada</string>
+    <string name="very_active">Muy activo</string>
+    <string name="goal">Objetivo</string>
+    <string name="maintain_weight">Mantener peso</string>
+    <string name="lose_weight">Perder peso</string>
+
+    <!-- PersonalInfo Screen -->
+    <string name="personal_info">Información personal</string>
+    <string name="name">Nombre</string>
+    <string name="birth_date">Fecha de nacimiento</string>
+
+    <!-- PhysicalData Screen -->
+    <string name="physical_data">Datos físicos</string>
+    <string name="height">Altura</string>
+    <string name="weight">Peso</string>
+
+    <!-- Questionnaire Screen -->
+    <string name="questionnaire">Cuestionario</string>
+    <string name="privacy">Privacidad</string>
+    <string name="privacy_policy">📢 Información importante sobre tu privacidad</string>
+    <string name="privacy_policy_description">
+    📢 Nunca compartiremos tus datos con terceros.\n\n
+    🔒 En WeightTrackerTFT, nos tomamos tu privacidad y seguridad muy en serio.\n\n
+    📊 Los datos que ingreses en este cuestionario nos ayudarán a personalizar tu experiencia, brindándote recomendaciones y estadísticas adaptadas a tus objetivos.\n\n
+    ✅ Seguridad garantizada: Toda la información se almacena de forma segura y solo será utilizada dentro de la aplicación.\n\n
+    📌 Uso de los datos: Los datos recopilados nos permitirán ofrecerte un mejor seguimiento de tu progreso, incluyendo análisis y gráficos personalizados.\n\n
+    ⚙️ Tú tienes el control: Puedes actualizar o eliminar tu información en cualquier momento desde la configuración de la app.\n\n
+    👉 Al continuar, aceptas que utilizaremos estos datos solo para mejorar tu experiencia en WeightTrackerTFT.
+    </string>
+    <string name="accept_terms_and_conditions">He leído y acepto el uso de mis datos</string>
+    <string name="accept_terms_description">Al hacer clic en Aceptar, aceptas que utilizaremos tus datos para personalizar tu experiencia y proporcionarte estadísticas adaptadas a tus objetivos.</string>
+    <string name="start_questionnaire">Comenzar cuestionario</string>
+
+    <!-- Home Screen -->
+    <string name="home">Inicio</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Configuración</string>
+
 </resources>

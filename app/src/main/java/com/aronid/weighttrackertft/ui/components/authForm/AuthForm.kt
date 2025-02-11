@@ -19,8 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
 import com.aronid.weighttrackertft.ui.components.emailField.EmailField
 import com.aronid.weighttrackertft.ui.components.passwordField.PasswordField
-import com.aronid.weighttrackertft.ui.theme.Black
-import com.aronid.weighttrackertft.ui.theme.White
 
 @Composable
 fun AuthForm(
@@ -67,8 +65,7 @@ fun AuthForm(
             Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.primary
-
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         } else {

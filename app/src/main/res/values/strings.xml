@@ -1,6 +1,8 @@
 <!-- default: english -->
 <resources>
     <string name="app_name">Weight Tracker</string>
+    <string name="app_logo_description">Weight Tracker</string>
+
 
     <!-- Button -->
     <string name="login">Log In</string>
@@ -8,6 +10,17 @@
     <string name="sign_up_free">Sign Up</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="ic_back">Back Icon</string>
+    <string name="next">Next</string>
+    <string name="prev">Previous</string>
+    <string name="skip">Skip</string>
+    <string name="submit">Submit</string>
+
+    <!-- Alert Dialog -->
+    <string name="alert_title">Alert</string>
+    <string name="alert_message">Are you sure you want to exit?</string>
+    <string name="alert_positive">Yes</string>
+    <string name="alert_negative">No</string>
+
 
     <!-- Language -->
     <string name="spanish">Spanish</string>
@@ -36,4 +49,49 @@
     <string name="error_email_invalid">Invalid email</string>
     <string name="error_password_empty">Empty password</string>
     <string name="error_password_length">Password length wrong</string>
+
+    <!-- LifeStyle Screen -->
+    <string name="life_style">Life Style</string>
+    <string name="activity_level">Activity Level</string>
+    <string name="sedentary">Sedentary</string>
+    <string name="lightly_active">Lightly Active</string>
+    <string name="moderately_active">Moderately Active</string>
+    <string name="very_active">Very Active</string>
+    <string name="goal">Goal</string>
+    <string name="maintain_weight">Maintain Weight</string>
+    <string name="lose_weight">Lose Weight</string>
+
+    <!-- PersonalInfo Screen -->
+    <string name="personal_info">Personal Info</string>
+    <string name="name">Name</string>
+    <string name="birth_date">Birth Date</string>
+
+    <!-- PhysicalData Screen -->
+    <string name="physical_data">Physical Data</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+
+    <!-- Questionnaire Screen -->
+    <string name="questionnaire">Questionnaire</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_policy">📢 Important about your privacy</string>
+    <string name="privacy_policy_description">
+    📢 We will never share your data with third parties.\n\n
+    🔒 At WeightTrackerTFT, we take your privacy and security very seriously.\n\n
+    📊 The data you enter in this questionnaire will help us personalize your experience, providing you with recommendations and statistics tailored to your goals.\n\n
+    ✅ Guaranteed security: All information is stored securely and will only be used within the app.\n\n
+    📌 Data usage: The collected data will allow us to offer you better tracking of your progress, including analysis and personalized charts.\n\n
+    ⚙️ You have control: You can update or delete your information at any time from the app settings.\n\n
+    👉 By continuing, you agree that we will use this data solely to improve your experience in WeightTrackerTFT.
+    </string>
+    <string name="accept_terms_and_conditions">I have read and accept the use of my data</string>
+    <string name="accept_terms_description">By clicking Accept, you agree that we will use your data to personalize your experience and provide you with statistics tailored to your goals.</string>
+    <string name="start_questionnaire">Start Questionnaire</string>
+
+    <!-- Home Screen -->
+    <string name="home">Home</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Settings</string>
+
 </resources>

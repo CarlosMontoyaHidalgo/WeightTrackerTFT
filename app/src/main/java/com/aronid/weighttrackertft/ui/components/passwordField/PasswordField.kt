@@ -32,11 +32,17 @@ fun PasswordField(
         OutlinedTextField(
             value = password,
             onValueChange = onPasswordChange,
-            label = { Text(stringResource(R.string.password)) },
+            label = {
+                Text(
+                    stringResource(R.string.password),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Lock,
-                    contentDescription = stringResource(R.string.ic_invalid_password)
+                    contentDescription = stringResource(R.string.ic_invalid_password),
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
             trailingIcon = {
@@ -48,7 +54,8 @@ fun PasswordField(
                 IconButton(onClick = { onPasswordVisibilityChange(!passwordVisible) }) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = stringResource(description)
+                        contentDescription = stringResource(description),
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             },
@@ -56,7 +63,7 @@ fun PasswordField(
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true
+            singleLine = true,
         )
 
         errorMessage?.let {

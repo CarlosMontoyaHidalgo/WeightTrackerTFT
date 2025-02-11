@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
 import com.aronid.weighttrackertft.ui.theme.Black
@@ -46,19 +48,12 @@ fun UserQuestionnaireScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "📢 Importante sobre tu privacidad",
+            text = stringResource(id = R.string.privacy_policy),
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "En WeightTrackerTFT, nos tomamos muy en serio tu privacidad y seguridad. " +
-                    "Los datos que ingreses en este cuestionario nos ayudarán a personalizar tu experiencia, " +
-                    "brindándote recomendaciones y estadísticas adaptadas a tus objetivos.\n\n" +
-                    "🔒 Seguridad garantizada: Toda la información se almacena de forma segura y solo será utilizada dentro de la aplicación.\n\n" +
-                    "📊 Uso de datos: Los datos recopilados nos permitirán ofrecerte un mejor seguimiento de tu progreso, " +
-                    "incluyendo análisis y gráficos personalizados.\n\n" +
-                    "✅ Tú tienes el control: Puedes actualizar o eliminar tu información en cualquier momento desde la configuración de la app.\n\n" +
-                    "Al continuar, aceptas que utilizaremos estos datos solo para mejorar tu experiencia en WeightTrackerTFT. 💪"
+            text = stringResource(id = R.string.privacy_policy_description),
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -70,14 +65,14 @@ fun UserQuestionnaireScreen(
                 onCheckedChange = { isChecked = it }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "He leído y acepto el uso de mis datos")
+            Text(text = stringResource(id = R.string.accept_terms_and_conditions))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
 
         CustomButton(
-            text = "Comenzar Cuestionario",
+            text = stringResource(id = R.string.start_questionnaire),
             containerColor = Black,
             textColor = White,
             enabled = isChecked,
