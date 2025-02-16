@@ -22,43 +22,15 @@ class SearchBarViewModel : ViewModel() {
     private val _selectedMuscle = MutableStateFlow<String?>(null)
     val selectedMuscle = _selectedMuscle.asStateFlow()
 
-
-    // Lista de músculos únicos
-    val muscleList = exerciseList
-        .flatMap { it.muscles }
-        .distinct()
-        .sorted()
-
     private val _exercises = MutableStateFlow(exerciseList)
-
-    val exercises = combine(
-        searchText.debounce(300L),
-        _selectedMuscle,
-    ) { text, muscle ->
-        applyFilters(text, muscle)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
-
-    private fun applyFilters(text: String, muscle: String?): List<Exercise> {
-        return _exercises.value.filter { exercise ->
-            val textMatch = text.isBlank() || exercise.matchesSearchQuery(text)
-            val muscleMatch = muscle == null || exercise.muscles.any { it.equals(muscle, true) }
-            textMatch && muscleMatch
         }
     }
 
-    fun toggleMuscleFilter(muscle: String) {
-        _selectedMuscle.value = if (_selectedMuscle.value == muscle) null else muscle
-    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
 
-    fun clearAllFilters() {
         _searchText.value = ""
         _selectedMuscle.value = null
     }
@@ -78,9 +50,6 @@ data class Exercise(
             "$name ${muscles.joinToString(" ")}",
             "$name${muscles.joinToString(" ")}",
             "${name.first()} ${muscles.joinToString("").first()}",
-            "$muscles $name",
-            "$muscles$name",
-            "${muscles.first()} ${name.first()}",
 
         )
 
