@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.BottomNavigationBar
-import com.aronid.weighttrackertft.ui.components.searchBar.MySearchBar
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
