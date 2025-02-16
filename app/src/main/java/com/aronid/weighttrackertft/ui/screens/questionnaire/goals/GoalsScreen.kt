@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.screens.questionnaire.lifeStyle
+package com.aronid.weighttrackertft.ui.screens.questionnaire.goals
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,9 +23,9 @@ import com.aronid.weighttrackertft.ui.components.myCard.SelectableCard
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable
-fun LifeStyleScreen(
+fun GoalsScreen(
     innerPadding: PaddingValues,
-    viewModel: LifeStyleViewModel,
+    viewModel: GoalsScreenViewModel,
     navHostController: NavHostController
 ) {
     val state by viewModel.state.collectAsState()
@@ -43,10 +43,10 @@ fun LifeStyleScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            ActivityLevelSection(
-                options = viewModel.getActivityLevelOptions(),
-                selectedOption = state.activityLevel,
-                onOptionSelected = viewModel::onActivityLevelSelected
+            GoalsSection(
+                options = viewModel.getGoalsOptions(),
+                selectedOption = state.goal,
+                onOptionSelected = viewModel::onGoalSelected
             )
 
 
@@ -70,14 +70,14 @@ fun LifeStyleScreen(
 }
 
 @Composable
-private fun ActivityLevelSection(
+private fun GoalsSection(
     options: List<LifeStyleOption>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.activity_level),
+            text = stringResource(R.string.goals),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -96,4 +96,3 @@ private fun ActivityLevelSection(
         )
     }
 }
-

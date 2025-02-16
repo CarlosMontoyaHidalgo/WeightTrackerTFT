@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.easy.date.picker)
     implementation(libs.lifecycle.viewmodel.compose)
 
+    implementation(libs.androidx.constraint.layout.compose)
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

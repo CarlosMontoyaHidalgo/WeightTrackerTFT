@@ -18,7 +18,6 @@ class UserRepository @Inject constructor(
     private val userCollection = firestore.collection(FirestoreCollections.USERS)
 
 
-
     suspend fun loginUser(email: String, password: String): Result<FirebaseUser> {
         return try {
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
@@ -62,6 +61,10 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             throw Exception("Error saving user: ${e.localizedMessage}", e)
         }
+    }
+
+    suspend fun updateUserFields(userId: String, updates: Map<String, Any>) {
+        userCollection.document(userId).update(updates).await()
     }
 
     suspend fun getUserName(userId: String): Result<String> {

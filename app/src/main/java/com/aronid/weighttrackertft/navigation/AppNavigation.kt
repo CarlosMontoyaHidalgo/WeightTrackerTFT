@@ -14,9 +14,14 @@ import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireViewModel
+import com.aronid.weighttrackertft.ui.screens.questionnaire.goals.GoalsScreen
+import com.aronid.weighttrackertft.ui.screens.questionnaire.goals.GoalsScreenViewModel
 import com.aronid.weighttrackertft.ui.screens.questionnaire.lifeStyle.LifeStyleScreen
+import com.aronid.weighttrackertft.ui.screens.questionnaire.lifeStyle.LifeStyleViewModel
+import com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation.PersonalInfoViewModel
 import com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation.PersonalInformationScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.physicalData.PhysicalDataScreen
+import com.aronid.weighttrackertft.ui.screens.questionnaire.physicalData.PhysicalDataViewModel
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
 import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
@@ -67,21 +72,33 @@ fun AppNavigation(
             )
         }
         composable(NavigationRoutes.PhysicalData.route) {
-            val viewModel: UserQuestionnaireViewModel = hiltViewModel()
-            PhysicalDataScreen(viewModel = viewModel, navController = navHostController)
+            val viewModel: PhysicalDataViewModel = hiltViewModel()
+            PhysicalDataScreen(
+                innerPadding,
+                viewModel = viewModel,
+                navHostController = navHostController
+            )
         }
         composable(NavigationRoutes.PersonalInformation.route) {
-            val viewModel: UserQuestionnaireViewModel = hiltViewModel()
+            val viewModel: PersonalInfoViewModel = hiltViewModel()
             PersonalInformationScreen(
                 innerPadding,
                 viewModel = viewModel,
-                navController = navHostController
+                navHostController = navHostController
             )
         }
 
         composable(NavigationRoutes.LifeStyle.route) {
-            val viewModel: UserQuestionnaireViewModel = hiltViewModel()
-            LifeStyleScreen(innerPadding, viewModel = viewModel, navController = navHostController)
+            val viewModel: LifeStyleViewModel = hiltViewModel()
+            LifeStyleScreen(
+                innerPadding,
+                viewModel = viewModel,
+                navHostController = navHostController
+            )
+        }
+        composable(NavigationRoutes.Goals.route) {
+            val viewModel: GoalsScreenViewModel = hiltViewModel()
+            GoalsScreen(innerPadding, viewModel = viewModel, navHostController = navHostController)
         }
         composable(NavigationRoutes.Stats.route) {
             StatsScreen(innerPadding, navHostController)
@@ -95,9 +112,6 @@ fun AppNavigation(
         composable(NavigationRoutes.Exercises.route) {
             ExerciseScreen(innerPadding, navHostController)
         }
-
-
-
     }
 }
 

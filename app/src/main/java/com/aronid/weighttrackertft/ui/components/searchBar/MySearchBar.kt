@@ -2,17 +2,20 @@ package com.aronid.weighttrackertft.ui.components.searchBar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -37,6 +40,7 @@ fun MySearchBar() {
     val exercises by viewModel.exercises.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val selectedMuscle by viewModel.selectedMuscle.collectAsState()
+
 
 
     Column(
@@ -64,16 +68,46 @@ fun MySearchBar() {
                         contentDescription = null,
                         modifier = Modifier
 
-                            .clickable { viewModel.clearSearchText() }
+                            .clickable { viewModel.clearAllFilters() }
                     )
                 }
             }
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-//        selectedMuscle?.let {
-//            FilterByMuscle(it)
-//        }
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(viewModel.muscleList.distinct()) { muscle ->
+                val isSelected = muscle == selectedMuscle
+                MyTag(
+                    text = muscle,
+                    textColor = if (isSelected) Color.White else Color.Black,
+                    backgroundColor = if (isSelected) Color.Blue else Color.LightGray,
+                    onClick = { viewModel.toggleMuscleFilter(muscle) }
+                )
+            }
+        }
+
+        selectedMuscle?.let { muscle ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable { viewModel.toggleMuscleFilter(muscle) }
+                    .padding(8.dp)
+            ) {
+                Text("Filtrado por: $muscle", color = Color.Blue)
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(R.drawable.ic_x),
+                    contentDescription = "Quitar filtro",
+                    tint = Color.Blue
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -100,16 +134,20 @@ fun MySearchBar() {
     }
 }
 
-@Composable
-fun FilterByMuscle(muscle: String) {
-    LazyRow(modifier = Modifier.fillMaxWidth().height(32.dp)) {
-        items(listOf(muscle)) { muscle ->
-            MyTag(
-                text = muscle,
-                textColor = Color.White,
-                backgroundColor = Color.Black
-            )
-        }
-    }
-}
+//@Composable
+//fun FilterByMuscle(muscle: String) {
+//    LazyRow(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .height(32.dp)
+//    ) {
+//        items(listOf(muscle)) { muscle ->
+//            MyTag(
+//                text = muscle,
+//                textColor = Color.White,
+//                backgroundColor = Color.Black
+//            )
+//        }
+//    }
+//}
 

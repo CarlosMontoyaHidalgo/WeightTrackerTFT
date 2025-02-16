@@ -94,4 +94,22 @@
     <!-- Settings Screen -->
     <string name="settings">Settings</string>
 
+    <!-- Activity Levels -->
+    <string name="activity_level_sedentary">Sedentary</string>
+    <string name="activity_level_sedentary_desc">Little or no exercise</string>
+    <string name="activity_level_moderate">Moderate</string>
+    <string name="activity_level_moderate_desc">Exercise 3&#8211;4 times per week</string>
+    <string name="activity_level_active">Active</string>
+    <string name="activity_level_active_desc">Intense daily exercise</string>
+
+    <!-- Goals -->
+    <string name="goals">Goals</string>
+    <string name="goal_lose_weight">Lose Weight</string>
+    <string name="goal_lose_weight_desc">Reduce body fat</string>
+    <string name="goal_maintain">Maintain Weight</string>
+    <string name="goal_maintain_desc">Keep current weight</string>
+    <string name="goal_gain_muscle">Gain Muscle</string>
+    <string name="goal_gain_muscle_desc">Increase muscle mass</string>
+
+
 </resources>

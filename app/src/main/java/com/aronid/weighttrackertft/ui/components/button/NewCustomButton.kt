@@ -100,6 +100,7 @@ fun NewCustomButton(
         ButtonType.TONAL_FILLED -> {
             FilledTonalButton(
                 onClick = onClick,
+                enabled = stateConfig.isEnabled,
                 shape = borderConfig?.buttonShape ?: RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = containerColor,
@@ -111,6 +112,7 @@ fun NewCustomButton(
         ButtonType.ELEVATED -> {
             ElevatedButton(
                 onClick = onClick,
+                enabled = stateConfig.isEnabled,
                 shape = borderConfig?.buttonShape ?: RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = containerColor,
@@ -123,6 +125,7 @@ fun NewCustomButton(
         ButtonType.OUTLINED -> {
             OutlinedButton(
                 onClick = onClick,
+                enabled = stateConfig.isEnabled,
                 shape = borderConfig?.buttonShape ?: RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = containerColor,
@@ -135,6 +138,7 @@ fun NewCustomButton(
         ButtonType.TEXT -> {
             TextButton(
                 onClick = onClick,
+                enabled = stateConfig.isEnabled,
                 shape = borderConfig?.buttonShape ?: RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = containerColor,

@@ -4,15 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.R
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 
 @OptIn(FlowPreview::class)
 class SearchBarViewModel : ViewModel() {
@@ -25,34 +22,44 @@ class SearchBarViewModel : ViewModel() {
     private val _selectedMuscle = MutableStateFlow<String?>(null)
     val selectedMuscle = _selectedMuscle.asStateFlow()
 
-    private val _exercises = MutableStateFlow(exerciseList)
-    val exercises = searchText
-        .debounce(300L)
-        .onEach { _isSearching.update { true } }
-        .combine(_exercises) { text, exercises ->
-            if (text.isBlank()) {
-                exercises
-            } else {
-                exercises.filter { it.matchesSearchQuery(text) }
-            }
-        }
-        .onEach { _isSearching.update { false } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _exercises.value)
 
+    // Lista de músculos únicos
+    val muscleList = exerciseList
+        .flatMap { it.muscles }
+        .distinct()
+        .sorted()
+
+    private val _exercises = MutableStateFlow(exerciseList)
+
+    val exercises = combine(
+        searchText.debounce(300L),
+        _selectedMuscle,
+    ) { text, muscle ->
+        applyFilters(text, muscle)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    private fun applyFilters(text: String, muscle: String?): List<Exercise> {
+        return _exercises.value.filter { exercise ->
+            val textMatch = text.isBlank() || exercise.matchesSearchQuery(text)
+            val muscleMatch = muscle == null || exercise.muscles.any { it.equals(muscle, true) }
+            textMatch && muscleMatch
+        }
+    }
+
+    fun toggleMuscleFilter(muscle: String) {
+        _selectedMuscle.value = if (_selectedMuscle.value == muscle) null else muscle
+    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
 
-    fun clearSearchText() {
+    fun clearAllFilters() {
         _searchText.value = ""
-    }
-
-    fun onMuscleSelected(muscle: String) {
-        _selectedMuscle.value = muscle
-    }
-
-    fun clearSelectedMuscle() {
         _selectedMuscle.value = null
     }
 
@@ -64,7 +71,6 @@ data class Exercise(
     val image: Int
 ) {
 
-    //TODO: View if the name or description is empty
     fun matchesSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
             name,
@@ -72,9 +78,9 @@ data class Exercise(
             "$name ${muscles.joinToString(" ")}",
             "$name${muscles.joinToString(" ")}",
             "${name.first()} ${muscles.joinToString("").first()}",
-            /*"$description $name",
-            "$description$name",
-            "${description.first()} ${name.first()}",*/
+            "$muscles $name",
+            "$muscles$name",
+            "${muscles.first()} ${name.first()}",
 
         )
 
@@ -93,7 +99,3 @@ private val exerciseList = listOf(
     Exercise("Pull-Up", listOf("Back", "Biceps"), R.drawable.ic_account_default),
     Exercise("Shoulder Press", listOf("Shoulders", "Triceps"), R.drawable.ic_account_default)
 )
-
-//private val muscleList =
-//    listOf("Quadriceps", "Hamstrings", "Glutes", "Chest", "Triceps", "Back", "Biceps", "Shoulders")
-

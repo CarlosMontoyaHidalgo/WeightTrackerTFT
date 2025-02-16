@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -13,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.BottomNavigationBar
-import com.aronid.weighttrackertft.ui.components.searchBar.MySearchBar
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
@@ -25,9 +25,17 @@ fun HomeScreen(
     Scaffold(
         bottomBar = { BottomNavigationBar(navHostController = navHostController) },
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(paddingValues)) {
-            Text(text = stringResource(id = R.string.home), color = MaterialTheme.colorScheme.onBackground)
-
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(paddingValues)) {
+            Text(
+                text = stringResource(id = R.string.home),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Button(onClick = { navHostController.navigate("questionnaire") }) {
+                Text(text = "Go to questionnaire")
+            }
         }
 
     }
