@@ -1,6 +1,9 @@
 package com.aronid.weighttrackertft.ui.components.exerciseCard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,74 +23,77 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
 
-
 @Composable
 fun ExerciseCard(
+    name: String,
+    primaryMuscle: String,
+    secondaryMuscles: List<String>,
+    imageUrl: Int,
     modifier: Modifier = Modifier,
-    exerciseName: String = "Exercise Name",
-    muscles: List<String> = listOf(
-        "Muscle 1",
-        "Muscle 2",
-        "Muscle 3, Muscle 4, Muscle 5, Muscle 6"
-    ),
-    imageResId: Int = R.drawable.background
+    onCardClick: () -> Unit = {},
+    isSelected: Boolean = false,
+    onToggleSelection: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .clickable { onCardClick() }
+            .then(
+                if (isSelected) Modifier.border(
+                    BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(8.dp)
+                ) else Modifier
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Image(
-                painter = painterResource(id = imageResId),
+                painter = painterResource(id = R.drawable.background/*imageUrl.toInt()*/),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(128.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.weight(1f)
-            ) {
+            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = exerciseName,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    text = name,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
-
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    items(muscles) { muscle ->
+                    item {
+                        MyTag(
+                            text = primaryMuscle,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    items(secondaryMuscles) { muscle ->
                         MyTag(
                             text = muscle,
-                            textColor = Color.White,
-                            backgroundColor = Color.Black,
                             modifier = Modifier
                         )
                     }
                 }
-
             }
+
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ExerciseCardPreview() {
-    ExerciseCard()
 }

@@ -10,6 +10,7 @@ import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
 import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseScreen
+import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseViewModel
 import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
@@ -22,6 +23,13 @@ import com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation.
 import com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation.PersonalInformationScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.physicalData.PhysicalDataScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.physicalData.PhysicalDataViewModel
+import com.aronid.weighttrackertft.ui.screens.routines.RoutineScreen
+import com.aronid.weighttrackertft.ui.screens.routines.RoutineViewModel
+import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.ChooseExercisesScreen
+import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.CreateRoutineScreen
+import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.CreateRoutineViewModel
+import com.aronid.weighttrackertft.ui.screens.routines.details.RoutineDetailsScreen
+import com.aronid.weighttrackertft.ui.screens.routines.details.RoutineDetailsViewModel
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
 import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
@@ -110,8 +118,31 @@ fun AppNavigation(
         }
 
         composable(NavigationRoutes.Exercises.route) {
-            ExerciseScreen(innerPadding, navHostController)
+            val viewModel: ExerciseViewModel = hiltViewModel()
+            ExerciseScreen(innerPadding, viewModel, navHostController)
         }
+
+        composable(NavigationRoutes.Routines.route) {
+            val viewModel: RoutineViewModel = hiltViewModel()
+            RoutineScreen(innerPadding, viewModel ,navHostController)
+        }
+
+
+        composable(NavigationRoutes.RoutineDetails.route) { backStackEntry ->
+            val routineId = backStackEntry.arguments?.getString("routineId")
+            val viewModel: RoutineDetailsViewModel = hiltViewModel()
+            RoutineDetailsScreen(innerPadding, routineId = routineId, navHostController = navHostController, viewModel)
+        }
+
+        composable(NavigationRoutes.CreateRoutine.route) {
+            val viewModel: CreateRoutineViewModel = hiltViewModel()
+            CreateRoutineScreen(innerPadding, viewModel ,navHostController)
+        }
+        composable(NavigationRoutes.ChooseExercises.route) {
+//            val viewModel: CreateRoutineViewModel = hiltViewModel()
+//            ChooseExercisesScreen(innerPadding, viewModel ,navHostController)
+        }
+
     }
 }
 

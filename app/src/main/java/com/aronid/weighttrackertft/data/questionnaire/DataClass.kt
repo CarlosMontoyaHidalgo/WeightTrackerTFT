@@ -6,7 +6,7 @@ import com.aronid.weighttrackertft.utils.button.LayoutConfig
 import com.aronid.weighttrackertft.utils.button.StateConfig
 import com.aronid.weighttrackertft.utils.button.TextConfig
 
-data class UserQuestionnaireState(
+data class BaseState(
     val isFormValid: Boolean = false,
     val buttonConfigs: ButtonConfigs = ButtonConfigs(
         textConfig = TextConfig(),
@@ -14,6 +14,14 @@ data class UserQuestionnaireState(
         stateConfig = StateConfig(),
         borderConfig = BorderConfig()
     )
+)
+
+data class UserQuestionnaireState(
+    val baseState: BaseState = BaseState()
+)
+
+data class ButtonState(
+    val baseState: BaseState = BaseState()
 )
 
 data class PersonalInfoState(

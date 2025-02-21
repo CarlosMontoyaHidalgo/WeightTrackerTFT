@@ -29,7 +29,7 @@ fun UserQuestionnaireScreen(
     navHostController: NavHostController,
 ) {
     val state by viewModel.state.collectAsState()
-    val buttonConfigs = state.buttonConfigs
+    val buttonConfigs = state.baseState.buttonConfigs
 
     FormScreen(
         modifier = Modifier,
@@ -52,7 +52,7 @@ fun UserQuestionnaireScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = state.isFormValid,
+                    checked = state.baseState.isFormValid,
                     onCheckedChange = { viewModel.onCheckboxChanged(it) }
                 )
                 Spacer(modifier = Modifier.width(8.dp))

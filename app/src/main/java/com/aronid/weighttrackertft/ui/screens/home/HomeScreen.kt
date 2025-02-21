@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.BottomNavigationBar
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -35,6 +36,17 @@ fun HomeScreen(
             )
             Button(onClick = { navHostController.navigate("questionnaire") }) {
                 Text(text = "Go to questionnaire")
+            }
+
+            Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
+                Text(text = "see routines")
+            }
+
+            Button(onClick = {navHostController.navigate(NavigationRoutes.CreateRoutine.route)}) {
+                Text(text = "Create a routine")
+            }
+            Button(onClick = {navHostController.navigate(NavigationRoutes.Exercises.route)}) {
+                Text(text = "Ver ejercicios")
             }
         }
 

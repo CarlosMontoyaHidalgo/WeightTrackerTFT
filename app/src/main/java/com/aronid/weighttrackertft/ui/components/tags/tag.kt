@@ -19,7 +19,8 @@ fun MyTag(
     text: String,
     textColor: Color = Color.White,
     backgroundColor: Color = Color.Black,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+
 ) {
     Box(
         modifier = Modifier

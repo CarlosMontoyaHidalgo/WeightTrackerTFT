@@ -45,38 +45,73 @@ android {
 
 dependencies {
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
+    // Firebase dependencies
+    implementation(platform(libs.firebase.bom)) // Firebase Bill of Materials (BoM) to manage Firebase dependencies versions
+    implementation(libs.firebase.crashlytics) // Firebase Crashlytics for crash reporting
+    implementation(libs.firebase.analytics) // Firebase Analytics for tracking user behavior
+    implementation(libs.firebase.auth) // Firebase Authentication for user authentication
+    implementation(libs.firebase.firestore) // Firebase Firestore for cloud database
 
-    implementation(libs.compose.material.icons.extended)
+// Jetpack Compose dependencies
+    implementation(libs.compose.material.icons.extended) // Extended Material Icons for Jetpack Compose
 
-    implementation(libs.runtime.livedata)
+// LiveData dependencies
+    implementation(libs.runtime.livedata) // LiveData for lifecycle-aware data observation
 
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+// Hilt dependencies
+    implementation(libs.hilt.android) // Hilt for dependency injection
+    kapt(libs.hilt.compiler) // Hilt compiler for generating code
+    implementation(libs.hilt.navigation.compose) // Hilt navigation integration for Jetpack Compose
 
-    implementation(libs.easy.date.picker)
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.constraint.layout.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.runtime.livedata)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+// Paging dependencies
+    implementation(libs.pagingCompose) // Paging library for loading data in pages in Jetpack Compose
+
+// Coil dependencies
+    implementation(libs.coil.compose) // Coil for image loading in Jetpack Compose
+
+// Date Picker dependencies
+    implementation(libs.easy.date.picker) // Easy Date Picker for date selection
+
+// ViewModel dependencies
+    implementation(libs.lifecycle.viewmodel.compose) // ViewModel integration for Jetpack Compose
+
+// Constraint Layout dependencies
+    implementation(libs.androidx.constraint.layout.compose) // Constraint Layout for Jetpack Compose
+
+// Navigation dependencies
+    implementation(libs.androidx.navigation.compose) // Navigation component for Jetpack Compose
+
+// Core KTX dependencies
+    implementation(libs.androidx.core.ktx) // Core KTX extensions for Android
+
+// Lifecycle Runtime dependencies
+    implementation(libs.androidx.lifecycle.runtime.ktx) // Lifecycle runtime extensions for Android
+
+// Activity Compose dependencies
+    implementation(libs.androidx.activity.compose) // Activity integration for Jetpack Compose
+
+// Compose BOM dependencies
+    implementation(platform(libs.androidx.compose.bom)) // Compose Bill of Materials (BoM) to manage Compose dependencies versions
+
+// Compose UI dependencies
+    implementation(libs.androidx.ui) // Core UI components for Jetpack Compose
+    implementation(libs.androidx.ui.graphics) // Graphics components for Jetpack Compose
+    implementation(libs.androidx.ui.tooling.preview) // Tooling support for Jetpack Compose previews
+
+// Material3 dependencies
+    implementation(libs.androidx.material3) // Material Design 3 components for Jetpack Compose
+
+// Runtime LiveData dependencies
+    implementation(libs.androidx.runtime.livedata) // Runtime LiveData integration for Jetpack Compose
+
+// Testing dependencies
+    testImplementation(libs.junit) // JUnit for unit testing
+    androidTestImplementation(libs.androidx.junit) // AndroidX JUnit extensions for Android testing
+    androidTestImplementation(libs.androidx.espresso.core) // Espresso for UI testing
+    androidTestImplementation(platform(libs.androidx.compose.bom)) // Compose Bill of Materials (BoM) for Android testing
+    androidTestImplementation(libs.androidx.ui.test.junit4) // JUnit4 integration for Jetpack Compose testing
+
+// Debug dependencies
+    debugImplementation(libs.androidx.ui.tooling) // Tooling support for Jetpack Compose debugging
+    debugImplementation(libs.androidx.ui.test.manifest) // Manifest support for Jetpack Compose testing
 }

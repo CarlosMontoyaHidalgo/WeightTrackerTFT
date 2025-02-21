@@ -19,4 +19,14 @@ sealed class NavigationRoutes(val route: String) {
     object UserSettings : NavigationRoutes("userSettings")
     object Customization : NavigationRoutes("customization")
     object Equipment : NavigationRoutes("equipment")
+
+    /*Workouts*/
+    object Routines : NavigationRoutes("routines")
+    object RoutineDetails: NavigationRoutes("routine_details/{routineId}"){
+        fun createRoute(routineId: String) = "routine_details/$routineId"
+    }
+    object CreateRoutine : NavigationRoutes("createRoutine")
+    object ChooseExercises : NavigationRoutes("chooseExercises")
+
+
 }

@@ -39,8 +39,10 @@ class UserQuestionnaireViewModel @Inject constructor(
             val border = getDefaultBorderConfig()
 
             it.copy(
-                isFormValid = isChecked,
-                buttonConfigs = ButtonConfigs(text, layout, state, border)
+                baseState = it.baseState.copy(
+                    isFormValid = isChecked,
+                    buttonConfigs = ButtonConfigs(text, layout, state, border)
+                )
             )
         }
     }

@@ -46,7 +46,6 @@ fun MyApp(auth: FirebaseAuth) {
     LaunchedEffect(auth) {
         auth.addAuthStateListener {
             isUserLoggedIn = it.currentUser != null
-            Log.i("isUserLoggedIn", isUserLoggedIn.toString())
         }
     }
 
