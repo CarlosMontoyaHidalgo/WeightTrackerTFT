@@ -13,7 +13,8 @@ data class ExerciseModel(
     @PropertyName("secondaryMuscle") val secondaryMuscle: List<DocumentReference> = emptyList(),
     @PropertyName("video_url") val videoUrl: String = "",
     @PropertyName("imageUrl") val imageUrl: String = "",
-    @PropertyName("type") val type: String = ""
+    @PropertyName("type") val type: String = "",
+    @PropertyName("requiresWeight") val requiresWeight: Boolean = false,
 ) {
 
 
@@ -42,10 +43,7 @@ data class ExerciseModel(
             "$primaryMuscle $name",
             "$primaryMuscle$name",
             "${primaryMuscle.toString().first()} ${name.first()}",
-
         )
-
-        return matchingCombinations.any{ it.contains(query, ignoreCase = true) }
+        return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
-
 }

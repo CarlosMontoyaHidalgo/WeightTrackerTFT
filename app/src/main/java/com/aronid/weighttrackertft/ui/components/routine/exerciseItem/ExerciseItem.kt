@@ -31,9 +31,5 @@ fun ExerciseItem(
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.weight(1f)
         )
-        Checkbox(
-            checked = isSelected,
-            onCheckedChange = { onExerciseSelected(exercise.id) }
-        )
     }
 }

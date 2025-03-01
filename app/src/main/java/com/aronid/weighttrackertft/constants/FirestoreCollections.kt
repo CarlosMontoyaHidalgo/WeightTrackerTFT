@@ -7,4 +7,5 @@ object FirestoreCollections {
     const val ROUTINES_PREDEFINED = "routines_predefined"
     const val MUSCLES = "muscles"
     const val EQUIPMENT = "equipment"
+    const val WORKOUT = "workouts"
 }

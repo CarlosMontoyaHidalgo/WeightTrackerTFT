@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.BottomNavigationBar
+package com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape

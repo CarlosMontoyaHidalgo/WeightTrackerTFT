@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
-import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.BottomNavigationBar
+import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import com.aronid.weighttrackertft.ui.components.ButtonList.ButtonList
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.button.CustomButton

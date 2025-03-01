@@ -161,7 +161,6 @@ private fun ButtonContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxSize()
     ) {
         iconConfig?.let {
             if (text == null || it.iconPosition == IconPosition.START) {
@@ -182,7 +181,7 @@ private fun ButtonContent(
             Text(text = text, fontSize = textSize, fontWeight = fontWeight)
         }
 
-       
+
 
         iconConfig?.let {
             if (text != null && it.iconPosition == IconPosition.END) {
@@ -202,6 +201,7 @@ private fun ButtonContent(
 
     }
 }
+
 
 
 /*Ejemplos de uso*/

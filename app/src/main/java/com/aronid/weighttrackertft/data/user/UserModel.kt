@@ -1,5 +1,7 @@
 package com.aronid.weighttrackertft.data.user
 
+import com.google.firebase.firestore.DocumentReference
+
 data class UserModel(
     val id: String = "",
     val name: String = "",
@@ -8,10 +10,12 @@ data class UserModel(
     val profileImageUrl: String? = null,
     val height: Int? = null,
     val weight: Double? = null,
+    val bodyFatPercentage: Double? = null,
     val gender: String? = null,
     val activityLevel: String? = null,
     val goal: String? = null,
-    val hasCompletedQuestionnaire: Boolean = false
+    val hasCompletedQuestionnaire: Boolean = false,
+    val createdRoutines: List<DocumentReference> = emptyList(),
 
 ) {
     fun toMap(): Map<String, Any?> {

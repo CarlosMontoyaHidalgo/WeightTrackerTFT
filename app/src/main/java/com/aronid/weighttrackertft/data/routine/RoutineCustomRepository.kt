@@ -55,16 +55,34 @@ class RoutineCustomRepository @Inject constructor(
         }
     }
 
-    private suspend fun getRoutineById(routineId: String): RoutineModel? {
+    suspend fun getRoutineById(routineId: String): RoutineModel? {
         return try {
             val snapshot = routinesCollection.document(routineId).get().await()
             val routine = snapshot.toObject(RoutineModel::class.java)
-            Log.i("RoutineDetailsScreen", "$routine") // 🔍 Depuración
             routine
         } catch (e: Exception) {
-            Log.i("RoutineDetailsScreen", "Error fetching routine: ${e.message}") // 🔴 Ver errores
             null
         }
+    }
+
+    suspend fun getExercisesForRoutine(routineId: String): List<ExerciseModel> {
+        val routine = getRoutineById(routineId)
+        val exerciseRefs = routine?.exercises ?: return emptyList()
+        return exerciseRefs.mapNotNull { ref ->
+            try {
+                ref.get().await().toObject(ExerciseModel::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    suspend fun updateRoutine(routine: RoutineModel, exerciseIds: List<String>) {
+        val exerciseRefs = exerciseIds.map { id ->
+            exercisesCollection.document(id)
+        }
+        val updatedRoutineWithRefs = routine.copy(exercises = exerciseRefs)
+        routinesCollection.document(routine.id).set(updatedRoutineWithRefs).await()
     }
 
     suspend fun getExercisesByRoutineId(routineId: String): List<ExerciseModel> {

@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.routine.exerciseItem.ExerciseItem
-import com.aronid.weighttrackertft.ui.components.searchBar.MySearchBar
+import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
 
 @Composable
 fun ChooseExercisesScreen(
@@ -43,7 +43,7 @@ fun ChooseExercisesScreen(
                     modifier = Modifier.padding(top = 8.dp)
                 )
             } else {
-                MySearchBar(
+                MuscleSearchBar(
                     exercises = availableExercises,
                     selectedExerciseIds = selectedExerciseIds,
                     onExerciseSelected = { exercise ->

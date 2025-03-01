@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.exerciseCard
+package com.aronid.weighttrackertft.ui.components.exercise.exerciseCard
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

@@ -21,12 +21,35 @@ sealed class NavigationRoutes(val route: String) {
     object Equipment : NavigationRoutes("equipment")
 
     /*Workouts*/
+    object Workout : NavigationRoutes("workout/{routineId}?isPredefined={isPredefined}") {
+        fun createRoute(routineId: String, isPredefined: Boolean = false): String {
+            return "workout/$routineId?isPredefined=$isPredefined"
+        }
+    }
+    object WorkoutSummary : NavigationRoutes("workoutSummary/{workoutId}"){
+        fun createRoute(workoutId: String) = "workoutSummary/$workoutId"
+    }
+
     object Routines : NavigationRoutes("routines")
-    object RoutineDetails: NavigationRoutes("routine_details/{routineId}"){
+
+
+    object RoutineDetails : NavigationRoutes("routine_details/{routineId}"){
         fun createRoute(routineId: String) = "routine_details/$routineId"
     }
+    object EditRoutine : NavigationRoutes("edit_routine/{routineId}"){
+        fun createRoute(routineId: String) = "edit_routine/$routineId"
+    }
+    object Training: NavigationRoutes("training/{routineId}"){
+        fun createRoute(routineId: String) = "training/$routineId"
+    }
+
     object CreateRoutine : NavigationRoutes("createRoutine")
     object ChooseExercises : NavigationRoutes("chooseExercises")
+
+    object ExerciseDetails : NavigationRoutes("exerciseDetails/{exerciseId}"){
+        fun createRoute(exerciseId: String) = "exerciseDetails/$exerciseId"
+    }
+
 
 
 }

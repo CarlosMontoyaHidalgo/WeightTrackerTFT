@@ -1,23 +1,19 @@
-package com.aronid.weighttrackertft.ui.components.searchBar
+package com.aronid.weighttrackertft.ui.components.searchBar.muscle
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 
 @OptIn(FlowPreview::class)
 class SearchBarViewModel : ViewModel(
 ) {
-
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 

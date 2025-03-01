@@ -43,6 +43,7 @@ fun FormScreen(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.2f)
+                .wrapContentHeight()
                 .constrainAs(formButtonRef) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

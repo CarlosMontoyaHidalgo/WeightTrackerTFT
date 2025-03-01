@@ -50,8 +50,8 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
+    fun getCurrentUser(): FirebaseUser {
+        return auth.currentUser ?: throw IllegalStateException("Routine ID not available")
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -96,40 +96,22 @@ class UserRepository @Inject constructor(
         }
     }
 
-    /* de pago
-    suspend fun updateUserProfileImage(userId: String, imageUrl: Uri): Result<String> {
-        return try {
-            // Genera nombre único para evitar caché
-            val timestamp = System.currentTimeMillis()
-            val fileRef = storageRef.child("profile_images/${userId}_$timestamp.jpg")
-
-            // Sube el archivo con monitorización de progreso
-            val uploadTask = fileRef.putFile(imageUri).await()
-
-            if (uploadTask.task.isSuccessful) {
-                val downloadUrl = fileRef.downloadUrl.await().toString()
-
-                // Actualiza Firestore con transacción
-                firestore.runTransaction { transaction ->
-                    val docRef = userCollection.document(userId)
-                    transaction.update(docRef, "profileImageUrl", downloadUrl)
-                }.await()
-
-                Result.success(downloadUrl)
-            } else {
-                Result.failure(Exception("Error en subida de archivo"))
-            }
-        } catch (e: Exception) {
-            // Rollback: Elimina imagen subida si falla actualización
-            fileRef?.delete().await()
-            Result.failure(e)
-        }
-    }
-*/
-
     suspend fun logout() {
         FirebaseAuth.getInstance().signOut()
     }
 
+    suspend fun getCurrentUserWeight(): Double? {
+        val userId = getCurrentUser().uid ?: return null
+        return try {
+            val userDoc = userCollection.document(userId).get().await().toObject(UserModel::class.java)
+            userDoc?.weight
+        } catch (_:Exception){
+            null
+        }
+    }
 
+    suspend fun getBodyFatPercentage(): Double? {
+        return userCollection.document(getCurrentUser().uid)
+            .get().await().getDouble("bodyFat")
+    }
 }

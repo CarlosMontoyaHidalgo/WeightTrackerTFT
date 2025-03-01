@@ -1,7 +1,6 @@
-package com.aronid.weighttrackertft.ui.components.exerciseCard
+package com.aronid.weighttrackertft.ui.components.exercise.exerciseCard
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.exercises.ExerciseRepository
@@ -40,7 +39,10 @@ class ExerciseCardViewModel @Inject constructor(
                 async { repository.fetchMuscleName(ref) }
             }.awaitAll()
             _secondaryMuscleNames.value = names
-            Log.d("ExerciseCardViewModel", "secondaryMuscleNames: ${_secondaryMuscleNames.value.joinToString()}")
+            Log.d(
+                "ExerciseCardViewModel",
+                "secondaryMuscleNames: ${_secondaryMuscleNames.value.joinToString()}"
+            )
         }
     }
 }

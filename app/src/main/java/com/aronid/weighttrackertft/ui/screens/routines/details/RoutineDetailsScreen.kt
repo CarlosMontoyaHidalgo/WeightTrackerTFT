@@ -16,6 +16,7 @@ import com.aronid.weighttrackertft.ui.components.routine.routineDetails.RoutineD
 fun RoutineDetailsScreen(
     innerPadding: PaddingValues,
     routineId: String?,
+    isPredefined: Boolean,
     navHostController: NavHostController,
     viewModel: RoutineDetailsViewModel
 ) {
@@ -23,12 +24,11 @@ fun RoutineDetailsScreen(
     val exercises by viewModel.exercises.collectAsState()
 
     Column(modifier = Modifier.padding(innerPadding)) {
-        Text(text = "Routine Details")
         LaunchedEffect(routineId) {
-            routineId?.let { id -> viewModel.loadRoutineDetails(routineId = id) }
+            routineId?.let { id -> viewModel.loadRoutineDetails(routineId = id, isPredefined = isPredefined) }
         }
 
-        RoutineDetailsContent(routine = routine, exercises = exercises)
+        RoutineDetailsContent(routine = routine, exercises = exercises, navHostController = navHostController, innerPadding, isPredefined)
 
     }
 

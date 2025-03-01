@@ -10,19 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
-import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.BottomNavigationBar
-import com.aronid.weighttrackertft.ui.components.BottomNavigationBar.EditRoutineBottomBar
 import com.aronid.weighttrackertft.ui.components.FloatingActionButton.MyFloatingActionButton
-import com.aronid.weighttrackertft.ui.components.searchBar.MySearchBar
+import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
+import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,8 +36,6 @@ fun ExerciseScreen(
         }
     }
 
-    val selectedExercises = remember { mutableStateListOf<ExerciseModel>() }
-
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navHostController = navHostController)
@@ -61,7 +53,14 @@ fun ExerciseScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            MySearchBar(exercises, {}, selectedExerciseIds = emptyList(), Modifier)
+            MuscleSearchBar(
+                exercises,
+                { exercise ->
+                    navHostController.navigate(NavigationRoutes.ExerciseDetails.createRoute(exercise.id))
+                },
+                selectedExerciseIds = emptyList(),
+                Modifier
+            )
         }
     }
 }

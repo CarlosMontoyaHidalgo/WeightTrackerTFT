@@ -1,6 +1,7 @@
 package com.aronid.weighttrackertft.data.muscles
 
 import com.aronid.weighttrackertft.constants.FirestoreCollections
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
@@ -10,6 +11,16 @@ class MuscleRepository @Inject constructor(
     private val firestore: FirebaseFirestore
 ) {
     private val muscleCollection = firestore.collection(FirestoreCollections.MUSCLES)
+
+    suspend fun fetchMuscleName(ref: DocumentReference?): String {
+        return try {
+            val muscleDoc = ref?.get()?.await()
+            val name = muscleDoc?.getString("name") ?: "Unknown"
+            name
+        } catch (e: Exception) {
+            "Error"
+        }
+    }
 
     suspend fun addMuscle(muscle: MuscleModel): Result<String> {
         return try {

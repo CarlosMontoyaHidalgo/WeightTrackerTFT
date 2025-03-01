@@ -1,15 +1,10 @@
 package com.aronid.weighttrackertft.data.exercises
 
 import android.util.Log
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.aronid.weighttrackertft.constants.FirestoreCollections
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -75,13 +70,29 @@ class ExerciseRepository @Inject constructor(
     // READ BY ID
     suspend fun getExerciseById(id: String): ExerciseModel? {
         return try {
-            exerciseCollection.document(id)
+            val snapshot = exerciseCollection.document(id)
                 .get()
                 .await()
+
+            snapshot
                 .toObject(ExerciseModel::class.java)
                 ?.copy(id = id)
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun getMuscleByExerciseId(id: String): String {
+        return try {
+            val snapshot = exerciseCollection.document(id)
+                .get()
+                .await()
+
+            val muscleRef = snapshot.get("primary_muscles") as DocumentReference
+            fetchMuscleName(muscleRef)
+        } catch (e: Exception) {
+            Log.e("ExerciseDetailsViewModel", "Error fetching muscle name", e)
+            "Error"
         }
     }
 
@@ -144,6 +155,15 @@ class ExerciseRepository @Inject constructor(
                 }
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    suspend fun getMETExercise(exerciseName: String): Float {
+        return try {
+            exerciseCollection.whereEqualTo("name", exerciseName.lowercase()).get()
+                .await().documents.firstOrNull()?.getDouble("met")?.toFloat() ?: 4.0f
+        } catch (e: Exception) {
+            4.0f
         }
     }
 }

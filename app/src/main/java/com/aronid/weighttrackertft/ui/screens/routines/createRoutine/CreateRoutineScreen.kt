@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
-import com.aronid.weighttrackertft.ui.components.searchBar.MySearchBar
+import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable
@@ -104,7 +104,7 @@ fun CreateRoutineScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            MySearchBar(
+            MuscleSearchBar(
                 exercises = availableExercises,
                 selectedExerciseIds = selectedExerciseIds,
                 onExerciseSelected = { exercise ->

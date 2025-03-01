@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.BottomNavigationBar
+package com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar
 
 data class BottomNavItem(
     val route: String,
