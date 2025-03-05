@@ -12,14 +12,14 @@ data class MuscleModel(
     @PropertyName("description") val description: String = ""
 
 ) {
-    fun toMap(): Map<String, Any?> {
-        return mapOf(
-            "id" to id,
-            "name" to name,
-            "primaryMuscle" to primaryMuscle,
-            "secondaryMuscle" to secondaryMuscle,
-            "imageUrl" to imageUrl,
-            "description" to description
-        )
-    }
+//    fun toMap(): Map<String, Any?> {
+//        return mapOf(
+//            "id" to id,
+//            "name" to name,
+//            "primaryMuscle" to primaryMuscle,
+//            "secondaryMuscle" to secondaryMuscle,
+//            "imageUrl" to imageUrl,
+//            "description" to description
+//        )
+//    }
 }

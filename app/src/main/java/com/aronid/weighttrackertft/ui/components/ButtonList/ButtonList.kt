@@ -22,7 +22,7 @@ fun ButtonList(navHostController: NavHostController) {
         "User Settings" to "user_settings",
         "Customization" to "customization",
         "Goals" to "goals",
-        "Equipment" to "equipment"
+        "History" to "history"
     )
 
     val iconMap = mapOf(

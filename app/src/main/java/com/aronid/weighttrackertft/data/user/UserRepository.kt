@@ -1,6 +1,7 @@
 package com.aronid.weighttrackertft.data.user
 
 import com.aronid.weighttrackertft.constants.FirestoreCollections
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
@@ -40,7 +41,8 @@ class UserRepository @Inject constructor(
                     "email" to email,
                     "createdAt" to FieldValue.serverTimestamp(),
                     "profileImageUrl" to null,
-                    "name" to "Usuario"
+                    "name" to "Usuario",
+
                 )
             ).await()
 
@@ -51,7 +53,7 @@ class UserRepository @Inject constructor(
     }
 
     fun getCurrentUser(): FirebaseUser {
-        return auth.currentUser ?: throw IllegalStateException("Routine ID not available")
+        return auth.currentUser ?: throw IllegalStateException("User Not Available")
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -67,8 +69,10 @@ class UserRepository @Inject constructor(
         userCollection.document(userId).update(updates).await()
     }
 
-    suspend fun getUserName(userId: String): Result<String> {
+    suspend fun getUserName(): Result<String> {
         return try {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+                ?: return Result.failure(Exception("Usuario no autenticado"))
             val document = userCollection.document(userId).get().await()
             val name = document.getString("name") ?: "Usuario"
             Result.success(name)
@@ -113,5 +117,24 @@ class UserRepository @Inject constructor(
     suspend fun getBodyFatPercentage(): Double? {
         return userCollection.document(getCurrentUser().uid)
             .get().await().getDouble("bodyFat")
+    }
+
+    suspend fun getAccountCreationDate(): Result<Timestamp> {
+        return try {
+            val userId = auth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val document = firestore.collection("users")
+                .document(userId)
+                .get()
+                .await()
+
+            val createdAt = document.getTimestamp("createdAt")
+                ?: return Result.failure(Exception("Fecha de creación no encontrada"))
+
+            Result.success(createdAt)
+        } catch (e: Exception) {
+            Result.failure(Exception("Error al obtener fecha de creación: ${e.message}", e))
+        }
     }
 }

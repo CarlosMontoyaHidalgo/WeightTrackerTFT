@@ -61,7 +61,7 @@ fun RoutineItem(
                     }
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        painter = painterResource(id = R.drawable.ic_play),
                         contentDescription = "Start workout"
                     )
                 }

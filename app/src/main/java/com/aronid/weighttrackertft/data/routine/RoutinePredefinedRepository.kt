@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 
 class RoutinePredefinedRepository @Inject constructor(
-    private val firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ) {
     private val predefinedRoutinesCollection = firestore.collection(FirestoreCollections.ROUTINES_PREDEFINED)
 

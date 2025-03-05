@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
@@ -16,6 +17,7 @@ import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseViewModel
 import com.aronid.weighttrackertft.ui.screens.exercises.details.ExerciseDetailsScreen
 import com.aronid.weighttrackertft.ui.screens.exercises.details.ExerciseDetailsViewModel
 import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
+import com.aronid.weighttrackertft.ui.screens.home.HomeViewModel
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireViewModel
@@ -39,7 +41,9 @@ import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
 import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
 import com.aronid.weighttrackertft.ui.screens.workout.WorkoutScreen
+import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryScreen
 import com.aronid.weighttrackertft.ui.screens.workout.WorkoutViewModel
+import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -75,7 +79,9 @@ fun AppNavigation(
             SignUpScreen(innerPadding, navHostController)
         }
         composable(NavigationRoutes.Home.route) {
-            HomeScreen(innerPadding, navHostController, db = Firebase.firestore)
+            val viewModel: HomeViewModel = hiltViewModel()
+            val calendarViewModel: CalendarViewModel = hiltViewModel()
+            HomeScreen(innerPadding, navHostController, viewModel, calendarViewModel)
         }
 
         composable(NavigationRoutes.Questionnaire.route) {
@@ -116,7 +122,8 @@ fun AppNavigation(
             GoalsScreen(innerPadding, viewModel = viewModel, navHostController = navHostController)
         }
         composable(NavigationRoutes.Stats.route) {
-            StatsScreen(innerPadding, navHostController)
+            val calendarViewModel: CalendarViewModel = hiltViewModel()
+            StatsScreen(innerPadding, navHostController, calendarViewModel)
         }
 
         composable(NavigationRoutes.Settings.route) {
@@ -213,10 +220,19 @@ fun AppNavigation(
             )
         }
 
-//        composable(NavigationRoutes.WorkoutSummary.route) {
-//            val viewModel: WorkoutViewModel = hiltViewModel()
-////            WorkoutSummaryScreen(innerPadding, viewModel, navHostController)
-//        }
+        composable(
+            route = NavigationRoutes.WorkoutSummary.route, // "workoutSummary/{workoutId}"
+            arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val workoutId = backStackEntry.arguments?.getString("workoutId")
+            val viewModel: WorkoutSummaryViewModel = hiltViewModel()
+            WorkoutSummaryScreen(
+                innerPadding = innerPadding,
+                workoutId = workoutId, // Pasar el workoutId extraído
+                viewModel = viewModel,
+                navHostController = navHostController
+            )
+        }
 
 
 //        composable(

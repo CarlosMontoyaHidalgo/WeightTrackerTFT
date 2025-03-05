@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.exercises.ExerciseRepository
-import com.aronid.weighttrackertft.data.muscles.MuscleModel
 import com.aronid.weighttrackertft.data.muscles.MuscleRepository
-import com.aronid.weighttrackertft.data.routine.RoutineModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +16,7 @@ import javax.inject.Inject
 class ExerciseDetailsViewModel @Inject constructor(
     private val exerciseRepository: ExerciseRepository,
     private val muscleRepository: MuscleRepository
-): ViewModel(){
+) : ViewModel() {
 
     private val _exercise = MutableStateFlow<ExerciseModel?>(null)
     val exercise: StateFlow<ExerciseModel?> = _exercise.asStateFlow()

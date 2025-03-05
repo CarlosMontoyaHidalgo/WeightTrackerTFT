@@ -3,21 +3,19 @@ package com.aronid.weighttrackertft.data.routine
 import android.util.Log
 import com.aronid.weighttrackertft.constants.FirestoreCollections
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RoutineCustomRepository @Inject constructor(
-    private val firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) {
     private val routinesCollection = firestore.collection(FirestoreCollections.ROUTINES_CUSTOM)
     private val exercisesCollection = firestore.collection(FirestoreCollections.EXERCISES)
 
-    // CRUD Básico
     suspend fun createRoutine(routine: RoutineModel): String {
         val userId = auth.currentUser?.uid ?: throw Exception("Usuario no autenticado")
 
@@ -85,16 +83,15 @@ class RoutineCustomRepository @Inject constructor(
         routinesCollection.document(routine.id).set(updatedRoutineWithRefs).await()
     }
 
-    suspend fun getExercisesByRoutineId(routineId: String): List<ExerciseModel> {
-        val routineSnapshot = routinesCollection.document(routineId).get().await()
-        val routine = routineSnapshot.toObject(RoutineModel::class.java)
+//    suspend fun getExercisesByRoutineId(routineId: String): List<ExerciseModel> {
+//        val routineSnapshot = routinesCollection.document(routineId).get().await()
+//        val routine = routineSnapshot.toObject(RoutineModel::class.java)
+//
+//        return routine?.exercises?.mapNotNull { exerciseRef ->
+//            exerciseRef.get().await().toObject(ExerciseModel::class.java)
+//        } ?: emptyList()
+//    }
 
-        return routine?.exercises?.mapNotNull { exerciseRef ->
-            exerciseRef.get().await().toObject(ExerciseModel::class.java)
-        } ?: emptyList()
-    }
-
-    // Nuevo método para obtener todos los ejercicios disponibles
     suspend fun getAllExercises(): List<ExerciseModel> {
         return try {
             val snapshot = exercisesCollection.get().await()
@@ -107,7 +104,6 @@ class RoutineCustomRepository @Inject constructor(
         }
     }
 
-    // Método para obtener una referencia a un ejercicio por su ID
     fun getExerciseReference(exerciseId: String): DocumentReference {
         return exercisesCollection.document(exerciseId)
     }

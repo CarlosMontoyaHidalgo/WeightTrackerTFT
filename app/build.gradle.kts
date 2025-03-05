@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aronid.weighttrackertft"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -52,6 +52,10 @@ dependencies {
     implementation(libs.firebase.auth) // Firebase Authentication for user authentication
     implementation(libs.firebase.firestore) // Firebase Firestore for cloud database
 
+
+    implementation(libs.calendar.compose)
+
+    implementation(libs.konfetti)
 // Jetpack Compose dependencies
     implementation(libs.compose.material.icons.extended) // Extended Material Icons for Jetpack Compose
 

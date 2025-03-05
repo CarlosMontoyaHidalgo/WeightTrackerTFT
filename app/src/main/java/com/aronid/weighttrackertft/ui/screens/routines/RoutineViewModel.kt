@@ -84,6 +84,29 @@ class RoutineViewModel @Inject constructor(
         _searchText.value = ""
     }
 
+    fun refreshRoutines() {
+        viewModelScope.launch {
+            try {
+                // Recarga las rutinas desde los repositorios
+                val updatedCustomRoutines = customRepository.getUserRoutines()
+                val updatedPredefinedRoutines = predefinedRepository.getPredefinedRoutines()
+
+                // Actualiza los flujos con los nuevos datos
+                _allCustomRoutines.value = updatedCustomRoutines
+                _allPredefinedRoutines.value = updatedPredefinedRoutines
+
+                // Opcional: Actualiza el estado del botón si depende de si hay rutinas
+                updateButtonConfigs(updatedCustomRoutines.isEmpty())
+            } catch (e: Exception) {
+                println("Error refreshing routines: ${e.message}")
+                // Opcional: Maneja el error, por ejemplo, manteniendo las listas vacías o mostrando un mensaje
+                _allCustomRoutines.value = emptyList()
+                _allPredefinedRoutines.value = emptyList()
+                updateButtonConfigs(true)
+            }
+        }
+    }
+
     private fun updateButtonConfigs(isEmpty: Boolean) {
         _state.update {
             val (text, layout, state) = getDefaultButtonConfig(true)

@@ -12,6 +12,7 @@ data class RoutineModel(
     @PropertyName("exercises") val exercises: List<DocumentReference> = emptyList(),
     @PropertyName("createdAt") val createdAt: Long = System.currentTimeMillis(),
     @PropertyName("userId") val userId: String = "",
+    @PropertyName("targetMuscles") val targetMuscles: List<String> = emptyList(),
 ) {
     init {
         /*

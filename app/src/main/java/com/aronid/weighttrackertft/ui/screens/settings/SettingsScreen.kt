@@ -68,8 +68,10 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
                 dismissButtonText = stringResource(id = R.string.alert_negative)
             )
 
-
-            ButtonList(navHostController = navHostController)
+            CustomButton(text = "Mis entrenamientos", onClick = {
+                navHostController.navigate("training")
+            })
+//            ButtonList(navHostController = navHostController)
         }
 
     }

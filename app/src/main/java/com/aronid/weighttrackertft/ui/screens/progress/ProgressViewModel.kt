@@ -1,16 +1,16 @@
 package com.aronid.weighttrackertft.ui.screens.progress
-
-import androidx.lifecycle.ViewModel
-import com.aronid.weighttrackertft.data.user.UserRepository
-import com.aronid.weighttrackertft.data.workout.WorkoutRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-
-@HiltViewModel
-class ProgressViewModel @Inject constructor(
-    private val workoutRepo: WorkoutRepository,
-    private val userRepo: UserRepository
-) : ViewModel() {
+//
+//import androidx.lifecycle.ViewModel
+//import com.aronid.weighttrackertft.data.user.UserRepository
+//import com.aronid.weighttrackertft.data.workout.WorkoutRepository
+//import dagger.hilt.android.lifecycle.HiltViewModel
+//import javax.inject.Inject
+//
+//@HiltViewModel
+//class ProgressViewModel @Inject constructor(
+//    private val workoutRepo: WorkoutRepository,
+//    private val userRepo: UserRepository
+//) : ViewModel() {
 
 //    fun calculateWeeklyProgress(): Map<String, Any> {
 //        return mapOf(
@@ -30,4 +30,4 @@ class ProgressViewModel @Inject constructor(
 //        val initialWeight = userRepo.getInitialWeight()
 //        return currentWeight - initialWeight
 //    }
-}
+//}

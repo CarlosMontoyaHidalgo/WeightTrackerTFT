@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.workout
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
@@ -44,36 +46,32 @@ import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 @Composable
 fun WorkoutScreen(
     innerPadding: PaddingValues,
     routineId: String?,
     isPredefined: Boolean,
     navHostController: NavHostController,
-    viewModel: WorkoutViewModel
+    viewModel: WorkoutViewModel // Inyectado con Hilt
 ) {
-
     val exercises by viewModel.exercisesWithSeries.collectAsState()
     val currentExerciseIndex by viewModel.currentExerciseIndex.collectAsState()
+    val saveState by viewModel.saveState.collectAsState()
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
+    var finishConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
     }
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding()
-    ) {
+
+    ConstraintLayout(modifier = Modifier.fillMaxSize().padding()) {
         val (headerRef, seriesRef, buttonsRef) = createRefs()
         WorkoutHeader(
             currentExercise = currentExercise,
-            onFinishClick = {
-                viewModel.saveWorkout()
-                navHostController.navigate(NavigationRoutes.WorkoutSummary.route)
-                },
+            onFinishClick = { finishConfirmation = true },
             onInfoClick = { showDialog = true },
             modifier = Modifier.constrainAs(headerRef) {
                 top.linkTo(parent.top)
@@ -81,6 +79,25 @@ fun WorkoutScreen(
                 end.linkTo(parent.end)
             }
         )
+
+        if (finishConfirmation) {
+            CustomAlertDialog(
+                showDialog = finishConfirmation,
+                onDismiss = { finishConfirmation = false },
+                onConfirm = {
+                    finishConfirmation = false
+                    viewModel.viewModelScope.launch {
+                        val workout = viewModel.saveWorkoutData()
+                        Log.d("WorkoutScreen", "Navigating with workout ID: ${workout.id}")
+                        navHostController.navigate(NavigationRoutes.WorkoutSummary.createRoute(workout.id))
+                    }
+                },
+                title = "¿Finalizar entrenamiento?",
+                text = "¿Estás seguro de que quieres finalizar el entrenamiento?",
+                confirmButtonText = "Finalizar",
+                dismissButtonText = "Cancelar"
+            )
+        }
 
         if (showDialog) {
             CustomAlertDialog(
@@ -94,12 +111,8 @@ fun WorkoutScreen(
                 dismissButtonText = "Cerrar"
             )
         }
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
 
+        ConstraintLayout(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             LazyColumn(
                 modifier = Modifier
                     .constrainAs(seriesRef) {
@@ -130,10 +143,7 @@ fun WorkoutScreen(
                             },
                             onToggleCompleted = { viewModel.toggleSeriesCompletion(index) }
                         )
-
-                        if (index < currentExercise.series.lastIndex &&
-                            !currentExercise.series[index].isDone
-                        ) {
+                        if (index < currentExercise.series.lastIndex && !currentExercise.series[index].isDone) {
                             VerticalDivider(
                                 modifier = Modifier.padding(vertical = 4.dp),
                                 thickness = 1.dp,
@@ -159,12 +169,9 @@ fun WorkoutScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             )
-
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkoutHeader(

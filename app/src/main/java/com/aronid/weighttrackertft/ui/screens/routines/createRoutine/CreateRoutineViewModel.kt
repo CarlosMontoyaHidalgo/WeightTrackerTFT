@@ -25,6 +25,16 @@ class CreateRoutineViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ): ViewModel() {
 
+    private val _availableMuscles = MutableStateFlow<List<String>>(listOf(
+        "Pecho",
+        "Tríceps",
+        "Espalda",
+        "Bíceps",
+        "Piernas",
+        "Hombros",
+        "Abdomen"
+    ))
+    val availableMuscles: StateFlow<List<String>> = _availableMuscles.asStateFlow()
     private val _customRoutines = MutableStateFlow<List<RoutineModel>>(emptyList())
     val customRoutines: StateFlow<List<RoutineModel>> = _customRoutines.asStateFlow()
 
@@ -48,7 +58,7 @@ class CreateRoutineViewModel @Inject constructor(
         loadAvailableExercises()
     }
 
-    fun createRoutine(name: String, goal: String, description: String, exerciseIds: List<String>) {
+    fun createRoutine(name: String, goal: String, description: String, exerciseIds: List<String>, targetMuscles: List<String>) {
         viewModelScope.launch {
             _state.value = State.Loading
             try {
@@ -59,7 +69,8 @@ class CreateRoutineViewModel @Inject constructor(
                     goal = goal,
                     description = description,
                     userId = userId,
-                    exercises = exerciseRefs
+                    exercises = exerciseRefs,
+                    targetMuscles = targetMuscles
                 )
 
                 val routineId = routineCustomRepository.createRoutine(routine)
@@ -81,8 +92,8 @@ class CreateRoutineViewModel @Inject constructor(
         }
     }
 
-    fun checkFormValidity(name: String, goal: String, description: String, selectedExerciseIds: List<String>) {
-        val isValid = name.isNotBlank() && goal.isNotBlank() && description.isNotBlank() && selectedExerciseIds.isNotEmpty()
+    fun checkFormValidity(name: String, goal: String, description: String, selectedExerciseIds: List<String>, targetMuscles: List<String>) {
+        val isValid = name.isNotBlank() && goal.isNotBlank() && description.isNotBlank() && selectedExerciseIds.isNotEmpty() && targetMuscles.isNotEmpty()
         updateButtonConfigs(isValid)
     }
 

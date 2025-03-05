@@ -20,7 +20,7 @@ class SearchBarViewModel : ViewModel(
     private val _selectedMuscle = MutableStateFlow<String?>(null)
     val selectedMuscle: StateFlow<String?> = _selectedMuscle.asStateFlow()
 
-    val muscleList = listOf("Quadriceps", "Hamstrings", "Glutes", "Chest", "Triceps", "Shoulders", "Back", "Biceps", "Lower Back")
+    val muscleList = listOf("Legs", "Chest", "Triceps", "Shoulders", "Back", "Biceps")
 
     fun getFilteredExercises(exercises: List<ExerciseModel>) = combine(
         _searchText,

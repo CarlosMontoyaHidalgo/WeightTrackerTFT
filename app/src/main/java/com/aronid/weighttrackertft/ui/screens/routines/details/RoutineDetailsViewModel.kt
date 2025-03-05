@@ -3,7 +3,6 @@ package com.aronid.weighttrackertft.ui.screens.routines.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
-import com.aronid.weighttrackertft.data.exercises.ExerciseRepository
 import com.aronid.weighttrackertft.data.routine.RoutineCustomRepository
 import com.aronid.weighttrackertft.data.routine.RoutineModel
 import com.aronid.weighttrackertft.data.routine.RoutinePredefinedRepository
