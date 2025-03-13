@@ -24,6 +24,13 @@ data class ButtonState(
     val baseState: BaseState = BaseState()
 )
 
+data class UserDataState(
+    val personalInfo: PersonalInfoState = PersonalInfoState(),
+    val physicalData: PhysicalDataState = PhysicalDataState(),
+    val lifeStyle: LifeStyleState = LifeStyleState(),
+    val goal: GoalState = GoalState()
+)
+
 data class PersonalInfoState(
     val name: String = "",
     val isNameValid: Boolean = true,

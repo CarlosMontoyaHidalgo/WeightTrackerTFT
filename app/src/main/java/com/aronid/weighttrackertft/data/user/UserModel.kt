@@ -7,7 +7,7 @@ data class UserModel(
     val id: String = "",
     val name: String = "",
     val email: String = "",
-    val birthdate: String? = null,
+    val birthdate: String = "",
     val profileImageUrl: String? = null,
     val height: Int? = null,
     val weight: Double? = null,

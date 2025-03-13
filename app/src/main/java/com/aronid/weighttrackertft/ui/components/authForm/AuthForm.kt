@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
-import com.aronid.weighttrackertft.ui.components.emailField.EmailField
+import com.aronid.weighttrackertft.ui.components.fields.emailField.EmailField
 import com.aronid.weighttrackertft.ui.components.passwordField.PasswordField
 
 @Composable

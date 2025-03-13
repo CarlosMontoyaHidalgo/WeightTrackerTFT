@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
-import com.aronid.weighttrackertft.ui.components.languageDropdown.LanguageDropdown
+import com.aronid.weighttrackertft.ui.components.dropdown.languageDropdown.LanguageDropdown
 import java.util.Locale
 
 @Composable

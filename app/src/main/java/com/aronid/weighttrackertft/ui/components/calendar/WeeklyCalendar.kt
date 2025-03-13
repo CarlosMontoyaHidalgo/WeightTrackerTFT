@@ -72,7 +72,8 @@ fun WeeklyWorkoutCalendar(
                         .padding(10.dp)
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            userScrollEnabled = false
         )
     }
 }

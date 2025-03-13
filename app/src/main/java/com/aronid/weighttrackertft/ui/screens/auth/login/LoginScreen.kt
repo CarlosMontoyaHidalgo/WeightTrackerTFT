@@ -30,7 +30,6 @@ fun LoginScreen(
     navHostController: NavHostController,
     ) {
     val viewModel: LoginViewModel = hiltViewModel()
-
     val state by viewModel.state.collectAsState()
 
     Column(

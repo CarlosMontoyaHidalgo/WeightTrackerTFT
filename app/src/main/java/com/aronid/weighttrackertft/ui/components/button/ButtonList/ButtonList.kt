@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.ButtonList
+package com.aronid.weighttrackertft.ui.components.button.ButtonList
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button

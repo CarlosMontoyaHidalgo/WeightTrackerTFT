@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
+import com.aronid.weighttrackertft.ui.components.dropdown.weightUnitSelector.WeightUnitSelectorViewModel
 import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
@@ -19,6 +20,7 @@ import com.aronid.weighttrackertft.ui.screens.exercises.details.ExerciseDetailsV
 import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 import com.aronid.weighttrackertft.ui.screens.home.HomeViewModel
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
+import com.aronid.weighttrackertft.ui.screens.personalization.PersonalizationScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireViewModel
 import com.aronid.weighttrackertft.ui.screens.questionnaire.goals.GoalsScreen
@@ -40,12 +42,12 @@ import com.aronid.weighttrackertft.ui.screens.routines.editRoutines.EditRoutineV
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
 import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
+import com.aronid.weighttrackertft.ui.screens.user.personalInformation.UserDataScreen
+import com.aronid.weighttrackertft.ui.screens.user.personalInformation.UserDataViewModel
 import com.aronid.weighttrackertft.ui.screens.workout.WorkoutScreen
-import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryScreen
 import com.aronid.weighttrackertft.ui.screens.workout.WorkoutViewModel
+import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryScreen
 import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryViewModel
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 
 @Composable
@@ -141,18 +143,6 @@ fun AppNavigation(
             RoutineScreen(innerPadding, viewModel, navHostController)
         }
 
-
-//        composable(NavigationRoutes.RoutineDetails.route) { backStackEntry ->
-//            val routineId = backStackEntry.arguments?.getString("routineId")
-//            val viewModel: RoutineDetailsViewModel = hiltViewModel()
-//            RoutineDetailsScreen(
-//                innerPadding,
-//                routineId = routineId,
-//                navHostController = navHostController,
-//                viewModel
-//            )
-//        }
-
         composable(
             route = "${NavigationRoutes.RoutineDetails.route}?isPredefined={isPredefined}",
             arguments = listOf(
@@ -196,10 +186,6 @@ fun AppNavigation(
             val viewModel: CreateRoutineViewModel = hiltViewModel()
             CreateRoutineScreen(innerPadding, viewModel, navHostController)
         }
-        composable(NavigationRoutes.ChooseExercises.route) {
-//            val viewModel: CreateRoutineViewModel = hiltViewModel()
-//            ChooseExercisesScreen(innerPadding, viewModel ,navHostController)
-        }
 
         composable(
             route = NavigationRoutes.Workout.route,
@@ -228,12 +214,21 @@ fun AppNavigation(
             val viewModel: WorkoutSummaryViewModel = hiltViewModel()
             WorkoutSummaryScreen(
                 innerPadding = innerPadding,
-                workoutId = workoutId, // Pasar el workoutId extraído
+                workoutId = workoutId,
                 viewModel = viewModel,
                 navHostController = navHostController
             )
         }
 
+        composable(NavigationRoutes.Personalization.route) {
+            PersonalizationScreen(innerPadding, navHostController)
+        }
+
+        composable(NavigationRoutes.UserData.route) {
+            val viewModel: UserDataViewModel = hiltViewModel()
+            val weightUnitViewModel: WeightUnitSelectorViewModel = hiltViewModel()
+            UserDataScreen(innerPadding, viewModel, weightUnitViewModel, navHostController)
+        }
 
 //        composable(
 //            NavigationRoutes.Training.route,

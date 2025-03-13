@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.emailField
+package com.aronid.weighttrackertft.ui.components.fields.emailField
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +31,9 @@ fun EmailField(
                     text = stringResource(R.string.email),
                     color = MaterialTheme.colorScheme.onBackground
                 )
+            },
+            trailingIcon = {
+
             },
             leadingIcon = {
                 Icon(

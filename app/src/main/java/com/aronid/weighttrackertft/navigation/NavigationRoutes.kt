@@ -45,10 +45,13 @@ sealed class NavigationRoutes(val route: String) {
 
     object CreateRoutine : NavigationRoutes("createRoutine")
     object ChooseExercises : NavigationRoutes("chooseExercises")
+    object Personalization : NavigationRoutes("personalization")
 
     object ExerciseDetails : NavigationRoutes("exerciseDetails/{exerciseId}"){
         fun createRoute(exerciseId: String) = "exerciseDetails/$exerciseId"
     }
+
+    object UserData : NavigationRoutes("userData")
 
 
 

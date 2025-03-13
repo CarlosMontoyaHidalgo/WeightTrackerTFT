@@ -34,6 +34,7 @@ import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.WeeklyWorkoutCalendar
+import com.aronid.weighttrackertft.ui.components.fields.email.EmailFieldScreenPreview
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kizitonwose.calendar.compose.WeekCalendar
@@ -110,9 +111,9 @@ fun HomeScreen(
                 text = stringResource(id = R.string.home),
                 color = MaterialTheme.colorScheme.onBackground
             )
-//            Button(onClick = { navHostController.navigate("questionnaire") }) {
-//                Text(text = "Go to questionnaire")
-//            }
+            Button(onClick = { navHostController.navigate(NavigationRoutes.PhysicalData.route) }) {
+                Text(text = "Go to questionnaire")
+            }
 
             Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
                 Text(text = "see routines")
@@ -120,7 +121,6 @@ fun HomeScreen(
             Button(onClick = { navHostController.navigate(NavigationRoutes.EditRoutine.route) }) {
                 Text(text = "editar routine")
             }
-
 
 //            MyCalendar()
 

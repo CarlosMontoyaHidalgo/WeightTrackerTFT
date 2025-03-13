@@ -80,9 +80,11 @@ fun CreateRoutineScreen(
                 Toast.makeText(context, "Rutina creada!", Toast.LENGTH_SHORT).show()
                 navHostController.popBackStack()
             }
+
             is CreateRoutineViewModel.State.Error -> {
                 Toast.makeText(context, currentState.message, Toast.LENGTH_LONG).show()
             }
+
             else -> {}
         }
     }
@@ -121,6 +123,7 @@ fun CreateRoutineScreen(
                         onDescriptionChange = { description = it },
                         onMuscleSelected = { targetMuscles = it }
                     )
+
                     1 -> ExerciseSelectionTab(
                         availableExercises = availableExercises,
                         selectedExerciseIds = selectedExerciseIds,

@@ -52,7 +52,6 @@ dependencies {
     implementation(libs.firebase.auth) // Firebase Authentication for user authentication
     implementation(libs.firebase.firestore) // Firebase Firestore for cloud database
 
-
     implementation(libs.calendar.compose)
 
     implementation(libs.konfetti)

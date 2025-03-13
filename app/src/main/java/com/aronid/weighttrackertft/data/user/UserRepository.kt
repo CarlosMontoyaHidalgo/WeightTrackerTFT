@@ -1,11 +1,15 @@
 package com.aronid.weighttrackertft.data.user
 
+import android.R.attr.tag
+import android.util.Log
 import com.aronid.weighttrackertft.constants.FirestoreCollections
+import com.aronid.weighttrackertft.data.questionnaire.UserDataState
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,7 +49,6 @@ class UserRepository @Inject constructor(
 
                 )
             ).await()
-
             Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
@@ -137,4 +140,24 @@ class UserRepository @Inject constructor(
             Result.failure(Exception("Error al obtener fecha de creación: ${e.message}", e))
         }
     }
+
+    suspend fun getUserData(userId: String): UserModel? {
+        return try {
+            val snapshot = userCollection.document(userId).get().await()
+            if (!snapshot.exists()) {
+                Log.w("UserRepository", "Usuario no encontrado: $userId")
+                return null
+            }
+
+            snapshot.toObject(UserModel::class.java)?.let { user ->
+                user.copy(id = snapshot.id).also {
+                    Log.d("UserRepository", "Datos obtenidos para usuario: $userId")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Error obteniendo usuario: ${e.message}")
+            null
+        }
+    }
+
 }
