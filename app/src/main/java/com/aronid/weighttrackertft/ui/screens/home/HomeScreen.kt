@@ -1,13 +1,11 @@
 package com.aronid.weighttrackertft.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
@@ -20,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -34,10 +31,8 @@ import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.WeeklyWorkoutCalendar
-import com.aronid.weighttrackertft.ui.components.fields.email.EmailFieldScreenPreview
+import com.aronid.weighttrackertft.ui.components.charts.donutCharts.SimpleDonutChart
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
-import com.google.firebase.firestore.FirebaseFirestore
-import com.kizitonwose.calendar.compose.WeekCalendar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -50,14 +45,7 @@ fun HomeScreen(
     calendarViewModel: CalendarViewModel
 ) {
     val workouts = viewModel.weeklyWorkouts.collectAsState()
-    val workouts2 = calendarViewModel.workouts.collectAsState()
     val name = viewModel.userName.collectAsState()
-
-    Log.d("HomeScreen", "workouts: ${workouts.value}")
-    Log.d("HomeScreen", "workouts: ${workouts}")
-    Log.d("HomeScreen", "workouts2: ${workouts2.value}")
-    Log.d("HomeScreen", "workouts2: ${workouts2}")
-
 
     var showDialog by rememberSaveable { mutableStateOf(false) }
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
@@ -84,9 +72,6 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
 
-            Log.d("HomeScreen", "workouts: ${workouts.value}")
-            Log.d("HomeScreen", "workouts: ${workouts}")
-
             ElevatedCard(
                 onClick = { /* A la derecha tendra una flecha que te llevara al calendario grande */ },
                 modifier = Modifier
@@ -106,6 +91,9 @@ fun HomeScreen(
                     }
                 )
             }
+//            SimpleDonutChart(listOf("back", "chest", "legs", "arms"))
+//            PreviewDonutChart()
+//            SimpleDonutChart()
 
             Text(
                 text = stringResource(id = R.string.home),
@@ -120,6 +108,10 @@ fun HomeScreen(
             }
             Button(onClick = { navHostController.navigate(NavigationRoutes.EditRoutine.route) }) {
                 Text(text = "editar routine")
+            }
+
+            Button(onClick = { navHostController.navigate(NavigationRoutes.WorkoutList.route) }) {
+                Text(text = "Lista de rutinas")
             }
 
 //            MyCalendar()

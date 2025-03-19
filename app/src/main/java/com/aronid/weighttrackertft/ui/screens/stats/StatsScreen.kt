@@ -94,7 +94,7 @@ fun StatsScreen(
     Scaffold(
         bottomBar = { BottomNavigationBar(navHostController = navHostController) },
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(paddingValues)) {
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             WorkoutCalendar(
                 workouts = workouts,
                 onDayClick = { date, dayWorkouts ->

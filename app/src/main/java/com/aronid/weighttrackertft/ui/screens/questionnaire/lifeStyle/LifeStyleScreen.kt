@@ -18,8 +18,8 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.questionnaire.LifeStyleOption
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
-import com.aronid.weighttrackertft.ui.components.myCard.CardTextOptionData
-import com.aronid.weighttrackertft.ui.components.myCard.SelectableCard
+import com.aronid.weighttrackertft.ui.components.cards.CardTextOptionData
+import com.aronid.weighttrackertft.ui.components.cards.SelectableCard
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable

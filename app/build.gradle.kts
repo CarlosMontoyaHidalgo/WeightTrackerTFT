@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.firebase.auth) // Firebase Authentication for user authentication
     implementation(libs.firebase.firestore) // Firebase Firestore for cloud database
 
+    implementation(libs.ycharts.compose)
+
     implementation(libs.calendar.compose)
 
     implementation(libs.konfetti)
@@ -67,7 +69,9 @@ dependencies {
     implementation(libs.hilt.navigation.compose) // Hilt navigation integration for Jetpack Compose
 
 // Paging dependencies
-    implementation(libs.pagingCompose) // Paging library for loading data in pages in Jetpack Compose
+//    implementation(libs.pagingCompose) // Paging library for loading data in pages in Jetpack Compose
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
 // Coil dependencies
     implementation(libs.coil.compose) // Coil for image loading in Jetpack Compose

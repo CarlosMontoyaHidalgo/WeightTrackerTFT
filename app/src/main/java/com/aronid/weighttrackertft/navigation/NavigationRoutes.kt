@@ -30,6 +30,8 @@ sealed class NavigationRoutes(val route: String) {
         fun createRoute(workoutId: String) = "workoutSummary/$workoutId"
     }
 
+    object WorkoutList : NavigationRoutes("workoutList")
+
     object Routines : NavigationRoutes("routines")
 
 

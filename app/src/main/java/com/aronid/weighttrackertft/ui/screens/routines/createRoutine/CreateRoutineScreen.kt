@@ -2,8 +2,10 @@ package com.aronid.weighttrackertft.ui.screens.routines.createRoutine
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
+import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
@@ -89,75 +93,85 @@ fun CreateRoutineScreen(
         }
     }
 
-
-
     Scaffold(
         modifier = Modifier,
         content = { scaffoldPadding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(scaffoldPadding)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                TabRow(selectedTabIndex = selectedTab) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
-                            text = { Text(title) }
+                // Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    TabRow(selectedTabIndex = selectedTab) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTab == index,
+                                onClick = { selectedTab = index },
+                                text = { Text(title) }
+                            )
+                        }
+                    }
+
+                    when (selectedTab) {
+                        0 -> RoutineDetailsTab(
+                            name = name,
+                            goal = goal,
+                            description = description,
+                            targetMuscles = targetMuscles,
+                            availableMuscles = availableMuscles,
+                            onNameChange = { name = it },
+                            onGoalChange = { goal = it },
+                            onDescriptionChange = { description = it },
+                            onMuscleSelected = { targetMuscles = it }
+                        )
+
+                        1 -> ExerciseSelectionTab(
+                            availableExercises = availableExercises,
+                            selectedExerciseIds = selectedExerciseIds,
+                            onExerciseSelected = { exercise ->
+                                selectedExerciseIds =
+                                    if (!selectedExerciseIds.contains(exercise.id)) {
+                                        selectedExerciseIds + exercise.id
+                                    } else {
+                                        selectedExerciseIds - exercise.id
+                                    }
+                            }
                         )
                     }
                 }
 
-                when (selectedTab) {
-                    0 -> RoutineDetailsTab(
-                        name = name,
-                        goal = goal,
-                        description = description,
-                        targetMuscles = targetMuscles,
-                        availableMuscles = availableMuscles, // Usar directamente el State
-                        onNameChange = { name = it },
-                        onGoalChange = { goal = it },
-                        onDescriptionChange = { description = it },
-                        onMuscleSelected = { targetMuscles = it }
-                    )
-
-                    1 -> ExerciseSelectionTab(
-                        availableExercises = availableExercises,
-                        selectedExerciseIds = selectedExerciseIds,
-                        onExerciseSelected = { exercise ->
-                            selectedExerciseIds = if (!selectedExerciseIds.contains(exercise.id)) {
-                                selectedExerciseIds + exercise.id
-                            } else {
-                                selectedExerciseIds - exercise.id
-                            }
-                        }
+                if(selectedTab == 0){
+                    NewCustomButton(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
+                        onClick = {
+                            viewModel.createRoutine(
+                                name,
+                                goal,
+                                description,
+                                selectedExerciseIds,
+                                targetMuscles
+                            )
+                        },
+                        text = "Crear Rutina",
+                        buttonType = ButtonType.ELEVATED,
+                        containerColor = Color.Blue,
+                        textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
+                        layoutConfig = buttonConfigs.layoutConfig,
+                        stateConfig = buttonConfigs.stateConfig,
+                        borderConfig = buttonConfigs.borderConfig
                     )
                 }
 
-                NewCustomButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        viewModel.createRoutine(
-                            name,
-                            goal,
-                            description,
-                            selectedExerciseIds,
-                            targetMuscles
-                        )
-                    },
-                    text = "Crear Rutina",
-                    buttonType = ButtonType.ELEVATED,
-                    containerColor = Color.Blue,
-                    textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
-                    layoutConfig = buttonConfigs.layoutConfig,
-                    stateConfig = buttonConfigs.stateConfig,
-                    borderConfig = buttonConfigs.borderConfig
-                )
             }
-        }
+                }
     )
 }
 
@@ -252,7 +266,7 @@ private fun MuscleGrid(
         columns = GridCells.Adaptive(128.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .fillMaxHeight()
     ) {
         items(muscles) { muscle ->
             FilterChip(

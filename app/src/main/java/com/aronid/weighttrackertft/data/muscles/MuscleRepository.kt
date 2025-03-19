@@ -1,6 +1,8 @@
 package com.aronid.weighttrackertft.data.muscles
 
 import com.aronid.weighttrackertft.constants.FirestoreCollections
+import com.aronid.weighttrackertft.data.exercises.ExerciseModel
+import com.aronid.weighttrackertft.data.exercises.ExerciseUtils.getMuscleIdsFromExercises
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -21,6 +23,21 @@ class MuscleRepository @Inject constructor(
             "Error"
         }
     }
+
+    suspend fun fetchMusclesFromIds(muscleIds: Set<String>): List<MuscleModel> {
+        val muscles = mutableListOf<MuscleModel>()
+        muscleIds.forEach { id ->
+            val doc = muscleCollection.document(id).get().await()
+            doc.toObject(MuscleModel::class.java)?.let { muscles.add(it) }
+        }
+        return muscles
+    }
+
+    suspend fun getWorkedMuscles(exercises: List<ExerciseModel>): List<MuscleModel> {
+        val muscleIds = getMuscleIdsFromExercises(exercises)
+        return fetchMusclesFromIds(muscleIds)
+    }
+
 
 //    suspend fun addMuscle(muscle: MuscleModel): Result<String> {
 //        return try {

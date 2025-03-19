@@ -46,6 +46,7 @@ import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
+import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 @Composable
@@ -62,13 +63,14 @@ fun WorkoutScreen(
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
+    val workoutDuration by viewModel.workoutDuration.collectAsState()
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
     }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize().padding()) {
-        val (headerRef, seriesRef, buttonsRef) = createRefs()
+        val (headerRef, seriesRef, timerRef ,buttonsRef) = createRefs()
         WorkoutHeader(
             currentExercise = currentExercise,
             onFinishClick = { finishConfirmation = true },
@@ -153,6 +155,15 @@ fun WorkoutScreen(
                     }
                 }
             }
+
+            WorkoutTimer(
+                durationInSeconds = workoutDuration / 1000,
+                modifier = Modifier.constrainAs(timerRef) {
+                    bottom.linkTo(buttonsRef.top, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
 
             WorkoutNavigationButtons(
                 exercises = exercises,

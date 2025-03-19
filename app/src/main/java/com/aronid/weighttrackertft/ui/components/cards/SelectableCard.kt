@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.myCard
+package com.aronid.weighttrackertft.ui.components.cards
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement

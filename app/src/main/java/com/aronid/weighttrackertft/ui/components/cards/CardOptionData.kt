@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.myCard
+package com.aronid.weighttrackertft.ui.components.cards
 
 data class CardTextOptionData(
     val id: String,

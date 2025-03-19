@@ -18,12 +18,13 @@ runtimeLivedata = "1.7.8"
 hilt = "2.51"
 kmpDateTimePicker = "1.0.7"
 constraintLayoutCompose = "1.1.1"
+paging = "3.3.6"
 pagingCompose = "3.3.6"
 coilCompose = "2.5.0"
 konfetti = "2.0.5"
 #noinspection GradleDependency
 calendar = "2.6.0-beta04"
-
+ycharts = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,7 +73,8 @@ easy-date-picker = { module = "network.chaintech:kmp-date-time-picker", version.
 androidx-constraint-layout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintLayoutCompose" }
 
 #Paging Compose
-pagingCompose = {group = "androidx.paging", name = "paging-compose" ,version.ref = "pagingCompose"}
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
 
 #Coil Compose - Permite cargar imagenes en jetpack compose
 coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coilCompose"}
@@ -82,6 +84,9 @@ konfetti = {module = "nl.dionsegijn:konfetti-compose", version.ref = "konfetti"}
 
 #Calendar Compose
 calendar-compose = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar"}
+
+#YCharts
+ycharts-compose = { group = "co.yml", name = "ycharts", version.ref = "ycharts"}
 
 
 [plugins]

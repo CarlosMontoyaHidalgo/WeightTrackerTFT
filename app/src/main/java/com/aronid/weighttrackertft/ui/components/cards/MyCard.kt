@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.myCard
+package com.aronid.weighttrackertft.ui.components.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

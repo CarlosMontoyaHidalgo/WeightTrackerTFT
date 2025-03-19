@@ -48,6 +48,7 @@ import com.aronid.weighttrackertft.ui.screens.workout.WorkoutScreen
 import com.aronid.weighttrackertft.ui.screens.workout.WorkoutViewModel
 import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryScreen
 import com.aronid.weighttrackertft.ui.screens.workout.summary.WorkoutSummaryViewModel
+import com.aronid.weighttrackertft.ui.screens.workout.workoutList.WorkoutList
 
 
 @Composable
@@ -218,6 +219,13 @@ fun AppNavigation(
                 viewModel = viewModel,
                 navHostController = navHostController
             )
+        }
+
+
+
+
+        composable(NavigationRoutes.WorkoutList.route) {
+            WorkoutList(innerPadding, navHostController)
         }
 
         composable(NavigationRoutes.Personalization.route) {

@@ -37,9 +37,6 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun fetchAllWorkouts() {
-    Log.d("CalendarViewModel", "CalendarViewModel initialized")
-    Log.d("CalendarViewModel", "Account creation date: ${_accountCreationDate.value}")
-        Log.d("CalendarViewModel", "workouts: ${_workouts.value}")
         viewModelScope.launch {
             val currentDate = LocalDate.now()
             val creationDate = _accountCreationDate.value?.let { Timestamp(it.seconds, it.nanoseconds) }
@@ -66,7 +63,6 @@ class CalendarViewModel @Inject constructor(
 
             val workouts = workoutRepository.getWorkoutsInDateRange(filteredStart, endTimestamp)
             _workouts.value = workouts
-            Log.d("CalendarViewModel", "Fetched workouts for month ${yearMonth}: ${workouts.size}")
         }
     }
 

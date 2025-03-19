@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.exercises.ExerciseRepository
+import com.aronid.weighttrackertft.data.muscles.MuscleRepository
 import com.aronid.weighttrackertft.data.routine.RoutineCustomRepository
 import com.aronid.weighttrackertft.data.routine.RoutinePredefinedRepository
 import com.aronid.weighttrackertft.data.user.UserRepository
@@ -14,6 +15,7 @@ import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.data.workout.WorkoutRepository
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +29,8 @@ class WorkoutViewModel @Inject constructor(
     private val routinePredefinedRepository: RoutinePredefinedRepository,
     private val workoutRepository: WorkoutRepository,
     private val userRepository: UserRepository,
-    private val exerciseRepository: ExerciseRepository
+    private val exerciseRepository: ExerciseRepository,
+    private val muscleRepository: MuscleRepository
 ) : ViewModel() {
 
     private val _routineId = MutableStateFlow<String?>(null)
@@ -40,6 +43,47 @@ class WorkoutViewModel @Inject constructor(
     private val _saveState = MutableStateFlow<String?>(null)
     val saveState: StateFlow<String?> = _saveState.asStateFlow()
 
+
+    private val _primaryMuscles = MutableStateFlow<List<String>>(emptyList())
+    val primaryMuscles: StateFlow<List<String>> = _primaryMuscles.asStateFlow()
+
+    private val _secondaryMuscles = MutableStateFlow<List<String>>(emptyList())
+    val secondaryMuscles: StateFlow<List<String>> = _secondaryMuscles.asStateFlow()
+
+    private val _workoutDuration = MutableStateFlow(0L)
+    val workoutDuration: StateFlow<Long> = _workoutDuration.asStateFlow()
+    private var isTimerRunning = false
+    private var startTime: Long = 0L
+
+
+    init {
+        startTimer()
+    }
+
+    private fun startTimer() {
+        if(!isTimerRunning){
+            isTimerRunning = true
+            startTime = System.currentTimeMillis()
+            viewModelScope.launch {
+                while (isTimerRunning) {
+                    val elapsedTime = System.currentTimeMillis() - startTime
+                    _workoutDuration.value = elapsedTime
+                    delay(1000)
+                }
+            }
+        }
+    }
+
+    fun stopTimer(){
+        isTimerRunning = false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
+    }
+
+
     fun loadRoutineExercises(routineId: String, isPredefined: Boolean = false) {
         viewModelScope.launch {
             val loadedRoutine = if (isPredefined) {
@@ -50,7 +94,13 @@ class WorkoutViewModel @Inject constructor(
             _routineId.value = routineId
             val exerciseRefs = loadedRoutine?.exercises ?: emptyList()
             val exercises = exerciseRefs.mapNotNull { ref ->
+                try {
                 ref.get().await().toObject(ExerciseModel::class.java)
+
+                } catch (e: Exception){
+                    Log.e("WorkoutViewModel", "Error loading exercise: ${e.message}", e)
+                    null
+                }
             }
             _exercisesWithSeries.value = exercises.map { exercise ->
                 ExerciseWithSeries(
@@ -58,10 +108,12 @@ class WorkoutViewModel @Inject constructor(
                     description = exercise.description,
                     imageUrl = exercise.imageUrl,
                     series = listOf(SeriesItem(setNumber = 1, weight = "", reps = "", isDone = false)),
-                    requiresWeight = exercise.requiresWeight ?: true
+                    requiresWeight = exercise.requiresWeight,
+                    primaryMuscleRef = exercise.primaryMuscle,
+                    secondaryMusclesRef = exercise.secondaryMuscle
+
                 )
             }
-            Log.d("WorkoutViewModel", "Loaded exercises: ${_exercisesWithSeries.value}")
         }
     }
 
@@ -115,16 +167,18 @@ class WorkoutViewModel @Inject constructor(
 
     suspend fun saveWorkoutData(): WorkoutModel {
         _saveState.value = "Guardando..."
+        stopTimer()
         try {
             val workout = calculateAndSetWorkoutData()
-            // Guardar el workout y obtener el WorkoutModel con el ID generado
             val savedWorkout = workoutRepository.saveWorkout(workout)
+            val primaryMusclesData = muscleRepository.fetchMusclesFromIds(savedWorkout.primaryMuscleIds.toSet())
+            _primaryMuscles.value = primaryMusclesData.map { it.name }
+            val secondaryMusclesData = muscleRepository.fetchMusclesFromIds(savedWorkout.secondaryMuscleIds.toSet())
+            _secondaryMuscles.value = secondaryMusclesData.map { it.name }
             _saveState.value = "Entrenamiento guardado"
-            Log.d("WorkoutViewModel", "Workout saved with ID: ${savedWorkout.id}, Calories: ${savedWorkout.calories}, Volume: ${savedWorkout.volume}")
-            return savedWorkout // Devolver el WorkoutModel con el ID
+            return savedWorkout
         } catch (e: Exception) {
             _saveState.value = "Error: ${e.message}"
-            Log.e("WorkoutViewModel", "Error saving workout: ${e.message}", e)
             throw e
         }
     }
@@ -149,6 +203,17 @@ class WorkoutViewModel @Inject constructor(
             }
         }
 
+
+        val primaryMuscleIds = _exercisesWithSeries.value
+            .map { it.primaryMuscleRef?.id ?: "No muscle ref"}
+            .toSet()
+            .toList()
+
+        val secondaryMuscleIds = _exercisesWithSeries.value
+            .flatMap { it.secondaryMusclesRef.map { ref -> ref?.id ?: "No muscle ref" } }
+            .toSet()
+            .toList()
+
         return WorkoutModel(
             id = "",
             userId = userRepository.getCurrentUser().uid,
@@ -157,7 +222,10 @@ class WorkoutViewModel @Inject constructor(
             calories = totalCalories.toInt(),
             volume = totalVolume.toInt(),
             intensity = 100.0,
-            workoutType = "Mixto"
+            workoutType = "Mixto",
+            primaryMuscleIds = primaryMuscleIds,
+            secondaryMuscleIds = secondaryMuscleIds,
+            duration = _workoutDuration.value / 1000 //almacenar en segundos
         )
     }
 }
