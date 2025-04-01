@@ -25,13 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
+import com.aronid.weighttrackertft.ui.components.alertDialog.BottomSheetDialog
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.WeeklyWorkoutCalendar
-import com.aronid.weighttrackertft.ui.components.charts.donutCharts.SimpleDonutChart
+import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,7 +56,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             Text(
-                text = "Bienvenido, ${name.value}!",
+                text = stringResource(R.string.welcome, name.value),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(innerPadding)
@@ -99,84 +101,90 @@ fun HomeScreen(
                 text = stringResource(id = R.string.home),
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Button(onClick = { navHostController.navigate(NavigationRoutes.PhysicalData.route) }) {
-                Text(text = "Go to questionnaire")
-            }
 
+//            BottomSheetDialog()
+//            Button(onClick = { navHostController.navigate(NavigationRoutes.PhysicalData.route) }) {
+//                Text(text = "Go to questionnaire")
+//            }
+//
             Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
                 Text(text = "see routines")
             }
-            Button(onClick = { navHostController.navigate(NavigationRoutes.EditRoutine.route) }) {
-                Text(text = "editar routine")
-            }
+//            Button(onClick = { navHostController.navigate(NavigationRoutes.EditRoutine.route) }) {
+//                Text(text = "editar routine")
+//            }
+//
+//            Button(onClick = { navHostController.navigate(NavigationRoutes.WorkoutList.route) }) {
+//                Text(text = "Lista de rutinas")
+//            }
 
-            Button(onClick = { navHostController.navigate(NavigationRoutes.WorkoutList.route) }) {
-                Text(text = "Lista de rutinas")
-            }
+//            val viewModel: CalendarViewModel = hiltViewModel()
+//            WorkoutRangeCalendar(viewModel)
 
 //            MyCalendar()
 
 //            Button(onClick = {navHostController.navigate(NavigationRoutes.CreateRoutine.route)}) {
 //                Text(text = "Create a routine")
 //            }
-//            Button(onClick = {navHostController.navigate(NavigationRoutes.Exercises.route)}) {
-//                Text(text = "Ver ejercicios")
-//            }
+            Button(onClick = {navHostController.navigate(NavigationRoutes.Exercises.route)}) {
+                Text(text = "Ver ejercicios")
+            }
+
+            Text(text = "Entrenamientos favoritos")
+            Button(onClick = {navHostController.navigate(NavigationRoutes.FavoriteExercises.route)}) {
+                Text(text = "Ver favoritos")
+            }
 
             if (showDialog && selectedDate != null) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
                     title = {
                         Text(
-                            "Entrenamientos del ${
-                                selectedDate!!.format(
-                                    DateTimeFormatter.ofPattern(
-                                        "dd/MM/yyyy"
-                                    )
-                                )
-                            }"
+                            text = stringResource(
+                                id = R.string.workouts_of,
+                                selectedDate!!.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                            )
                         )
                     },
                     text = {
                         if (selectedWorkouts.isEmpty()) {
-                            Text("No hay entrenamientos para este día.")
+                            Text(stringResource(R.string.no_workouts_for_day))
                         } else if (selectedWorkouts.size == 1) {
                             // Caso 1: Un solo entrenamiento
                             val workout = selectedWorkouts.first()
                             Text(
-                                text = """
-                                    Entrenamiento:
-                                    - Calorías: ${workout.calories} kcal
-                                    - Volumen: ${workout.volume} kg
-                                    - Tipo: ${workout.workoutType}
-                                    - Intensidad: ${workout.intensity}%
-                                    - Fecha: ${
-                                    workout.date?.toDate()?.toString() ?: "No disponible"
-                                }
-                                """.trimIndent(),
+                                text = stringResource(
+                                    id = R.string.single_workout_details,
+                                    workout.calories.toString(),
+                                    workout.volume.toString(),
+                                    workout.workoutType,
+                                    workout.intensity.toString(),
+                                    workout.date?.toDate()?.toString() ?: stringResource(R.string.not_available)
+                                ),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         } else {
-                            // Caso 2: Múltiples entrenamientos
                             Text(
-                                text = selectedWorkouts.joinToString("\n") { workout ->
-                                    "Entrenamiento ${selectedWorkouts.indexOf(workout) + 1}:\n" +
-                                            "- Calorías: ${workout.calories} kcal\n" +
-                                            "- Volumen: ${workout.volume} kg\n" +
-                                            "- Tipo: ${workout.workoutType}\n" +
-                                            "- Intensidad: ${workout.intensity}%\n" +
-                                            "- Fecha: ${
-                                                workout.date?.toDate()
-                                                    ?.toString() ?: "No disponible"
-                                            }"
-                                },
+                                text = selectedWorkouts.mapIndexed { index, workout ->
+                                    val workoutIndex = index + 1
+                                    val dateString = workout.date?.toDate()?.toString() ?: stringResource(id = R.string.not_available)
+                                    stringResource(
+                                        id = R.string.workout_details,
+                                        workoutIndex,
+                                        workout.calories.toString(),
+                                        workout.volume.toString(),
+                                        workout.workoutType,
+                                        workout.intensity.toString(),
+                                        dateString
+                                    )
+                                }.joinToString("\n"),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     },
                     confirmButton = {
                         TextButton(onClick = { showDialog = false }) {
-                            Text("Cerrar")
+                            Text(stringResource(R.string.close))
                         }
                     })
             }

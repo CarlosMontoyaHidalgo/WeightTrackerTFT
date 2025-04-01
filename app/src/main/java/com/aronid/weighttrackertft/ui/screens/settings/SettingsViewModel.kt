@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
@@ -22,6 +23,29 @@ class SettingsViewModel @Inject constructor(
 
     private val _buttonState = MutableStateFlow(ButtonState())
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
+
+    private val _userName = MutableStateFlow<String>("")
+    val userName: StateFlow<String> = _userName.asStateFlow()
+
+    init {
+        fetchUserData()
+    }
+
+    private fun fetchUserData() {
+        viewModelScope.launch {
+            val user = userRepository.getUserName()
+            user.fold(
+                onSuccess = { name ->
+                    Log.d("HomeViewModel", "Nombre obtenido: $name")
+                    _userName.value = name
+                },
+                onFailure = { exception ->
+                    Log.e("HomeViewModel", "Error al obtener nombre: $exception")
+                    _userName.value = "Usuario" // Valor por defecto más amigable
+                }
+            )
+        }
+    }
 
     init {
         updateButtonConfigs()

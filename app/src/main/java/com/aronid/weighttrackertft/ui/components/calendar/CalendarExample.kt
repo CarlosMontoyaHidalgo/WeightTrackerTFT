@@ -32,97 +32,98 @@ import java.time.DayOfWeek
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
-@Composable
-private fun MyCalendar() {
-    val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(100) }
-    val endMonth = remember { currentMonth.plusMonths(100) }
-    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
-    val daysOfWeek = remember { daysOfWeek(firstDayOfWeek) }
 
-    // Estado para rastrear el día seleccionado
-    var selectedDay by remember { mutableStateOf<CalendarDay?>(null) }
-
-    val state = rememberCalendarState(
-        startMonth = startMonth,
-        endMonth = endMonth,
-        firstVisibleMonth = currentMonth,
-        firstDayOfWeek = firstDayOfWeek
-    )
-
-    Column {
-        HorizontalCalendar(
-            state = state,
-            dayContent = { day ->
-                Day(
-                    day = day,
-                    isSelected = selectedDay == day,
-                    onClick = { clickedDay ->
-                        selectedDay = if (selectedDay == clickedDay) null else clickedDay
-                    }
-                )
-            },
-            monthHeader = { calendarMonth ->
-                MonthHeader(
-                    month = calendarMonth.yearMonth.month,
-                    year = calendarMonth.yearMonth.year,
-                    daysOfWeek = daysOfWeek
-                )
-            }
-        )
-    }
-}
-
-@Composable
-private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .clip(CircleShape)
-            .background(color = if (isSelected) Color.Green else Color.Transparent)
-            .clickable(
-                enabled = day.position == DayPosition.MonthDate,
-                onClick = { onClick(day) }
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = day.date.dayOfMonth.toString(),
-            color = if (day.position == DayPosition.MonthDate) Color.Black else Color.Gray
-        )
-    }
-}
-
-@Composable
-private fun MonthHeader(month: java.time.Month, year: Int, daysOfWeek: List<DayOfWeek>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        // Nombre del mes y año
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "${month.getDisplayName(TextStyle.FULL, Locale.getDefault())} $year",
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-        // Días de la semana
-        DaysOfWeekTitle(daysOfWeek = daysOfWeek)
-    }
-}
-
-@Composable
-private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        for (dayOfWeek in daysOfWeek) {
-            Text(
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
-            )
-        }
-    }
-}
+//@Composable
+//private fun MyCalendar() {
+//    val currentMonth = remember { YearMonth.now() }
+//    val startMonth = remember { currentMonth.minusMonths(100) }
+//    val endMonth = remember { currentMonth.plusMonths(100) }
+//    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
+//    val daysOfWeek = remember { daysOfWeek(firstDayOfWeek) }
+//
+//    // Estado para rastrear el día seleccionado
+//    var selectedDay by remember { mutableStateOf<CalendarDay?>(null) }
+//
+//    val state = rememberCalendarState(
+//        startMonth = startMonth,
+//        endMonth = endMonth,
+//        firstVisibleMonth = currentMonth,
+//        firstDayOfWeek = firstDayOfWeek
+//    )
+//
+//    Column {
+//        HorizontalCalendar(
+//            state = state,
+//            dayContent = { day ->
+//                Day(
+//                    day = day,
+//                    isSelected = selectedDay == day,
+//                    onClick = { clickedDay ->
+//                        selectedDay = if (selectedDay == clickedDay) null else clickedDay
+//                    }
+//                )
+//            },
+//            monthHeader = { calendarMonth ->
+//                MonthHeader(
+//                    month = calendarMonth.yearMonth.month,
+//                    year = calendarMonth.yearMonth.year,
+//                    daysOfWeek = daysOfWeek
+//                )
+//            }
+//        )
+//    }
+//}
+//
+//@Composable
+//private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
+//    Box(
+//        modifier = Modifier
+//            .aspectRatio(1f)
+//            .clip(CircleShape)
+//            .background(color = if (isSelected) Color.Green else Color.Transparent)
+//            .clickable(
+//                enabled = day.position == DayPosition.MonthDate,
+//                onClick = { onClick(day) }
+//            ),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        Text(
+//            text = day.date.dayOfMonth.toString(),
+//            color = if (day.position == DayPosition.MonthDate) Color.Black else Color.Gray
+//        )
+//    }
+//}
+//
+//@Composable
+//private fun MonthHeader(month: java.time.Month, year: Int, daysOfWeek: List<DayOfWeek>, modifier: Modifier = Modifier) {
+//    Column(modifier = modifier.fillMaxWidth()) {
+//        // Nombre del mes y año
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 8.dp),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Text(
+//                text = "${month.getDisplayName(TextStyle.FULL, Locale.getDefault())} $year",
+//                style = MaterialTheme.typography.headlineMedium,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//        // Días de la semana
+//        DaysOfWeekTitle(daysOfWeek = daysOfWeek)
+//    }
+//}
+//
+//@Composable
+//private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
+//    Row(modifier = Modifier.fillMaxWidth()) {
+//        for (dayOfWeek in daysOfWeek) {
+//            Text(
+//                modifier = Modifier.weight(1f),
+//                textAlign = TextAlign.Center,
+//                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+//            )
+//        }
+//    }
+//}

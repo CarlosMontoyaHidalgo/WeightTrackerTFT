@@ -17,6 +17,7 @@ data class WorkoutModel(
     @PropertyName("primaryMuscleIds") val primaryMuscleIds: List<String> = emptyList(),
     @PropertyName("secondaryMuscleIds") val secondaryMuscleIds: List<String> = emptyList(),
     @PropertyName("duration") val duration: Long = 0L,
+    @PropertyName("isFavorite") val isFavorite: Boolean = false,
 )
 
 data class ExerciseWithSeries(

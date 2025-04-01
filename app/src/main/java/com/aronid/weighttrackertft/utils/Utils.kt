@@ -1,0 +1,42 @@
+package com.aronid.weighttrackertft.utils
+
+import com.google.firebase.Timestamp
+import java.util.Calendar
+
+fun String?.toTitleCase(): String {
+    return this?.split(" ")?.joinToString(" ") { word ->
+        word.lowercase().replaceFirstChar { it.uppercase() }
+    } ?: ""
+}
+
+fun getDateRange(period: String, referenceDate: Timestamp? = null): Pair<Timestamp, Timestamp> {
+    val calendar = Calendar.getInstance()
+    referenceDate?.let { calendar.time = it.toDate() }
+
+    when (period.lowercase()) {
+        "daily" -> {}
+        "weekly" -> calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        "monthly" -> calendar.set(Calendar.DAY_OF_MONTH, 1)
+        "yearly" -> {
+            calendar.set(Calendar.MONTH, Calendar.JANUARY)
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+        }
+        else -> throw IllegalArgumentException("Invalid period: $period")
+    }
+
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    val startDate = Timestamp(calendar.time)
+
+    when (period.lowercase()) {
+        "daily" -> calendar.add(Calendar.DAY_OF_YEAR, 1)
+        "weekly" -> calendar.add(Calendar.WEEK_OF_YEAR, 1)
+        "monthly" -> calendar.add(Calendar.MONTH, 1)
+        "yearly" -> calendar.add(Calendar.YEAR, 1)
+    }
+
+    val endDate = Timestamp(calendar.time)
+    return startDate to endDate
+}

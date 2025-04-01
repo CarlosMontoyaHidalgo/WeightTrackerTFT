@@ -30,13 +30,15 @@ fun PersonalizationScreen(innerPadding: PaddingValues, navHostController: NavHos
 
 
     Column(Modifier.padding(innerPadding)){
-        LanguageDropdown(
-            currentLanguage = currentLanguage,
-            onLanguageSelected = { selectedLanguage ->
-                languageViewModel.changeLanguage(context, selectedLanguage)
-                currentLanguage = selectedLanguage
-            }
-        )
+//        LanguageDropdown(
+//            currentLanguage = currentLanguage,
+//            onLanguageSelected = { selectedLanguage ->
+//                languageViewModel.changeLanguage(context, selectedLanguage)
+//                currentLanguage = selectedLanguage
+//            }
+//        )
+
+        LanguageDropdown()
 
         WeightReminderSelector(
             viewModel = weightReminderViewModel

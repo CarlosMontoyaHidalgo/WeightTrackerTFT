@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -19,6 +20,7 @@ import com.aronid.weighttrackertft.navigation.AppNavigation
 import com.aronid.weighttrackertft.ui.theme.WeightTrackerTFTTheme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,10 +32,27 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //auth = Firebase.auth
+        val sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("selected_language", "English") ?: "English"
+        Log.d("MainActivity", "Saved language: $savedLanguage")
+        updateLocale(savedLanguage)
+
         enableEdgeToEdge()
         setContent {
             MyApp(auth)
         }
+    }
+
+    private fun updateLocale(language: String) {
+        val locale = when (language) {
+            "English" -> Locale("en")
+            "Spanish" -> Locale("es")
+            else -> Locale.getDefault()
+        }
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }
 

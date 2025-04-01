@@ -1,261 +1,332 @@
-package com.aronid.weighttrackertft.ui.screens.workout.workoutList
+package com.aronid.weighttrackertft.ui.components.calendar
 
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.aronid.weighttrackertft.R
-import com.aronid.weighttrackertft.ui.components.cards.CustomWorkoutCard.WorkoutCard
-import com.aronid.weighttrackertft.ui.components.searchBar.workouts.WorkoutTopBar
+import com.google.firebase.Timestamp
+import com.kizitonwose.calendar.compose.HorizontalCalendar
+import com.kizitonwose.calendar.compose.rememberCalendarState
+import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.Date
+import java.util.Locale
 
 //@Composable
-//fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostController) {
-//    val workoutListViewModel: WorkoutListViewModel = hiltViewModel()
-//    val workouts = workoutListViewModel.workouts.collectAsLazyPagingItems()
-//    var showCheckbox by remember { mutableStateOf(false) }
-//    var showAlertDialog by remember { mutableStateOf(false) }
-//    var showFilterDialog by remember { mutableStateOf(false) }
-//    val selectedWorkouts = remember { mutableStateMapOf<String, Boolean>() }
+//fun WorkoutRangeCalendar(viewModel: CalendarViewModel, onDateRangeSelected: (LocalDate, LocalDate) -> Unit, onDismiss: () -> Unit) {
+//    val accountCreationDate by viewModel.accountCreationDate.collectAsState()
+//    val currentDate = LocalDate.now()
 //
-//    LaunchedEffect(workouts) {
-//        workouts.itemSnapshotList.forEach { workout ->
-//            workout?.let {
-//                if (!selectedWorkouts.containsKey(it.id)) {
-//                    selectedWorkouts[it.id] = false
+//    val startDate =
+//        accountCreationDate?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
+//            ?: currentDate.minusYears(1)
+//
+//    val startMonth = YearMonth.from(startDate)
+//    val endMonth = YearMonth.now().plusMonths(12)
+//
+//    val currentMonth = remember { YearMonth.now() }
+//    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
+//
+//    val state = rememberCalendarState(
+//        startMonth = startMonth,
+//        endMonth = endMonth,
+//        firstVisibleMonth = currentMonth,
+//        firstDayOfWeek = firstDayOfWeek
+//    )
+//
+//    var selectedStart by remember { mutableStateOf<CalendarDay?>(null) }
+//    var selectedEnd by remember { mutableStateOf<CalendarDay?>(null) }
+//
+//    HorizontalCalendar(
+//        state = state,
+//        dayContent = { day ->
+//            val start = selectedStart
+//            val end = selectedEnd
+//            val isStart = start == day
+//            val isEnd = end == day
+//            val isInRange = start != null && end != null &&
+//                    !day.date.isBefore(start.date) && !day.date.isAfter(end.date)
+//            val isDisabled =
+//                day.date.isBefore(startDate)
+//
+//            DayContent(
+//                day = day,
+//                isStart = isStart,
+//                isEnd = isEnd,
+//                isInRange = isInRange,
+//                isDisabled = isDisabled,
+//                onClick = {
+//                    if (!isDisabled) {
+//                        val currentStart = selectedStart
+//                        val currentEnd = selectedEnd
+//                        if (currentStart == null) {
+//                            selectedStart = day
+//                            selectedEnd = null
+//                        } else if (currentEnd == null) {
+//                            if (day.date.isAfter(currentStart.date)) {
+//                                selectedEnd = day
+//                            } else {
+//                                selectedStart = day
+//                                selectedEnd = null
+//                            }
+//                        } else {
+//                            selectedStart = day
+//                            selectedEnd = null
+//                        }
+//                    }
 //                }
-//            }
-//        }
-//    }
-//
-//    Scaffold(
-//        topBar = {
-//            WorkoutTopBar(
-//                selectedWorkouts = selectedWorkouts,
-//                onEditClick = { showCheckbox = !showCheckbox },
-//                onDeleteClick = { showAlertDialog = true },
-//                onFilterClick = { showFilterDialog = true },
-//                onClearFilterClick = { workoutListViewModel.clearDateFilter() },
-//                showCheckbox = showCheckbox
 //            )
 //        },
-//        modifier = Modifier.padding(innerPadding)
-//    ) { paddingValues ->
-//        Box(
-//            modifier = Modifier
-//                .padding(paddingValues)
-//                .fillMaxSize() // Ocupa todo el espacio disponible
-//        ) {
-//            // Lista que ocupa toda la altura
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize()
-//            ) {
-//                if (workouts.itemCount == 0) {
-//                    item {
-//                        Text(
-//                            text = "No hay workouts disponibles",
-//                            textAlign = TextAlign.Center,
-//                            modifier = Modifier.fillMaxWidth().padding(16.dp)
-//                        )
-//                    }
-//                } else {
-//                    items(workouts.itemCount) { index ->
-//                        workouts[index]?.let { workout ->
-//                            WorkoutCard(
-//                                workout = workout,
-//                                showCheckbox = showCheckbox,
-//                                isChecked = selectedWorkouts[workout.id] ?: false,
-//                                onCheckedChange = { checked ->
-//                                    selectedWorkouts[workout.id] = checked
-//                                    workoutListViewModel.toggleSelection(workout.id, checked)
-//                                },
-//                                navHostController = navHostController
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//
-//            // Botón de "Volver atrás" superpuesto
-//            Button(
-//                onClick = { navHostController.popBackStack() },
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary
-//                ),
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter) // Posicionado en la parte inferior
-//                    .padding(16.dp) // Espacio desde el borde
-//            ) {
-//                Icon(
-//                    painter = painterResource(R.drawable.ic_go_back),
-//                    contentDescription = "Volver atrás",
-//                    tint = MaterialTheme.colorScheme.onPrimary
-//                )
-//            }
+//        monthHeader = { month ->
+//            MonthHeader(month.yearMonth)
 //        }
-//    }
+//    )
 //}
+//
+@Composable
+fun DayContent(
+    day: CalendarDay,
+    isStart: Boolean,
+    isEnd: Boolean,
+    isInRange: Boolean,
+    isDisabled: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        isDisabled -> Color.LightGray
+        isStart || isEnd -> MaterialTheme.colorScheme.primary
+        isInRange -> Color(0x0F7492F3)
+        else -> Color.Transparent
+    }
 
+    val textColor = when {
+        isDisabled -> Color.Gray
+        isStart || isEnd -> Color.White
+        isInRange -> Color.Black
+        else -> Color.Black
+    }
 
-//            ConstraintLayout(Modifier.fillMaxWidth()) {
-//                val (titleRef, editRef, deleteRef, filterRef, clearFilterRef) = createRefs()
-//
-//                Text(
-//                    text = "Workouts",
-//                    textAlign = TextAlign.Start, // Alineado a la izquierda por defecto
-//                    modifier = Modifier
-//                        .constrainAs(titleRef) {
-//                            start.linkTo(parent.start, margin = 16.dp)
-//                            top.linkTo(parent.top)
-//                            bottom.linkTo(parent.bottom)
-//                            end.linkTo(deleteRef.start, margin = 8.dp) // Limita el espacio hacia los botones
-//                        }
-//                        .padding(end = 8.dp)
-//                )
-//
-//                if (showCheckbox) {
-//                    Button(
-//                        onClick = { showAlertDialog = true },
-//                        enabled = selectedWorkouts.values.any { it },
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = MaterialTheme.colorScheme.primary,
-//                            contentColor = MaterialTheme.colorScheme.onPrimary,
-//                            disabledContainerColor = Color(0xFFFFCDD2),
-//                            disabledContentColor = Color.Gray
-//                        ),
-//                        modifier = Modifier.constrainAs(deleteRef) {
-//                            end.linkTo(editRef.start, margin = 4.dp) // Reducido de default a 4dp
-//                            top.linkTo(parent.top)
-//                            bottom.linkTo(parent.bottom)
-//                        }
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_trash),
-//                            contentDescription = "Eliminar",
-//                            tint = if (selectedWorkouts.values.any { it }) Color.Red else Color.Gray
-//                        )
-//                    }
-//                }
-//
-//                Button(
-//                    onClick = {
-//                        showCheckbox = !showCheckbox
-//                        Log.d("WorkoutList", "Checkbox state toggled: $showCheckbox")
-//                    },
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = Color.Transparent,
-//                        contentColor = MaterialTheme.colorScheme.onPrimary
-//                    ),
-//                    modifier = Modifier.constrainAs(editRef) {
-//                        end.linkTo(filterRef.start, margin = 4.dp) // Reducido de default a 4dp
-//                        top.linkTo(parent.top)
-//                        bottom.linkTo(parent.bottom)
-//                    }
-//                ) {
-//                    Icon(
-//                        imageVector = if (showCheckbox) Icons.Default.Done else Icons.Default.Edit,
-//                        contentDescription = "Edit",
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                }
-//
-//                Button(
-//                    onClick = { showFilterDialog = true },
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = Color.Transparent,
-//                        contentColor = MaterialTheme.colorScheme.onPrimary
-//                    ),
-//                    modifier = Modifier.constrainAs(filterRef) {
-//                        end.linkTo(clearFilterRef.start, margin = 4.dp) // Reducido de default a 4dp
-//                        top.linkTo(parent.top)
-//                        bottom.linkTo(parent.bottom)
-//                    }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.CalendarToday,
-//                        contentDescription = "Filtrar por fecha",
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                }
-//
-//                Button(
-//                    onClick = {
-//                        workoutListViewModel.clearDateFilter()
-//                        Log.d("WorkoutList", "Date filter cleared")
-//                    },
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = Color.Transparent,
-//                        contentColor = MaterialTheme.colorScheme.onPrimary
-//                    ),
-//                    modifier = Modifier.constrainAs(clearFilterRef) {
-//                        end.linkTo(parent.end, margin = 16.dp)
-//                        top.linkTo(parent.top)
-//                        bottom.linkTo(parent.bottom)
-//                    }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.Clear,
-//                        contentDescription = "Borrar filtro",
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                }
-//
-//                if (showAlertDialog) {
-//                    CustomAlertDialog(
-//                        showDialog = showAlertDialog,
-//                        onDismiss = { showAlertDialog = false },
-//                        onConfirm = {
-//                            val toDelete = selectedWorkouts.filter { it.value }.keys.toList()
-//                            Log.d("WorkoutList", "Confirming deletion of workouts: $toDelete")
-//                            workoutListViewModel.deleteSelectedWorkouts()
-//                            showAlertDialog = false
-//                            showCheckbox = false
-//                            selectedWorkouts.clear()
-//                            Log.d("WorkoutList", "Refreshing workouts after delete")
-//                            workouts.refresh()
-//                        },
-//                        title = "¿Estás seguro de eliminar estos workouts?",
-//                        text = "No podrás recuperarlos",
-//                        confirmButtonText = stringResource(R.string.alert_positive),
-//                        dismissButtonText = stringResource(R.string.alert_negative)
-//                    )
-//                }
-//
-//                if (showFilterDialog) {
-//                    SimpleDateFilterDialog(
-//                        onDateRangeSelected = { startDate, endDate ->
-//                            workoutListViewModel.setDateFilter(startDate, endDate)
-//                        },
-//                        onDismiss = { showFilterDialog = false }
-//                    )
-//                }
-//            }
+    val shape = when {
+        isStart -> RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
+        isEnd -> RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp)
+        else -> RoundedCornerShape(0.dp)
+    }
+
+    Box(
+        modifier = Modifier
+            .aspectRatio(1f)
+            .clip(shape)
+            .background(backgroundColor)
+            .border(
+                width = 1.dp,
+                color = if (isStart || isEnd) Color.Black else Color.Transparent,
+                shape = shape
+            )
+            .clickable(enabled = !isDisabled) { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = day.date.dayOfMonth.toString(),
+            color = textColor
+        )
+    }
+}
+
+@Composable
+fun MonthHeader(yearMonth: YearMonth) {
+    Text(
+        text = yearMonth.month.getDisplayName(
+            TextStyle.FULL,
+            Locale.getDefault()
+        ) + " " + yearMonth.year,
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun WorkoutRangeCalendar(
+    viewModel: CalendarViewModel,
+    onDateRangeSelected: (Timestamp?, Timestamp?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val accountCreationDate by viewModel.accountCreationDate.collectAsState()
+    val currentDate = LocalDate.now()
+
+    val startDate = accountCreationDate?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
+        ?: currentDate.minusYears(1)
+
+    val startMonth = YearMonth.from(startDate)
+    val endMonth = YearMonth.now().plusMonths(12)
+
+    val currentMonth = remember { YearMonth.now() }
+    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
+
+    val state = rememberCalendarState(
+        startMonth = startMonth,
+        endMonth = endMonth,
+        firstVisibleMonth = currentMonth,
+        firstDayOfWeek = firstDayOfWeek
+    )
+
+    var selectedStart by remember { mutableStateOf<CalendarDay?>(null) }
+    var selectedEnd by remember { mutableStateOf<CalendarDay?>(null) }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Select Date Range") },
+        text = {
+            Box(modifier = Modifier.height(400.dp)) {
+                HorizontalCalendar(
+                    state = state,
+                    dayContent = { day ->
+                        val start = selectedStart
+                        val end = selectedEnd
+                        val isStart = start == day
+                        val isEnd = end == day
+                        val isSingle = isStart && end == null
+                        val isInRange = start != null && end != null &&
+                                !day.date.isBefore(start.date) && !day.date.isAfter(end.date)
+                        val isDisabled = day.date.isBefore(startDate)
+
+                        DayContent(
+                            day = day,
+                            isStart = isStart,
+                            isEnd = isEnd,
+                            isSingle = isSingle,
+                            isInRange = isInRange,
+                            isDisabled = isDisabled,
+                            onClick = {
+                                if (!isDisabled) {
+                                    val currentStart = selectedStart
+                                    val currentEnd = selectedEnd
+                                    if (currentStart == null) {
+                                        // First selection
+                                        selectedStart = day
+                                        selectedEnd = null
+                                    } else if (currentEnd == null) {
+                                        if (day == currentStart) {
+                                            // Keep as single day selection
+                                            selectedEnd = null
+                                        } else if (day.date.isAfter(currentStart.date)) {
+                                            // Set as range end
+                                            selectedEnd = day
+                                        } else {
+                                            // New start before current start
+                                            selectedStart = day
+                                            selectedEnd = null
+                                        }
+                                    } else {
+                                        // Reset to new single selection
+                                        selectedStart = day
+                                        selectedEnd = null
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    monthHeader = { month -> MonthHeader(month.yearMonth) }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val startTimestamp = selectedStart?.date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.let { Timestamp(Date.from(it)) }
+                    val endTimestamp = selectedEnd?.date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.let { Timestamp(Date.from(it)) }
+                    onDateRangeSelected(startTimestamp, endTimestamp ?: startTimestamp) // Use startTimestamp if end is null
+                    onDismiss()
+                },
+                enabled = selectedStart != null
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun DayContent(
+    day: CalendarDay,
+    isStart: Boolean,
+    isEnd: Boolean,
+    isSingle: Boolean,
+    isInRange: Boolean,
+    isDisabled: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        isDisabled -> Color.LightGray
+        isSingle -> MaterialTheme.colorScheme.primary
+        isStart || isEnd -> MaterialTheme.colorScheme.primary
+        isInRange -> Color(0x0F7492F3)
+        else -> Color.Transparent
+    }
+
+    val textColor = when {
+        isDisabled -> Color.Gray
+        isSingle -> Color.White
+        isStart || isEnd -> Color.White
+        isInRange -> Color.Black
+        else -> Color.Black
+    }
+
+    val shape = when {
+        isSingle -> CircleShape
+        isStart -> RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
+        isEnd -> RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp)
+        else -> RoundedCornerShape(0.dp)
+    }
+
+    Box(
+        modifier = Modifier
+            .aspectRatio(1f)
+            .clip(shape)
+            .background(backgroundColor)
+            .border(
+                width = 1.dp,
+                color = if (isStart || isEnd || isSingle) Color.Black else Color.Transparent,
+                shape = shape
+            )
+            .clickable(enabled = !isDisabled) { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = day.date.dayOfMonth.toString(),
+            color = textColor
+        )
+    }
+}

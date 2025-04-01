@@ -57,6 +57,11 @@ dependencies {
     implementation(libs.calendar.compose)
 
     implementation(libs.konfetti)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
 // Jetpack Compose dependencies
     implementation(libs.compose.material.icons.extended) // Extended Material Icons for Jetpack Compose
 

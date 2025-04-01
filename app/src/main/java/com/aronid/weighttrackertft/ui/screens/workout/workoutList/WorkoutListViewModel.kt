@@ -68,10 +68,19 @@ class WorkoutListViewModel @Inject constructor(
     }
 
     fun setDateFilter(startDate: Timestamp?, endDate: Timestamp?) {
-        _dateFilter.value = startDate to endDate
-        Log.d("WorkoutListViewModel", "Date filter set: start=$startDate, end=$endDate")
-    }
+        val adjustedEndDate = endDate?.let {
+            val endLocalDate = it.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            val endOfDay = endLocalDate.atTime(23, 59, 59, 999999999)
+            Timestamp(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()))
+        } ?: startDate?.let {
+            val startLocalDate = it.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            val endOfDay = startLocalDate.atTime(23, 59, 59, 999999999)
+            Timestamp(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()))
+        }
 
+        _dateFilter.value = startDate to adjustedEndDate
+        Log.d("WorkoutListViewModel", "Date filter set: start=$startDate, end=$adjustedEndDate")
+    }
     fun clearDateFilter() {
         _dateFilter.value = null to null
         Log.d("WorkoutListViewModel", "Date filter cleared")

@@ -11,6 +11,7 @@ import com.aronid.weighttrackertft.data.user.UserRepository
 import com.aronid.weighttrackertft.data.weight.WeightRepository
 import com.aronid.weighttrackertft.utils.button.getDefaultBorderConfig
 import com.aronid.weighttrackertft.utils.button.getDefaultButtonConfig
+import com.aronid.weighttrackertft.utils.toTitleCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,8 +42,9 @@ class UserDataViewModel @Inject constructor(
     val showNameError: StateFlow<Boolean> = _showNameError
 
     fun onNameChanged(newName: String) {
-        _state.update { it.copy(name = newName) }
-        _showNameError.value = validateName(newName) != null
+        val formattedName = newName.toTitleCase()
+        _state.update { it.copy(name = formattedName) }
+        _showNameError.value = validateName(formattedName) != null
         checkFormValidity()
     }
 
@@ -134,7 +136,7 @@ class UserDataViewModel @Inject constructor(
                     val userData = userRepository.getUserData(currentUser.uid)
                     userData?.let {
                         _state.value = it
-                        originalData = it.copy() // Store original data for comparison
+                        originalData = it.copy()
                         _selectedGoal.value = it.goal ?: ""
                         Log.d("UserDataViewModel", "User data loaded: $it")
                         checkFormValidity()

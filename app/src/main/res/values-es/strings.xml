@@ -65,6 +65,8 @@
     <!-- PhysicalData Screen -->
     <string name="physical_data">Datos físicos</string>
     <string name="height">Altura</string>
+    <string name="height_cm">Altura (cm)</string>
+
     <string name="weight">Peso</string>
 
     <!-- Questionnaire Screen -->
@@ -106,5 +108,117 @@
     <string name="goal_maintain_desc">Conservar peso actual</string>
     <string name="goal_gain_muscle">Ganar músculo</string>
     <string name="goal_gain_muscle_desc">Aumentar masa muscular</string>
+
+    <string name="finish_workout">¿Finalizar entrenamiento?</string>
+    <string name="finish_workout_confirmation">¿Estás seguro de que quieres finalizar el entrenamiento?</string>
+    <string name="finish">Finalizar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
+    <string name="exercise">Ejercicio</string>
+    <string name="back">Atrás</string>
+    <string name="info">Info</string>
+    <string name="navigating_with_workout_id">Navegando con ID de entrenamiento:</string>
+
+    <string name="welcome">Bienvenido, %1$s!</string>
+    <string name="no_workouts_for_day">No hay entrenamientos para este día.</string>
+    <string name="workout">Entrenamiento</string>
+    <string name="calories">Calorías: %1$s kcal</string>
+    <string name="volume">Volumen: %1$s kg</string>
+    <string name="type">Tipo: %1$s</string>
+    <string name="intensity">Intensidad: %1$s%</string>
+    <string name="date">Fecha: %1$s</string>
+    <string name="not_available">No disponible</string>
+    <string name="workout_details">Entrenamiento %1$d:\n- Calorías: %2$s kcal\n- Volumen: %3$s kg\n- Tipo: %4$s\n- Intensidad: %5$s%%\n- Fecha: %6$s</string>
+    <string name="single_workout_details">Entrenamiento:\n- Calorías: %1$s kcal\n- Volumen: %2$s kg\n- Tipo: %3$s\n- Intensidad: %4$s%%\n- Fecha: %5$s</string>
+
+    <string name="workouts_of">Entrenamientos del %1$s</string>
+    <string name="progress">Progreso</string>
+    <string name="exercises">Ejercicios</string>
+    <string name="expand_language_menu">Expandir menú de idiomas</string>
+
+    <string name="daily">Diario</string>
+    <string name="every_3_days">Cada 3 días</string>
+    <string name="weekly">Semanal</string>
+    <string name="every_2_weeks">Cada 2 semanas</string>
+    <string name="every_month">Cada mes</string>
+    <string name="expand_reminder_options">Expandir opciones de recordatorio</string>
+
+    <string name="choose_exercises">Elegir Ejercicios</string>
+    <string name="no_exercises_available">No hay ejercicios disponibles</string>
+    <string name="selected_exercises">Ejercicios seleccionados:</string>
+    <string name="confirm_selection">Confirmar Selección</string>
+
+    <string name="details">Detalles</string>
+    <string name="routine_created">Rutina creada!</string>
+    <string name="create_routine">Crear Rutina</string>
+    <string name="description">Descripción</string>
+    <string name="target_muscles">Músculos objetivo</string>
+    <string name="select_exercises">Seleccionar Ejercicios</string>
+
+    <string name="start_routine">Empezar rutina</string>
+
+    <string name="edit_routine">Editar Rutina</string>
+    <string name="add_exercises">Añadir Ejercicios</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="routine_updated_successfully">Rutina actualizada correctamente</string>
+    <string name="name_cannot_be_empty">El nombre no puede estar vacío</string>
+
+    <string name="search_routines_placeholder">Buscar rutinas…</string>
+    <string name="my_routines">Mis Rutinas</string>
+    <string name="no_custom_routines">No hay rutinas personalizadas</string>
+    <string name="create_new_routine">Crear nueva rutina</string>
+    <string name="create_new_routine_toast">Crear nueva rutina</string>
+    <string name="no_custom_routines_found">No se encontraron rutinas personalizadas</string>
+    <string name="predefined_routines">Rutinas Predefinidas</string>
+    <string name="loading_predefined_routines">Cargando rutinas predefinidas…</string>
+    <string name="no_predefined_routines_found">No se encontraron rutinas predefinidas</string>
+    <string name="add_icon_description">Agregar</string>
+
+    <string name="customization_settings">Configuración de Personalización</string>
+    <string name="change_theme">Cambiar Tema</string>
+    <string name="change_language">Cambiar Idioma</string>
+    <string name="change_font_size">Cambiar Tamaño de Fuente</string>
+
+    <string name="equipment_settings">Configuración de Equipos</string>
+    <string name="add_equipment">Agregar Equipo</string>
+    <string name="remove_equipment">Eliminar Equipo</string>
+    <string name="view_equipment_list">Ver Lista de Equipos</string>
+
+    <string name="goals_settings">Configuración de Objetivos</string>
+    <string name="set_new_goal">Establecer Nuevo Objetivo</string>
+    <string name="view_goals">Ver Objetivos</string>
+    <string name="edit_goals">Editar Objetivos</string>
+
+    <string name="user_settings">Configuración de Usuario</string>
+    <string name="change_personal_information">Cambiar Información Personal</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="notification_settings">Configuración de Notificaciones</string>
+
+    <string name="personal_data">Datos Personales</string>
+    <string name="customization">Personalización</string>
+    <string name="logout">Cerrar Sesión</string>
+
+    <string name="weight_label">Peso (%1$s)</string>
+
+    <string name="expand_goal_options">Expandir opciones de objetivos</string>
+
+    <string name="save">Guardar</string>
+
+    <string name="calories_burned">Calorías quemadas</string>
+    <string name="kcal_unit">kcal</string>
+    <string name="kg_unit">kg</string>
+    <string name="no_data_available">No hay datos disponibles</string>
+
+    <string name="workouts_deleted">¡Entrenamientos eliminados!</string>
+    <string name="delete_error">Error al eliminar</string>
+    <string name="delete_workouts_confirmation_title">¿Estás seguro de eliminar estos workouts?</string>
+    <string name="delete_workouts_confirmation_message">No podrás recuperarlos</string>
+    <string name="no_workouts_available">No hay entrenamientos disponibles</string>
+    <string name="go_back">Volver atrás</string>
+
+    <string name="language_flag">Bandera del idioma</string>
+    <string name="selected">Seleccionado</string>
+
+
 
 </resources>

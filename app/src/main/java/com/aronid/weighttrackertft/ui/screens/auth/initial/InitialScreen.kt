@@ -92,12 +92,12 @@ fun InitialScreen(
             onClick = navigateToLogin
         )
         Spacer(modifier = Modifier.weight(1f))
-        LanguageDropdown(
-            currentLanguage = currentLanguage,
-            onLanguageSelected = { selectedLanguage ->
-                viewModel.changeLanguage(context, selectedLanguage)
-                currentLanguage = selectedLanguage
-            }
-        )
+//        LanguageDropdown(
+//            currentLanguage = currentLanguage,
+//            onLanguageSelected = { selectedLanguage ->
+//                viewModel.changeLanguage(context, selectedLanguage)
+//                currentLanguage = selectedLanguage
+//            }
+//        )
     }
 }

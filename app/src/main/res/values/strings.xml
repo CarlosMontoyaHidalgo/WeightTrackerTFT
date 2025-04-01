@@ -69,6 +69,7 @@
     <!-- PhysicalData Screen -->
     <string name="physical_data">Physical Data</string>
     <string name="height">Height</string>
+    <string name="height_cm">Height (cm)</string>
     <string name="weight">Weight</string>
 
     <!-- Questionnaire Screen -->
@@ -111,5 +112,116 @@
     <string name="goal_gain_muscle">Gain Muscle</string>
     <string name="goal_gain_muscle_desc">Increase muscle mass</string>
 
+    <string name="finish_workout">¿Finalizar entrenamiento?</string>
+    <string name="finish_workout_confirmation">¿Estás seguro de que quieres finalizar el entrenamiento?</string>
+    <string name="finish">Finalizar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
+    <string name="exercise">Ejercicio</string>
+    <string name="back">Atrás</string>
+    <string name="info">Info</string>
+    <string name="navigating_with_workout_id">Navegando con ID de entrenamiento:</string>
+
+    <string name="welcome">Welcome, %1$s!</string>
+    <string name="no_workouts_for_day">No workouts for this day.</string>
+    <string name="workout">Workout</string>
+    <string name="calories">Calories: %1$s kcal</string>
+    <string name="volume">Volume: %1$s kg</string>
+    <string name="type">Type: %1$s</string>
+    <string name="intensity">Intensity: %1$s%</string>
+    <string name="date">Date: %1$s</string>
+    <string name="workout_details">Workout %1$d:\n- Calories: %2$s kcal\n- Volume: %3$s kg\n- Type: %4$s\n- Intensity: %5$s%%\n- Date: %6$s</string>
+    <string name="single_workout_details">Workout:\n- Calories: %1$s kcal\n- Volume: %2$s kg\n- Type: %3$s\n- Intensity: %4$s%%\n- Date: %5$s</string>
+    <string name="not_available">Not available</string>
+
+    <string name="workouts_of">Workouts of %1$s</string>
+    <string name="progress">Progress</string>
+    <string name="exercises">Exercises</string>
+    <string name="expand_language_menu">Expand language menu</string>
+
+    <string name="daily">Daily</string>
+    <string name="every_3_days">Every 3 days</string>
+    <string name="weekly">Weekly</string>
+    <string name="every_2_weeks">Every 2 weeks</string>
+    <string name="every_month">Every month</string>
+    <string name="expand_reminder_options">Expand reminder options</string>
+
+    <string name="choose_exercises">Choose Exercises</string>
+    <string name="no_exercises_available">No exercises available</string>
+    <string name="selected_exercises">Selected exercises:</string>
+    <string name="confirm_selection">Confirm Selection</string>
+
+    <string name="details">Details</string>
+    <string name="routine_created">Routine created!</string>
+    <string name="create_routine">Create Routine</string>
+    <string name="description">Description</string>
+    <string name="target_muscles">Target muscles</string>
+    <string name="select_exercises">Select Exercises</string>
+
+    <string name="start_routine">Start routine</string>
+
+    <string name="edit_routine">Editar Rutina</string>
+    <string name="add_exercises">Añadir Ejercicios</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="routine_updated_successfully">Rutina actualizada correctamente</string>
+    <string name="name_cannot_be_empty">El nombre no puede estar vacío</string>
+
+    <string name="search_routines_placeholder">Search routines…</string>
+    <string name="my_routines">My Routines</string>
+    <string name="no_custom_routines">No custom routines available</string>
+    <string name="create_new_routine">Create new routine</string>
+    <string name="create_new_routine_toast">Create new routine</string>
+    <string name="no_custom_routines_found">No custom routines found</string>
+    <string name="predefined_routines">Predefined Routines</string>
+    <string name="loading_predefined_routines">Loading predefined routines…</string>
+    <string name="no_predefined_routines_found">No predefined routines found</string>
+    <string name="add_icon_description">Add</string>
+
+    <string name="customization_settings">Customization Settings</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="change_language">Change Language</string>
+    <string name="change_font_size">Change Font Size</string>
+
+    <string name="equipment_settings">Equipment Settings</string>
+    <string name="add_equipment">Add Equipment</string>
+    <string name="remove_equipment">Remove Equipment</string>
+    <string name="view_equipment_list">View Equipment List</string>
+
+    <string name="goals_settings">Goals Settings</string>
+    <string name="set_new_goal">Set New Goal</string>
+    <string name="view_goals">View Goals</string>
+    <string name="edit_goals">Edit Goals</string>
+
+    <string name="user_settings">User Settings</string>
+    <string name="change_personal_information">Change Personal Information</string>
+    <string name="change_password">Change Password</string>
+    <string name="notification_settings">Notification Settings</string>
+
+    <string name="personal_data">Personal Data</string>
+    <string name="customization">Customization</string>
+    <string name="logout">Logout</string>
+
+    <string name="weight_label">Weight (%1$s)</string>
+
+    <string name="expand_goal_options">Expand goal options</string>
+
+    <string name="save">Save</string>
+
+    <string name="calories_burned">Calories burned</string>
+    <string name="kcal_unit">kcal</string>
+    <string name="kg_unit">kg</string>
+    <string name="no_data_available">No data available</string>
+
+    <string name="workouts_deleted">Workouts deleted!</string>
+    <string name="delete_error">Error deleting</string>
+    <string name="delete_workouts_confirmation_title">Are you sure you want to delete these workouts?</string>
+    <string name="delete_workouts_confirmation_message">You won\'t be able to recover them</string>
+    <string name="no_workouts_available">No workouts available</string>
+    <string name="go_back">Go back</string>
+
+    <string name="language_flag">Language flag</string>
+
+
+    <string name="selected">Selected</string>
 
 </resources>

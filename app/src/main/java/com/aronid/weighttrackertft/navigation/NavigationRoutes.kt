@@ -13,12 +13,15 @@ sealed class NavigationRoutes(val route: String) {
     object Loading : NavigationRoutes("loading")
     object Stats : NavigationRoutes("stats")
     object Exercises : NavigationRoutes("Exercises")
+    object FavoriteExercises : NavigationRoutes("favoriteExercises")
 
     /*Settings*/
     object Settings : NavigationRoutes("settings")
     object UserSettings : NavigationRoutes("userSettings")
     object Customization : NavigationRoutes("customization")
     object Equipment : NavigationRoutes("equipment")
+
+    object SplashScreen: NavigationRoutes("splashScreen")
 
     /*Workouts*/
     object Workout : NavigationRoutes("workout/{routineId}?isPredefined={isPredefined}") {
@@ -33,7 +36,6 @@ sealed class NavigationRoutes(val route: String) {
     object WorkoutList : NavigationRoutes("workoutList")
 
     object Routines : NavigationRoutes("routines")
-
 
     object RoutineDetails : NavigationRoutes("routine_details/{routineId}"){
         fun createRoute(routineId: String) = "routine_details/$routineId"
@@ -54,6 +56,8 @@ sealed class NavigationRoutes(val route: String) {
     }
 
     object UserData : NavigationRoutes("userData")
+
+    object Charts : NavigationRoutes("charts")
 
 
 

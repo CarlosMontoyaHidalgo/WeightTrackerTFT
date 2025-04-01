@@ -2,6 +2,7 @@ package com.aronid.weighttrackertft.data.workout
 
 import android.util.Log
 import com.aronid.weighttrackertft.constants.FirestoreCollections
+import com.aronid.weighttrackertft.utils.getDateRange
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -147,6 +148,13 @@ class WorkoutRepository @Inject constructor(
             .orderBy("date", Query.Direction.DESCENDING)
         return WorkoutPagingSource(baseQuery, startDate, endDate)
     }
+
+    suspend fun getCaloriesForPeriod(period: String, referenceDate: Timestamp? = null): Int {
+        val (startDate, endDate) = getDateRange(period, referenceDate)
+        val workouts = getWorkoutsInDateRange(startDate, endDate)
+        return workouts.sumOf { it.calories }
+    }
+
 
 //    suspend fun getWorkoutsByRoutine(routineId: String): List<WorkoutModel> {
 //        return workoutCollection

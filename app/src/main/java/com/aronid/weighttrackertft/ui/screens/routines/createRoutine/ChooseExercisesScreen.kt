@@ -1,17 +1,24 @@
 package com.aronid.weighttrackertft.ui.screens.routines.createRoutine
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.routine.exerciseItem.ExerciseItem
@@ -31,14 +38,14 @@ fun ChooseExercisesScreen(
         isContentScrolleable = true,
         formContent = {
             Text(
-                text = "Elegir Ejercicios",
+                text = stringResource(id = R.string.choose_exercises),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
             if (availableExercises.isEmpty()) {
                 Text(
-                    text = "No hay ejercicios disponibles",
+                    text = stringResource(id = R.string.no_exercises_available),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -59,7 +66,7 @@ fun ChooseExercisesScreen(
 
                 if (selectedExerciseIds.isNotEmpty()) {
                     Text(
-                        text = "Ejercicios seleccionados:",
+                        text = stringResource(id = R.string.selected_exercises),
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(top = 8.dp)
                     )
@@ -92,7 +99,7 @@ fun ChooseExercisesScreen(
                     .padding(top = 16.dp)
                     .fillMaxWidth()
             ) {
-                Text("Confirmar Selección")
+                Text(stringResource(id = R.string.confirm_selection))
             }
         }
     )

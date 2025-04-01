@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
@@ -50,6 +51,8 @@ fun RoutineSearchBar(
     val state by viewModel.state.collectAsState()
     val buttonConfigs = state.baseState.buttonConfigs
 
+    val createNewRoutineMessage = stringResource(id = R.string.create_new_routine_toast)
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -69,7 +72,7 @@ fun RoutineSearchBar(
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Buscar rutinas...")
+                    Text(stringResource(R.string.search_routines_placeholder))
                 }
             },
             trailingIcon = {
@@ -92,7 +95,7 @@ fun RoutineSearchBar(
         LazyColumn {
             item {
                 Text(
-                    text = "Mis Rutinas",
+                    text = stringResource(R.string.my_routines),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                 )
@@ -101,7 +104,7 @@ fun RoutineSearchBar(
             if (customRoutines.isEmpty() && searchText.isEmpty()) {
                 item {
                     Text(
-                        text = "No hay rutinas personalizadas",
+                        text = stringResource(R.string.no_custom_routines),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 8.dp)
@@ -109,10 +112,11 @@ fun RoutineSearchBar(
                     NewCustomButton(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         onClick = {
-                            Toast.makeText(context, "Crear nueva rutina", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, createNewRoutineMessage, Toast.LENGTH_SHORT)
+                                .show()
                             navHostController.navigate(NavigationRoutes.CreateRoutine.route)
                         },
-                        text = "Crear nueva rutina",
+                        text = stringResource(R.string.create_new_routine),
                         buttonType = ButtonType.ELEVATED,
                         containerColor = Color.Blue,
                         textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
@@ -122,7 +126,7 @@ fun RoutineSearchBar(
                         iconConfig = IconConfig(
                             iconId = R.drawable.ic_add,
                             iconPosition = IconPosition.END,
-                            iconContentDescription = "Add",
+                            iconContentDescription = stringResource(R.string.add_icon_description),
                             iconSize = 24.dp,
                             iconSpacing = 8.dp,
                             iconTint = Color.White
@@ -132,7 +136,7 @@ fun RoutineSearchBar(
             } else if (customRoutines.isEmpty()) {
                 item {
                     Text(
-                        text = "No se encontraron rutinas personalizadas",
+                        text = stringResource(R.string.no_custom_routines_found),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 8.dp)
@@ -150,7 +154,7 @@ fun RoutineSearchBar(
 
             item {
                 Text(
-                    text = "Rutinas Predefinidas",
+                    text = stringResource(R.string.predefined_routines),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                 )
@@ -159,7 +163,9 @@ fun RoutineSearchBar(
             if (predefinedRoutines.isEmpty()) {
                 item {
                     Text(
-                        text = if (searchText.isEmpty()) "Cargando rutinas predefinidas..." else "No se encontraron rutinas predefinidas",
+                        text = if (searchText.isEmpty()) stringResource(R.string.loading_predefined_routines) else stringResource(
+                            R.string.no_predefined_routines_found
+                        ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 8.dp)

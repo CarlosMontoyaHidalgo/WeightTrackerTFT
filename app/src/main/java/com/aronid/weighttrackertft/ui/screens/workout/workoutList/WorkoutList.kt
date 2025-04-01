@@ -1,15 +1,15 @@
 package com.aronid.weighttrackertft.ui.screens.workout.workoutList
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -33,15 +33,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
+import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.SimpleDateFilterDialog
+import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.cards.CustomWorkoutCard.WorkoutCard
 import com.aronid.weighttrackertft.ui.components.searchBar.workouts.WorkoutTopBar
 
@@ -49,11 +50,15 @@ import com.aronid.weighttrackertft.ui.components.searchBar.workouts.WorkoutTopBa
 fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostController) {
     val workoutListViewModel: WorkoutListViewModel = hiltViewModel()
     val workouts = workoutListViewModel.workouts.collectAsLazyPagingItems()
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
     var showCheckbox by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var showFilterDialog by remember { mutableStateOf(false) }
     val selectedWorkouts = remember { mutableStateMapOf<String, Boolean>() }
     val context = LocalContext.current
+
+    val workoutsDeletedMessage = stringResource(id = R.string.workouts_deleted)
+    val deleteErrorMessage = stringResource(id = R.string.delete_error)
 
     LaunchedEffect(workouts) {
         workouts.itemSnapshotList.forEach { workout ->
@@ -76,57 +81,77 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                 showCheckbox = showCheckbox
             )
 
-                            if (showAlertDialog) {
-                    CustomAlertDialog(
-                        showDialog = showAlertDialog,
-                        onDismiss = { showAlertDialog = false },
-                        onConfirm = {
-                            val toDelete = selectedWorkouts.filter { it.value }.keys.toList()
-                            workoutListViewModel.deleteSelectedWorkouts { success ->
-                                if (success) {
-                                    Toast.makeText(context, "¡Entrenamientos eliminados!", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show()
-                                }
+            if (showAlertDialog) {
+                CustomAlertDialog(
+                    showDialog = showAlertDialog,
+                    onDismiss = { showAlertDialog = false },
+                    onConfirm = {
+                        val toDelete = selectedWorkouts.filter { it.value }.keys.toList()
+                        workoutListViewModel.deleteSelectedWorkouts { success ->
+                            if (success) {
+                                Toast.makeText(
+                                    context,
+                                    workoutsDeletedMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(context, deleteErrorMessage, Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                            showAlertDialog = false
-                            showCheckbox = false
-                            selectedWorkouts.clear()
-                            workouts.refresh()
-                        },
-                        title = "¿Estás seguro de eliminar estos workouts?",
-                        text = "No podrás recuperarlos",
-                        confirmButtonText = stringResource(R.string.alert_positive),
-                        dismissButtonText = stringResource(R.string.alert_negative)
-                    )
-                }
+                        }
+                        showAlertDialog = false
+                        showCheckbox = false
+                        selectedWorkouts.clear()
+                        workouts.refresh()
+                    },
+                    title = stringResource(id = R.string.delete_workouts_confirmation_title),
+                    text = stringResource(id = R.string.delete_workouts_confirmation_message),
+                    confirmButtonText = stringResource(R.string.alert_positive),
+                    dismissButtonText = stringResource(R.string.alert_negative)
+                )
+            }
 
-                if (showFilterDialog) {
-                    SimpleDateFilterDialog(
-                        onDateRangeSelected = { startDate, endDate ->
-                            workoutListViewModel.setDateFilter(startDate, endDate)
-                        },
-                        onDismiss = { showFilterDialog = false }
-                    )
-                }
+            if (showFilterDialog) {
+//                SimpleDateFilterDialog(
+//                    onDateRangeSelected = { startDate, endDate ->
+//                        workoutListViewModel.setDateFilter(startDate, endDate)
+//                    },
+//                    onDismiss = { showFilterDialog = false }
+//                )
+
+                WorkoutRangeCalendar(
+                    viewModel = calendarViewModel,
+                    onDateRangeSelected = { startDate, endDate ->
+                        workoutListViewModel.setDateFilter(startDate, endDate)
+                    },
+                    onDismiss = { showFilterDialog = false }
+                )
+            }
         },
         modifier = Modifier.padding(innerPadding)
+            .navigationBarsPadding()
     ) { paddingValues ->
         Box(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
+                )
                 .fillMaxSize() // Ocupa todo el espacio disponible
         ) {
             // Lista que ocupa toda la altura
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 if (workouts.itemCount == 0) {
                     item {
                         Text(
-                            text = "No hay workouts disponibles",
+                            text = stringResource(R.string.no_workouts_available),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().padding(16.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                         )
                     }
                 } else {
@@ -140,7 +165,7 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                                     selectedWorkouts[workout.id] = checked
                                     workoutListViewModel.toggleSelection(workout.id, checked)
                                 },
-                                navHostController = navHostController
+                                navHostController = navHostController,
                             )
                         }
                     }
@@ -157,13 +182,13 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                 shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
+                    .padding(bottom = 8.dp)
                     .shadow(4.dp, CircleShape),
                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_go_back),
-                    contentDescription = "Volver atrás",
+                    contentDescription = stringResource(R.string.go_back),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }

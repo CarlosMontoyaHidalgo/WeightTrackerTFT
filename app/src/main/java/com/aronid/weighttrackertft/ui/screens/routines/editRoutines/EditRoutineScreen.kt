@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
@@ -37,12 +38,13 @@ fun EditRoutineScreen(
     val routine by viewModel.routine.collectAsState()
     val exercises by viewModel.exercises.collectAsState()
 
-    // Estados para los campos editables
     var name by remember { mutableStateOf(routine?.name ?: "") }
     var goal by remember { mutableStateOf(routine?.goal ?: "") }
     var description by remember { mutableStateOf(routine?.description ?: "") }
 
-    // Cargar la rutina al iniciar
+    val routineUpdatedMessage = stringResource(id = R.string.routine_updated_successfully)
+    val nameCannotBeEmptyMessage = stringResource(id = R.string.name_cannot_be_empty)
+
     LaunchedEffect(routineId) {
         viewModel.loadRoutine(routineId)
     }
@@ -53,35 +55,34 @@ fun EditRoutineScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "Editar Rutina",
+            text = stringResource(R.string.edit_routine),
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campos editables
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Nombre") },
+            label = { Text(stringResource(R.string.name)) },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = goal,
             onValueChange = { goal = it },
-            label = { Text("Objetivo") },
+            label = { Text(stringResource(R.string.goal)) },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("Descripción") },
+            label = { Text(stringResource(R.string.description)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Ejercicios",
+            text = stringResource(R.string.exercises),
             style = MaterialTheme.typography.headlineSmall
         )
 
@@ -100,19 +101,17 @@ fun EditRoutineScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para añadir ejercicios
         Button(
             onClick = {
                 navHostController.navigate("choose_exercises")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Añadir Ejercicios")
+            Text(stringResource(R.string.add_exercises))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para guardar cambios
         val context = LocalContext.current
         Button(
             onClick = {
@@ -123,17 +122,17 @@ fun EditRoutineScreen(
                         description = description,
                         exerciseIds = exercises.map { it.id }
                     )
-                    Toast.makeText(context, "Rutina actualizada correctamente", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, routineUpdatedMessage, Toast.LENGTH_SHORT)
                         .show()
                     navHostController.popBackStack()
                 } else {
-                    Toast.makeText(context, "El nombre no puede estar vacío", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, nameCannotBeEmptyMessage, Toast.LENGTH_SHORT)
                         .show()
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Guardar Cambios")
+            Text(stringResource(R.string.save_changes))
         }
     }
 }

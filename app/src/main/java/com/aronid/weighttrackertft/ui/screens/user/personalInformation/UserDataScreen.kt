@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -87,14 +88,14 @@ fun UserDataScreen(
         formContent = {
             Column(horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxHeight()) {
-                Text("Datos Personales")
+                Text(stringResource(id = R.string.personal_data))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 DefaultField(
                     text = state.name,
                     onTextChange = { viewModel.onNameChanged(it) },
-                    label = "Nombre",
+                    label = stringResource(id = R.string.name),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     iconId = R.drawable.ic_user,
                     validate = viewModel::validateName,
@@ -109,7 +110,7 @@ fun UserDataScreen(
                     DefaultField(
                         text = formatDate(state.birthdate),
                         onTextChange = viewModel::onBirthdateChanged,
-                        label = "Fecha de Nacimiento",
+                        label = stringResource(id = R.string.birth_date),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Cambiado a Text
                         iconId = R.drawable.ic_calendar,
                         validate = viewModel::validateBirthdate,
@@ -138,7 +139,7 @@ fun UserDataScreen(
                 DefaultField(
                     text = state.email,
                     onTextChange = { viewModel.onEmailChanged(it) },
-                    label = "Email",
+                    label = stringResource(id = R.string.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     iconId = R.drawable.ic_email,
                     validate = viewModel::validateEmail,
@@ -149,7 +150,7 @@ fun UserDataScreen(
                 DefaultField(
                     text = state.height?.toString() ?: "",
                     onTextChange = { viewModel.onHeightChanged(it) },
-                    label = "Altura (cm)",
+                    label = stringResource(id = R.string.height_cm),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     iconId = R.drawable.ic_height,
                     validate = viewModel::validateHeight,
@@ -159,7 +160,7 @@ fun UserDataScreen(
                 DefaultField(
                     text = state.weight?.toString() ?: "",
                     onTextChange = { viewModel.onWeightChanged(it) },
-                    label = "Peso (${weightUnit.lowercase()})",
+                    label = stringResource(id = R.string.weight_label, weightUnit.lowercase()),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     iconId = R.drawable.ic_weight,
                     validate = viewModel::validateWeight,
@@ -201,7 +202,7 @@ fun UserDataScreen(
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_down),
-                            contentDescription = "Expand goal options",
+                            contentDescription = stringResource(id = R.string.expand_goal_options),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -257,7 +258,7 @@ fun UserDataScreen(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_go_back),
-                        contentDescription = "Back"
+                        contentDescription = stringResource(id = R.string.back),
                     )
                 }
             }
@@ -265,7 +266,7 @@ fun UserDataScreen(
         },
         formButton = {
             NewCustomButton(
-                text = "Guardar",
+                text = stringResource(id = R.string.save),
                 onClick = { viewModel.saveUserData() },
                 buttonType = ButtonType.FILLED,
                 containerColor = Color.Black,

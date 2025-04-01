@@ -21,6 +21,7 @@ import com.aronid.weighttrackertft.ui.screens.home.HomeScreen
 import com.aronid.weighttrackertft.ui.screens.home.HomeViewModel
 import com.aronid.weighttrackertft.ui.screens.loading.LoadingScreen
 import com.aronid.weighttrackertft.ui.screens.personalization.PersonalizationScreen
+import com.aronid.weighttrackertft.ui.screens.progress.charts.ChartsScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireScreen
 import com.aronid.weighttrackertft.ui.screens.questionnaire.UserQuestionnaireViewModel
 import com.aronid.weighttrackertft.ui.screens.questionnaire.goals.GoalsScreen
@@ -41,6 +42,7 @@ import com.aronid.weighttrackertft.ui.screens.routines.editRoutines.EditRoutineS
 import com.aronid.weighttrackertft.ui.screens.routines.editRoutines.EditRoutineViewModel
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsScreen
 import com.aronid.weighttrackertft.ui.screens.settings.SettingsViewModel
+import com.aronid.weighttrackertft.ui.screens.splash.SplashScreen
 import com.aronid.weighttrackertft.ui.screens.stats.StatsScreen
 import com.aronid.weighttrackertft.ui.screens.user.personalInformation.UserDataScreen
 import com.aronid.weighttrackertft.ui.screens.user.personalInformation.UserDataViewModel
@@ -62,6 +64,10 @@ fun AppNavigation(
         if (isUserLoggedIn) NavigationRoutes.Home.route else NavigationRoutes.Loading.route
 
     NavHost(navHostController, startDestination = startDestination) {
+
+        composable(NavigationRoutes.SplashScreen.route) {
+            SplashScreen(innerPadding, isUserLoggedIn ,navHostController)
+        }
 
         composable(NavigationRoutes.Loading.route) {
             LoadingScreen(innerPadding, navHostController)
@@ -237,6 +243,14 @@ fun AppNavigation(
             val weightUnitViewModel: WeightUnitSelectorViewModel = hiltViewModel()
             UserDataScreen(innerPadding, viewModel, weightUnitViewModel, navHostController)
         }
+        composable(NavigationRoutes.Charts.route) {
+            ChartsScreen(innerPadding, navHostController)
+        }
+
+        composable(NavigationRoutes.FavoriteExercises.route){
+
+        }
+
 
 //        composable(
 //            NavigationRoutes.Training.route,

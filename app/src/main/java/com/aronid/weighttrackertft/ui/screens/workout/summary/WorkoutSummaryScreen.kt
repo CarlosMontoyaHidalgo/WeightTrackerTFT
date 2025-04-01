@@ -28,9 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.cards.CustomElevatedCard.CustomElevatedCard
@@ -63,7 +64,10 @@ fun WorkoutSummaryScreen(
         }
     }
 
-    Log.d("WorkoutSummaryScreen", "Recomposing - Calories: $calories, Volume: $volume, SaveState: $saveState, IsLoading: $isLoading")
+    Log.d(
+        "WorkoutSummaryScreen",
+        "Recomposing - Calories: $calories, Volume: $volume, SaveState: $saveState, IsLoading: $isLoading"
+    )
 
     Column(
         modifier = Modifier
@@ -100,22 +104,24 @@ fun WorkoutSummaryScreen(
                 formContent = {
                     Text(text = saveState.toString())
                     CustomElevatedCard(
-                        title = "Calorias quemadas",
+                        title = stringResource(R.string.calories_burned),
                         result = calories,
-                        unitLabel = "kcal",
+                        unitLabel = stringResource(R.string.kcal_unit),
                         contentColor = Color.Red
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     CustomElevatedCard(
                         iconResource = Icons.Filled.FitnessCenter,
-                        title = "Volumen",
+                        title = stringResource(R.string.volume),
                         result = volume,
-                        unitLabel = "kg",
+                        unitLabel = stringResource(R.string.kg_unit),
                         contentColor = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     ElevatedCard(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                         shape = RoundedCornerShape(16.dp)
@@ -124,13 +130,13 @@ fun WorkoutSummaryScreen(
                             Log.d("WorkoutSummaryScreen", "Primary Muscles: $primaryMuscles")
                             SimpleDonutChart(content = primaryMuscles)
                         } else {
-                            Text("No hay datos disponibles")
+                            Text(stringResource(R.string.no_data_available))
                         }
                     }
                 },
                 formButton = {
                     NewCustomButton(
-                        text = "Cerrar",
+                        text = stringResource(R.string.close),
                         onClick = { navHostController.navigate(NavigationRoutes.Home.route) },
                         buttonType = ButtonType.FILLED,
                         containerColor = Color.Black,

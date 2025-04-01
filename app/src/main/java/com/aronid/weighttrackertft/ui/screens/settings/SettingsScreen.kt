@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,6 +36,8 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
     var showDialog by remember { mutableStateOf(false) }
     val state by settingsViewModel.buttonState.collectAsState()
     val buttonConfigs = state.baseState.buttonConfigs
+//    val name by settingsViewModel.userName.collectAsState()
+
 
     LaunchedEffect(Unit) {
         settingsViewModel.updateButtonConfigs()
@@ -57,9 +60,10 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
                 contentDescription = stringResource(id = R.string.settings),
                 painter = painterResource(id = R.drawable.ic_account_default)
             )
+//            Text(name)
 
             NewCustomButton(
-                text = "Datos Personales",
+                text = stringResource(id = R.string.personal_data),
                 onClick = {
                     navHostController.navigate(NavigationRoutes.UserData.route)
                 },
@@ -72,7 +76,7 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
             )
 
             NewCustomButton(
-                text = "Personalización",
+                text = stringResource(id = R.string.customization),
                 onClick = {
                     navHostController.navigate(NavigationRoutes.Personalization.route)
                 },
@@ -85,7 +89,20 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
             )
 
             NewCustomButton(
-                text = "Logout",
+                text = "History Workout",
+                onClick = {
+                    navHostController.navigate(NavigationRoutes.WorkoutList.route)
+                },
+                buttonType = ButtonType.FILLED,
+                containerColor = Color.Black,
+                textConfig = buttonConfigs.textConfig,
+                layoutConfig = buttonConfigs.layoutConfig,
+                stateConfig = buttonConfigs.stateConfig,
+                borderConfig = buttonConfigs.borderConfig
+            )
+
+            NewCustomButton(
+                text = stringResource(id = R.string.logout),
                 onClick = {
                     showDialog = true
                 },

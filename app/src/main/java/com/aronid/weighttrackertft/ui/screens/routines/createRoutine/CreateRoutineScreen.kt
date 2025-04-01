@@ -32,11 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
-import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
@@ -49,7 +50,7 @@ fun CreateRoutineScreen(
 ) {
     val context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Detalles", "Ejercicios")
+    val tabs = listOf(stringResource(R.string.details), stringResource(R.string.exercises))
 
     var name by remember { mutableStateOf("") }
     var goal by remember { mutableStateOf("") }
@@ -59,13 +60,15 @@ fun CreateRoutineScreen(
 
     val state by viewModel.state.collectAsState()
     val availableExercises by viewModel.availableExercises.collectAsState()
-    val availableMuscles by viewModel.availableMuscles.collectAsState() // Corrección aquí
+    val availableMuscles by viewModel.availableMuscles.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
     val buttonConfigs = buttonState.baseState.buttonConfigs
 
     val navResult = navHostController.currentBackStackEntry
         ?.savedStateHandle
         ?.getLiveData<List<String>>("selectedExerciseIds")
+
+    val routineCreatedMessage = stringResource(id = R.string.routine_created)
 
     LaunchedEffect(navResult) {
         navResult?.value?.let {
@@ -81,7 +84,7 @@ fun CreateRoutineScreen(
     LaunchedEffect(state) {
         when (val currentState = state) {
             is CreateRoutineViewModel.State.Success -> {
-                Toast.makeText(context, "Rutina creada!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, routineCreatedMessage, Toast.LENGTH_SHORT).show()
                 navHostController.popBackStack()
             }
 
@@ -101,7 +104,6 @@ fun CreateRoutineScreen(
                     .fillMaxSize()
                     .padding(scaffoldPadding)
             ) {
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -146,7 +148,7 @@ fun CreateRoutineScreen(
                     }
                 }
 
-                if(selectedTab == 0){
+                if (selectedTab == 0) {
                     NewCustomButton(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
@@ -160,7 +162,7 @@ fun CreateRoutineScreen(
                                 targetMuscles
                             )
                         },
-                        text = "Crear Rutina",
+                        text = stringResource(R.string.create_routine),
                         buttonType = ButtonType.ELEVATED,
                         containerColor = Color.Blue,
                         textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
@@ -171,7 +173,7 @@ fun CreateRoutineScreen(
                 }
 
             }
-                }
+        }
     )
 }
 
@@ -181,7 +183,7 @@ private fun RoutineDetailsTab(
     goal: String,
     description: String,
     targetMuscles: List<String>,
-    availableMuscles: List<String>, // Cambiado a List<String> en lugar de State
+    availableMuscles: List<String>,
     onNameChange: (String) -> Unit,
     onGoalChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -196,26 +198,26 @@ private fun RoutineDetailsTab(
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
-            label = { Text("Nombre") },
+            label = { Text(stringResource(R.string.name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = goal,
             onValueChange = onGoalChange,
-            label = { Text("Objetivo") },
+            label = { Text(stringResource(R.string.goal)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = description,
             onValueChange = onDescriptionChange,
-            label = { Text("Descripción") },
+            label = { Text(stringResource(R.string.description)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         Text(
-            text = "Músculos objetivo",
+            text = stringResource(R.string.target_muscles),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(top = 8.dp)
         )
@@ -240,7 +242,7 @@ private fun ExerciseSelectionTab(
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = "Seleccionar Ejercicios",
+            text = stringResource(R.string.selected_exercises),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )

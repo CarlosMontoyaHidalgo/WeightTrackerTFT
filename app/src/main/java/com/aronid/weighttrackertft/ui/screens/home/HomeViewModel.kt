@@ -58,7 +58,7 @@ class HomeViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     Log.e("HomeViewModel", "Error al obtener nombre: $exception")
-                    _userName.value = "Usuario" // Valor por defecto más amigable
+                    _userName.value = "Usuario"
                 }
             )
         }

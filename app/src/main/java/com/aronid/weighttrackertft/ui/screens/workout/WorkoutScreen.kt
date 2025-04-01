@@ -18,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
@@ -33,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,15 +47,15 @@ import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
 import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 @Composable
 fun WorkoutScreen(
     innerPadding: PaddingValues,
     routineId: String?,
     isPredefined: Boolean,
     navHostController: NavHostController,
-    viewModel: WorkoutViewModel // Inyectado con Hilt
+    viewModel: WorkoutViewModel
 ) {
     val exercises by viewModel.exercisesWithSeries.collectAsState()
     val currentExerciseIndex by viewModel.currentExerciseIndex.collectAsState()
@@ -69,8 +69,10 @@ fun WorkoutScreen(
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
     }
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize().padding()) {
-        val (headerRef, seriesRef, timerRef ,buttonsRef) = createRefs()
+    ConstraintLayout(modifier = Modifier
+        .fillMaxSize()
+        .padding()) {
+        val (headerRef, seriesRef, timerRef, buttonsRef) = createRefs()
         WorkoutHeader(
             currentExercise = currentExercise,
             onFinishClick = { finishConfirmation = true },
@@ -91,13 +93,17 @@ fun WorkoutScreen(
                     viewModel.viewModelScope.launch {
                         val workout = viewModel.saveWorkoutData()
                         Log.d("WorkoutScreen", "Navigating with workout ID: ${workout.id}")
-                        navHostController.navigate(NavigationRoutes.WorkoutSummary.createRoute(workout.id))
+                        navHostController.navigate(
+                            NavigationRoutes.WorkoutSummary.createRoute(
+                                workout.id
+                            )
+                        )
                     }
                 },
-                title = "¿Finalizar entrenamiento?",
-                text = "¿Estás seguro de que quieres finalizar el entrenamiento?",
-                confirmButtonText = "Finalizar",
-                dismissButtonText = "Cancelar"
+                title = stringResource(R.string.finish_workout),
+                text = stringResource(R.string.finish_workout_confirmation),
+                confirmButtonText = stringResource(R.string.finish),
+                dismissButtonText = stringResource(R.string.cancel)
             )
         }
 
@@ -110,11 +116,13 @@ fun WorkoutScreen(
                 text = "${currentExercise?.description}",
                 imageUrl = (currentExercise?.imageUrl ?: R.drawable.background).toString(),
                 confirmButtonText = "",
-                dismissButtonText = "Cerrar"
+                dismissButtonText = stringResource(R.string.close)
             )
         }
 
-        ConstraintLayout(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
             LazyColumn(
                 modifier = Modifier
                     .constrainAs(seriesRef) {
@@ -183,6 +191,7 @@ fun WorkoutScreen(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkoutHeader(
@@ -200,7 +209,7 @@ fun WorkoutHeader(
             ) {
                 currentExercise?.let { ex ->
                     Text(
-                        text = ex.exerciseName ?: "Ejercicio",
+                        text = ex.exerciseName ?: stringResource(R.string.exercise),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -208,7 +217,7 @@ fun WorkoutHeader(
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
-                        contentDescription = "info",
+                        contentDescription = stringResource(id = R.string.info),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable { onInfoClick() }
@@ -232,7 +241,7 @@ fun WorkoutHeader(
                     contentColor = Color.White
                 )
             ) {
-                Text("Finalizar")
+                Text(stringResource(R.string.finish))
             }
         },
         modifier = modifier
@@ -259,7 +268,7 @@ fun WorkoutNavigationButtons(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "Atrás",
+                contentDescription = stringResource(R.string.back),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
             )
@@ -281,7 +290,7 @@ fun WorkoutNavigationButtons(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = "Siguiente",
+                contentDescription = stringResource(R.string.next),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
             )

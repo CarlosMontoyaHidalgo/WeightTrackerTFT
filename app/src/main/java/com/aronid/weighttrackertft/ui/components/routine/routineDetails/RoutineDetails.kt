@@ -5,11 +5,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -33,30 +37,9 @@ fun RoutineDetailsContent(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val (headerRef, cardsRef, buttonRef) = createRefs()
+        val (headerRef, titleRef, favoriteRef ,cardsRef, buttonRef) = createRefs()
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(headerRef) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        ) {
-            routine?.let { rt ->
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = rt.name, style = MaterialTheme.typography.headlineMedium)
-                    Text(
-                        text = rt.goal ?: "Sin objetivo",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            } ?: run {
-                CircularProgressIndicator()
-            }
-        }
+
 
         routine?.let { rt ->
             Button(
@@ -71,7 +54,7 @@ fun RoutineDetailsContent(
                         end.linkTo(parent.end)
                     }
             ) {
-                Text(text = "Empezar rutina")
+                Text(stringResource(R.string.start_routine))
             }
         }
 

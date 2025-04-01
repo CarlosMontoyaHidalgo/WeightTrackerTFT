@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.R
@@ -35,11 +36,11 @@ fun WeightReminderSelector(
     val reminderInterval by viewModel.reminderInterval.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     val options = listOf(
-        "Diario" to 1,
-        "Cada 3 días" to 3,
-        "Semanal" to 7,
-        "Cada 2 semanas" to 14,
-        "Cada mes" to 30
+        R.string.daily to 1,
+        R.string.every_3_days to 3,
+        R.string.weekly to 7,
+        R.string.every_2_weeks to 14,
+        R.string.every_month to 30
     )
     var buttonWidth by remember { mutableStateOf(0.dp) }
 
@@ -62,14 +63,14 @@ fun WeightReminderSelector(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = when (reminderInterval) {
-                1 -> "Diario"
-                3 -> "Cada 3 días"
-                7 -> "Semanal"
-                14 -> "Cada 2 semanas"
-                30 -> "Cada mes"
-                else -> "Semanal" // Valor por defecto si algo falla
-            },
+            text = stringResource( when (reminderInterval) {
+                1 -> R.string.daily
+                3 -> R.string.every_3_days
+                7 -> R.string.weekly
+                14 -> R.string.every_2_weeks
+                30 -> R.string.every_month
+                else -> R.string.weekly
+            }),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
@@ -100,7 +101,7 @@ fun WeightReminderSelector(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = label,
+                        text = stringResource(label),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)

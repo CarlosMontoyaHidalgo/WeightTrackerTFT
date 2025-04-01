@@ -11,6 +11,7 @@ import com.aronid.weighttrackertft.utils.button.getDefaultBorderConfig
 import com.aronid.weighttrackertft.utils.button.getDefaultButtonConfig
 import com.aronid.weighttrackertft.utils.formatDate
 import com.aronid.weighttrackertft.utils.isValidDateFormat
+import com.aronid.weighttrackertft.utils.toTitleCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,9 +70,9 @@ class PersonalInfoViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     val updates = mapOf<String, Any>(
-                        "name" to (_state.value.name ?: ""),
-                        "birthdate" to (_state.value.birthdate ?: ""),
-                        "gender" to (_state.value.gender ?: "")
+                        "name" to _state.value.name.toTitleCase(),
+                        "birthdate" to _state.value.birthdate,
+                        "gender" to _state.value.gender
                     )
                     userRepository.updateUserFields(currentUser.uid, updates)
                     navHostController.navigate(NavigationRoutes.LifeStyle.route)

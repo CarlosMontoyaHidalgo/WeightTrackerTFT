@@ -43,7 +43,7 @@ fun SignUpScreen(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.back),
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .align(Alignment.Start)

@@ -111,9 +111,11 @@ fun Day(
         ) {
             if (workouts.isNotEmpty()) {
                 Canvas(modifier = Modifier.matchParentSize()) {
+
                     val strokeWidth = 4.dp.toPx()
-                    val diameter = size.minDimension - strokeWidth
-                    val radius = diameter / 2
+                    val originalDiameter = size.minDimension - strokeWidth
+                    val adjustedDiameter = originalDiameter * 1.1f
+                    val radius = adjustedDiameter / 2
                     val center = Offset(size.width / 2, size.height / 2)
                     val segmentAngle = 360f / workouts.size
 
@@ -122,7 +124,7 @@ fun Day(
                             "legs" -> Color.Red
                             "biceps" -> Color.Blue
                             "triceps" -> Color.Green
-                            else -> Color.Gray
+                            else -> Color(0xFF26549A)
                         }
                         drawArc(
                             color = color,
@@ -130,7 +132,7 @@ fun Day(
                             sweepAngle = segmentAngle,
                             useCenter = false,
                             topLeft = center - Offset(radius, radius),
-                            size = Size(diameter, diameter),
+                            size = Size(adjustedDiameter, adjustedDiameter),
                             style = Stroke(width = strokeWidth)
                         )
                     }
