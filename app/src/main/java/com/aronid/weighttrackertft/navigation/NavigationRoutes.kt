@@ -1,6 +1,8 @@
 package com.aronid.weighttrackertft.navigation
 
 sealed class NavigationRoutes(val route: String) {
+    object Example : NavigationRoutes("example")
+
     object Login : NavigationRoutes("logIn")
     object SignUp : NavigationRoutes("signUp")
     object Initial : NavigationRoutes("initial")
@@ -37,9 +39,12 @@ sealed class NavigationRoutes(val route: String) {
 
     object Routines : NavigationRoutes("routines")
 
-    object RoutineDetails : NavigationRoutes("routine_details/{routineId}"){
-        fun createRoute(routineId: String) = "routine_details/$routineId"
+    object RoutineDetails {
+        const val route = "routine_details/{routineId}" // Solo routineId en la path
+        fun createRoute(routineId: String, isPredefined: Boolean = false) =
+            "routine_details/$routineId?isPredefined=$isPredefined"
     }
+
     object EditRoutine : NavigationRoutes("edit_routine/{routineId}"){
         fun createRoute(routineId: String) = "edit_routine/$routineId"
     }

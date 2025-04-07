@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.workout.summary
 
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,11 +31,8 @@ class WorkoutSummaryViewModel @Inject constructor(
     private val _saveState = MutableStateFlow<String?>(null)
     val saveState: StateFlow<String?> = _saveState.asStateFlow()
 
-    private val _primaryMuscles = MutableStateFlow<List<String>>(emptyList())
-    val primaryMuscles: StateFlow<List<String>> = _primaryMuscles.asStateFlow()
-
-    private val _secondaryMuscles = MutableStateFlow<List<String>>(emptyList())
-    val secondaryMuscles: StateFlow<List<String>> = _secondaryMuscles.asStateFlow()
+    private val _allMuscles = MutableStateFlow<List<Pair<String, Float>>>(emptyList())
+    val allMuscles: StateFlow<List<Pair<String, Float>>> = _allMuscles.asStateFlow()
 
     private val _buttonState = MutableStateFlow(ButtonState())
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
@@ -61,7 +59,6 @@ class WorkoutSummaryViewModel @Inject constructor(
             try {
                 val workout = workoutRepository.getWorkoutById(workoutId)
                 workout?.let {
-                    Log.d("WorkoutSummaryViewModel", "Fetched workout: $it")
                     _calories.value = it.calories
                     _volume.value = it.volume
 
@@ -79,15 +76,19 @@ class WorkoutSummaryViewModel @Inject constructor(
                         exercise.secondaryMusclesRef.mapNotNull { it?.id }
                     }.distinct()
 
-                    _primaryMuscles.value = primaryMuscles
-                    _secondaryMuscles.value = secondaryMuscles
+                    // Combinar músculos primarios y secundarios con valores diferenciados
+                    val allMusclesMap = mutableMapOf<String, Float>()
+                    primaryMuscles.forEach { muscle ->
+                        allMusclesMap[muscle] = 100f // Máximo peso para primarios
+                    }
+                    secondaryMuscles.forEach { muscle ->
+                        // Solo asignar valor si no es primario (evitar sobrescritura)
+                        allMusclesMap.putIfAbsent(muscle, 50f) // Menor peso para secundarios
+                    }
 
-// asi para que te den todos los musculos principales
-//                    _primaryMuscles.value = it.primaryMuscleIds
-//                    _secondaryMuscles.value = it.secondaryMuscleIds
+                    _allMuscles.value = allMusclesMap.toList()
                     _saveState.value = "Entrenamiento guardado"
                     updateButtonConfigs()
-
                 } ?: run {
                     Log.w("WorkoutSummaryViewModel", "Workout not found for ID: $workoutId")
                 }

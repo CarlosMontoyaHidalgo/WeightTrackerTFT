@@ -13,7 +13,9 @@ data class RoutineModel(
     @PropertyName("createdAt") val createdAt: Long = System.currentTimeMillis(),
     @PropertyName("userId") val userId: String = "",
     @PropertyName("targetMuscles") val targetMuscles: List<String> = emptyList(),
-) {
+    @PropertyName("isFavorite") val isFavorite: Boolean = false,
+
+    ) {
     init {
         /*
         require(name.isNotBlank()) { "Name can't be blank" }

@@ -2,6 +2,10 @@ package com.aronid.weighttrackertft.utils
 
 import com.google.firebase.Timestamp
 import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Locale
+
 
 fun String?.toTitleCase(): String {
     return this?.split(" ")?.joinToString(" ") { word ->
@@ -40,3 +44,18 @@ fun getDateRange(period: String, referenceDate: Timestamp? = null): Pair<Timesta
     val endDate = Timestamp(calendar.time)
     return startDate to endDate
 }
+
+
+fun Timestamp.formatSpanish(): String {
+    val calendar = Calendar.getInstance()
+    calendar.time = this.toDate()
+    val formatter = SimpleDateFormat("EEEE dd MMMM yyyy", Locale("es", "ES"))
+    return formatter.format(calendar.time).replaceFirstChar { it.uppercase() }
+}
+
+fun LocalDate.formatSpanish(): String {
+    return "${this.dayOfMonth} de ${this.month.getDisplayName(java.time.format.TextStyle.FULL, Locale("es", "ES"))} de ${this.year}"
+}
+
+
+

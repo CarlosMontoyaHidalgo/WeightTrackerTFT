@@ -3,6 +3,8 @@ package com.aronid.weighttrackertft.ui.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aronid.weighttrackertft.data.routine.RoutineCustomRepository
+import com.aronid.weighttrackertft.data.routine.favorite.FavoriteRoutine
 import com.aronid.weighttrackertft.data.user.UserRepository
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.data.workout.WorkoutRepository
@@ -20,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val workoutRepository: WorkoutRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val routineCustomRepository: RoutineCustomRepository
 ) : ViewModel() {
 
     private val _weeklyWorkouts = MutableStateFlow<List<WorkoutModel>>(emptyList())
@@ -29,10 +32,14 @@ class HomeViewModel @Inject constructor(
     private val _userName = MutableStateFlow<String>("")
     val userName: StateFlow<String> = _userName.asStateFlow()
 
+    private val _favorites = MutableStateFlow<List<FavoriteRoutine>>(emptyList())
+    val favorites: StateFlow<List<FavoriteRoutine>> = _favorites.asStateFlow()
+
     init {
         fetchWeeklyWorkouts()
         fetchUserData()
     }
+
 
     private fun fetchWeeklyWorkouts() {
         viewModelScope.launch {
@@ -45,6 +52,7 @@ class HomeViewModel @Inject constructor(
 
             val workouts = workoutRepository.getWorkoutsInDateRange(startDate, endDate)
             _weeklyWorkouts.value = workouts
+            _favorites.value = routineCustomRepository.getUserFavorites()
         }
     }
 

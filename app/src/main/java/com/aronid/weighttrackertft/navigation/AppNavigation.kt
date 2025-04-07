@@ -13,6 +13,7 @@ import com.aronid.weighttrackertft.ui.components.dropdown.weightUnitSelector.Wei
 import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
+import com.aronid.weighttrackertft.ui.screens.example.ExampleScreen
 import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseScreen
 import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseViewModel
 import com.aronid.weighttrackertft.ui.screens.exercises.details.ExerciseDetailsScreen
@@ -64,6 +65,10 @@ fun AppNavigation(
         if (isUserLoggedIn) NavigationRoutes.Home.route else NavigationRoutes.Loading.route
 
     NavHost(navHostController, startDestination = startDestination) {
+
+        composable(NavigationRoutes.Example.route) {
+            ExampleScreen(innerPadding, navHostController)
+        }
 
         composable(NavigationRoutes.SplashScreen.route) {
             SplashScreen(innerPadding, isUserLoggedIn ,navHostController)

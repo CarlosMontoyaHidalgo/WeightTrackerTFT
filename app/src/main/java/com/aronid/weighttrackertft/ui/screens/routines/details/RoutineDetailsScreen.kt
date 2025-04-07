@@ -24,10 +24,22 @@ fun RoutineDetailsScreen(
 
     Column(modifier = Modifier.padding(innerPadding)) {
         LaunchedEffect(routineId) {
-            routineId?.let { id -> viewModel.loadRoutineDetails(routineId = id, isPredefined = isPredefined) }
+            routineId?.let { id ->
+                viewModel.loadRoutineDetails(
+                    routineId = id,
+                    isPredefined = isPredefined
+                )
+            }
         }
 
-        RoutineDetailsContent(routine = routine, exercises = exercises, navHostController = navHostController, innerPadding, isPredefined)
+        RoutineDetailsContent(
+            routine = routine,
+            exercises = exercises,
+            navHostController = navHostController,
+            innerPadding,
+            isPredefined,
+            viewModel
+        )
 
     }
 

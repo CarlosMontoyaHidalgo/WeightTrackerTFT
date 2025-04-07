@@ -43,11 +43,6 @@ class WorkoutViewModel @Inject constructor(
     private val _saveState = MutableStateFlow<String?>(null)
     val saveState: StateFlow<String?> = _saveState.asStateFlow()
 
-    private val _isFavorite = MutableStateFlow<Boolean>(false)
-
-
-
-
     private val _primaryMuscles = MutableStateFlow<List<String>>(emptyList())
     val primaryMuscles: StateFlow<List<String>> = _primaryMuscles.asStateFlow()
 

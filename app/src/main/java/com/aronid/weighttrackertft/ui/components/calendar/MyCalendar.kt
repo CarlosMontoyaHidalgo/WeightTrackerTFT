@@ -43,7 +43,7 @@ fun WorkoutCalendar(
     viewModel: CalendarViewModel
 ) {
     val currentDate = remember { LocalDate.now() }
-    val firstDayOfWeek = firstDayOfWeekFromLocale()
+    val firstDayOfWeek = DayOfWeek.MONDAY
     val daysOfWeek = remember { daysOfWeek(firstDayOfWeek) }
 
     val accountCreationDate by viewModel.accountCreationDate.collectAsState()
@@ -64,7 +64,6 @@ fun WorkoutCalendar(
         HorizontalCalendar(
             state = state,
             dayContent = { day ->
-                // Filtrar workouts del usuario para este día, después de accountCreationDate
                 val dayWorkouts = workouts.filter {
                     val workoutDate = it.date?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
                     workoutDate != null && !workoutDate.isBefore(startDate) && workoutDate == day.date
@@ -109,7 +108,7 @@ fun WorkoutDay(day: CalendarDay, workouts: List<WorkoutModel>, onClick: (Calenda
 
                 workouts.forEachIndexed { index, workout ->
                     val color = when (workout.workoutType.lowercase()) {
-                        "mixto" -> Color.Magenta
+                        "mixto" -> Color(0xFF001E3C)
                         "legs" -> Color.Red
                         "biceps" -> Color.Blue
                         "triceps" -> Color.Green

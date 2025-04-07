@@ -1,27 +1,19 @@
 package com.aronid.weighttrackertft.ui.screens.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,24 +22,22 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
-import com.aronid.weighttrackertft.ui.components.alertDialog.BottomSheetDialog
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.WeeklyWorkoutCalendar
-import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
     navHostController: NavHostController,
-    viewModel: HomeViewModel,
+    viewModel: HomeViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel
 ) {
-    val workouts = viewModel.weeklyWorkouts.collectAsState()
-    val name = viewModel.userName.collectAsState()
+    val workouts by viewModel.weeklyWorkouts.collectAsState()
+    val name by viewModel.userName.collectAsState()
+    val favorites by viewModel.favorites.collectAsState()
 
     var showDialog by rememberSaveable { mutableStateOf(false) }
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
@@ -56,7 +46,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             Text(
-                text = stringResource(R.string.welcome, name.value),
+                text = stringResource(R.string.welcome, name),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(innerPadding)
@@ -73,19 +63,16 @@ fun HomeScreen(
                 .padding(horizontal = 8.dp)
                 .padding(paddingValues)
         ) {
-
             ElevatedCard(
-                onClick = { /* A la derecha tendra una flecha que te llevara al calendario grande */ },
+                onClick = { /* Navegar al calendario grande */ },
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 elevation = CardDefaults.cardElevation(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
-                )
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 WeeklyWorkoutCalendar(
-                    workouts = workouts.value,
+                    workouts = workouts,
                     onDayClick = { date, dayWorkouts ->
                         selectedDate = date
                         selectedWorkouts = dayWorkouts
@@ -93,48 +80,95 @@ fun HomeScreen(
                     }
                 )
             }
-//            SimpleDonutChart(listOf("back", "chest", "legs", "arms"))
-//            PreviewDonutChart()
-//            SimpleDonutChart()
 
-            Text(
-                text = stringResource(id = R.string.home),
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-//            BottomSheetDialog()
-//            Button(onClick = { navHostController.navigate(NavigationRoutes.PhysicalData.route) }) {
-//                Text(text = "Go to questionnaire")
-//            }
-//
-            Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
-                Text(text = "see routines")
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Entrenamientos favoritos",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(8.dp) // Fixed: Changed 'custom' to valid padding parameter
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                IconButton(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
-//            Button(onClick = { navHostController.navigate(NavigationRoutes.EditRoutine.route) }) {
-//                Text(text = "editar routine")
-//            }
-//
-//            Button(onClick = { navHostController.navigate(NavigationRoutes.WorkoutList.route) }) {
-//                Text(text = "Lista de rutinas")
-//            }
 
-//            val viewModel: CalendarViewModel = hiltViewModel()
-//            WorkoutRangeCalendar(viewModel)
+            if (favorites.isEmpty()) {
+                Text(
+                    text = "No tienes rutinas favoritas aún",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
+                Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
+                    Text(text = "Ver todas las rutinas")
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                ) {
+                    items(favorites) { favorite ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clickable {
+                                    navHostController.navigate(
+                                        NavigationRoutes.RoutineDetails.createRoute(
+                                            favorite.routineId,
+                                            favorite.isPredefined
+                                        )
+                                    )
+                                },
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = favorite.name,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Text(
+                                    text = if (favorite.isPredefined) "Predefinida" else "Personalizada",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
 
-//            MyCalendar()
+            Spacer(modifier = Modifier.height(16.dp))
 
-//            Button(onClick = {navHostController.navigate(NavigationRoutes.CreateRoutine.route)}) {
-//                Text(text = "Create a routine")
-//            }
-            Button(onClick = {navHostController.navigate(NavigationRoutes.Exercises.route)}) {
+            Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
+                Text(text = "Ver todas las rutinas")
+            }
+
+            Button(onClick = { navHostController.navigate(NavigationRoutes.Exercises.route) }) {
                 Text(text = "Ver ejercicios")
             }
-
-            Text(text = "Entrenamientos favoritos")
-            Button(onClick = {navHostController.navigate(NavigationRoutes.FavoriteExercises.route)}) {
-                Text(text = "Ver favoritos")
+            Button(onClick = { navHostController.navigate(NavigationRoutes.Example.route) }) {
+                Text(text = "Ver ejemplo")
             }
 
+            // Added: Restore the dialog functionality from the previous version
             if (showDialog && selectedDate != null) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
@@ -150,7 +184,6 @@ fun HomeScreen(
                         if (selectedWorkouts.isEmpty()) {
                             Text(stringResource(R.string.no_workouts_for_day))
                         } else if (selectedWorkouts.size == 1) {
-                            // Caso 1: Un solo entrenamiento
                             val workout = selectedWorkouts.first()
                             Text(
                                 text = stringResource(
@@ -186,10 +219,9 @@ fun HomeScreen(
                         TextButton(onClick = { showDialog = false }) {
                             Text(stringResource(R.string.close))
                         }
-                    })
+                    }
+                )
             }
-
         }
     }
-
 }

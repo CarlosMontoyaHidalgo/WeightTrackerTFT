@@ -42,20 +42,20 @@ fun BackButton(navHostController: NavHostController){
             Button(
                 onClick = { navHostController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    contentColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
                     .shadow(4.dp, CircleShape),
-                border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
+                border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.primary)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_go_back),
                     contentDescription = "Volver atrás",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }

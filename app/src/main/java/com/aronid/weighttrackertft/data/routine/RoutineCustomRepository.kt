@@ -3,6 +3,7 @@ package com.aronid.weighttrackertft.data.routine
 import android.util.Log
 import com.aronid.weighttrackertft.constants.FirestoreCollections
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
+import com.aronid.weighttrackertft.data.routine.favorite.FavoriteRoutine
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,10 +11,11 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RoutineCustomRepository @Inject constructor(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) {
     private val routinesCollection = firestore.collection(FirestoreCollections.ROUTINES_CUSTOM)
+    private val predefinedRoutinesCollection = firestore.collection(FirestoreCollections.ROUTINES_PREDEFINED)
     private val exercisesCollection = firestore.collection(FirestoreCollections.EXERCISES)
 
     suspend fun createRoutine(routine: RoutineModel): String {
@@ -106,5 +108,68 @@ class RoutineCustomRepository @Inject constructor(
 
     fun getExerciseReference(exerciseId: String): DocumentReference {
         return exercisesCollection.document(exerciseId)
+    }
+
+    suspend fun isFavorite(routineId: String): Boolean {
+        val userId = auth.currentUser?.uid ?: return false
+        val favoritesRef = firestore.collection("users")
+            .document(userId)
+            .collection("favorites")
+            .document(routineId)
+        val snapshot = favoritesRef.get().await()
+        return snapshot.exists()
+    }
+
+    suspend fun toggleFavorite(routineId: String, isPredefined: Boolean) {
+        val userId = auth.currentUser?.uid ?: throw Exception("Usuario no autenticado")
+        Log.d("Favorites", "Usuario autenticado: $userId")
+        val favoritesRef = firestore.collection("users")
+            .document(userId)
+            .collection("favorites")
+            .document(routineId)
+
+        val snapshot = favoritesRef.get().await()
+        if (snapshot.exists()) {
+            Log.d("Favorites", "Eliminando favorito: $routineId")
+            favoritesRef.delete().await()
+        } else {
+            Log.d("Favorites", "Agregando favorito: $routineId")
+            val favoriteData = mapOf(
+                "routineId" to routineId,
+                "isPredefined" to isPredefined,
+                "timestamp" to System.currentTimeMillis()
+            )
+            favoritesRef.set(favoriteData).await()
+        }
+    }
+
+    suspend fun getUserFavorites(): List<FavoriteRoutine> {
+        val userId = auth.currentUser?.uid ?: return emptyList()
+        return try {
+            val snapshot = firestore.collection("users")
+                .document(userId)
+                .collection("favorites")
+                .get()
+                .await()
+            snapshot.documents.mapNotNull { doc ->
+                val data = doc.data ?: return@mapNotNull null
+                val routineId = data["routineId"] as? String ?: return@mapNotNull null
+                val isPredefined = data["isPredefined"] as? Boolean ?: false
+                val timestamp = data["timestamp"] as? Long ?: 0L
+
+                // Obtener el nombre de la rutina
+                val routineSnapshot = if (isPredefined) {
+                    predefinedRoutinesCollection.document(routineId).get().await()
+                } else {
+                    routinesCollection.document(routineId).get().await()
+                }
+                val name = routineSnapshot.getString("name") ?: "Sin nombre"
+
+                FavoriteRoutine(routineId, name, isPredefined, timestamp)
+            }
+        } catch (e: Exception) {
+            Log.e("Repository", "Error fetching favorites: ${e.message}")
+            emptyList()
+        }
     }
 }
