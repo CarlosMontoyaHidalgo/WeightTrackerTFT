@@ -19,6 +19,7 @@ class RoutinePredefinedRepository @Inject constructor(
                 val routine = doc.toObject(RoutineModel::class.java)?.copy(id = doc.id)
                 routine
             }
+            println("Predefined routines fetched: ${routines.size} routines")
             routines
         } catch (e: Exception) {
             emptyList()

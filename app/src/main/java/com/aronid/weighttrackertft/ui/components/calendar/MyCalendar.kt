@@ -108,7 +108,7 @@ fun WorkoutDay(day: CalendarDay, workouts: List<WorkoutModel>, onClick: (Calenda
 
                 workouts.forEachIndexed { index, workout ->
                     val color = when (workout.workoutType.lowercase()) {
-                        "mixto" -> Color(0xFF001E3C)
+                        "mixto" -> Color(0xFF26549A)
                         "legs" -> Color.Red
                         "biceps" -> Color.Blue
                         "triceps" -> Color.Green

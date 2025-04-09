@@ -43,6 +43,7 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.goals.getGoalOptions
 import com.aronid.weighttrackertft.ui.components.WheelDatePickerBottomSheet.WheelDatePickerBottomSheet
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.dropdown.weightUnitSelector.WeightUnitSelectorViewModel
 import com.aronid.weighttrackertft.ui.components.fields.defaultField.DefaultField
@@ -54,17 +55,15 @@ import com.aronid.weighttrackertft.utils.formatDate
 fun UserDataScreen(
     innerPadding: PaddingValues,
     viewModel: UserDataViewModel,
-    weightUnitViewModel: WeightUnitSelectorViewModel,
+    weightUnitViewModel: WeightUnitSelectorViewModel, // Podríamos eliminar esto si usamos WeightRepository directamente
     navHostController: NavHostController
 ) {
-    // Estados
     val state by viewModel.state.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
     val buttonConfigs = buttonState.baseState.buttonConfigs
     var showDatePicker by remember { mutableStateOf(false) }
-    val weightUnit by weightUnitViewModel.weightUnit.collectAsState()
+    val weightUnit by viewModel.weightUnit.collectAsState() // Usamos el weightUnit del ViewModel
 
-    // Estados para el menú desplegable
     var expandedGoal by remember { mutableStateOf(false) }
     val goalOptions = getGoalOptions()
     val density = LocalDensity.current
@@ -86,8 +85,10 @@ fun UserDataScreen(
         innerPadding = innerPadding,
         isContentScrolleable = true,
         formContent = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxHeight()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxHeight()
+            ) {
                 Text(stringResource(id = R.string.personal_data))
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -111,7 +112,7 @@ fun UserDataScreen(
                         text = formatDate(state.birthdate),
                         onTextChange = viewModel::onBirthdateChanged,
                         label = stringResource(id = R.string.birth_date),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Cambiado a Text
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         iconId = R.drawable.ic_calendar,
                         validate = viewModel::validateBirthdate,
                         showError = showBirthdateError,
@@ -146,7 +147,6 @@ fun UserDataScreen(
                     showError = showEmailError
                 )
 
-
                 DefaultField(
                     text = state.height?.toString() ?: "",
                     onTextChange = { viewModel.onHeightChanged(it) },
@@ -158,7 +158,9 @@ fun UserDataScreen(
                 )
 
                 DefaultField(
-                    text = state.weight?.toString() ?: "",
+                    text = state.weight?.let {
+                        if (weightUnit == "Libras") (it / 0.453592).toString() else it.toString()
+                    } ?: "",
                     onTextChange = { viewModel.onWeightChanged(it) },
                     label = stringResource(id = R.string.weight_label, weightUnit.lowercase()),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -243,26 +245,7 @@ fun UserDataScreen(
                     }
                 }
             }
-            Box() {
-
-                FloatingActionButton(
-                    onClick = { navHostController.popBackStack() },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(vertical = 64.dp)
-//                    shape = TODO(),
-//                    containerColor = TODO(),
-//                    contentColor = TODO(),
-//                    elevation = TODO(),
-//                    interactionSource = TODO()
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_go_back),
-                        contentDescription = stringResource(id = R.string.back),
-                    )
-                }
-            }
-
+            BackButton(navHostController)
         },
         formButton = {
             NewCustomButton(

@@ -1,6 +1,7 @@
 package com.aronid.weighttrackertft.di
 
 import com.aronid.weighttrackertft.data.exercises.ExerciseRepository
+import com.aronid.weighttrackertft.data.goals.GoalRepository
 import com.aronid.weighttrackertft.data.questionnaire.QuestionnaireRepository
 import com.aronid.weighttrackertft.data.routine.RoutineCustomRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -44,11 +45,4 @@ object RepositoryModule {
         return ExerciseRepository(firestore)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideExerciseRepository(
-//        firestore: FirebaseFirestore
-//    ): ExerciseRepository {
-//        return ExerciseRepository(firestore)
-//    }
 }

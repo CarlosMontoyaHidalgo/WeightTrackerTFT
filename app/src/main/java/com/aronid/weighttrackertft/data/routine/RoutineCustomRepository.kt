@@ -85,6 +85,36 @@ class RoutineCustomRepository @Inject constructor(
         routinesCollection.document(routine.id).set(updatedRoutineWithRefs).await()
     }
 
+    suspend fun deleteRoutine(id: String) {
+        try {
+            val userId = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
+            val routineDoc = routinesCollection.document(id).get().await()
+            val routine = routineDoc.toObject(RoutineModel::class.java)
+            if (routine?.userId == userId) {
+                routinesCollection.document(id).delete().await()
+            } else {
+                throw SecurityException("User $userId does not own routine $id")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    suspend fun deleteRoutines(ids: List<String>) {
+        try {
+            val userId = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
+            firestore.runBatch { batch ->
+                ids.forEach { id ->
+                    val ref = routinesCollection.document(id)
+                    batch.delete(ref)
+                }
+            }.await()
+            println("Batch delete completed for ${ids.size} routines")
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
 //    suspend fun getExercisesByRoutineId(routineId: String): List<ExerciseModel> {
 //        val routineSnapshot = routinesCollection.document(routineId).get().await()
 //        val routine = routineSnapshot.toObject(RoutineModel::class.java)

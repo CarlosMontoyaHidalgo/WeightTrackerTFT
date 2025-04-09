@@ -4,6 +4,8 @@ import com.google.firebase.Timestamp
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
@@ -56,6 +58,16 @@ fun Timestamp.formatSpanish(): String {
 fun LocalDate.formatSpanish(): String {
     return "${this.dayOfMonth} de ${this.month.getDisplayName(java.time.format.TextStyle.FULL, Locale("es", "ES"))} de ${this.year}"
 }
+
+fun Timestamp.toLocalDate(): LocalDate {
+    return this.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+}
+
+fun Timestamp.formatShort(): String {
+    val formatter = DateTimeFormatter.ofPattern("dd/MMM/yy", Locale("es", "ES"))
+    return this.toLocalDate().format(formatter)
+}
+
 
 
 

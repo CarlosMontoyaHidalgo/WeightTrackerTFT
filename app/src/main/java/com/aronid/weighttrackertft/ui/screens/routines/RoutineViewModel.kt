@@ -1,5 +1,8 @@
 package com.aronid.weighttrackertft.ui.screens.routines
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
@@ -20,6 +23,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class RoutineFilterType {
+    ALL, CUSTOM_ONLY, PREDEFINED_ONLY
+}
+
 @HiltViewModel
 class RoutineViewModel @Inject constructor(
     private val customRepository: RoutineCustomRepository,
@@ -34,22 +41,35 @@ class RoutineViewModel @Inject constructor(
 
     private val _allCustomRoutines = MutableStateFlow<List<RoutineModel>>(emptyList())
     private val _allPredefinedRoutines = MutableStateFlow<List<RoutineModel>>(emptyList())
+    private val _selectedRoutines = mutableStateMapOf<String, Boolean>()
+    private val _filterType = MutableStateFlow(RoutineFilterType.ALL)
 
-    val customRoutines: StateFlow<List<RoutineModel>> = combine(_allCustomRoutines, _searchText) { routines, text ->
-        filterRoutines(routines, text)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    val filterType: StateFlow<RoutineFilterType> = _filterType.asStateFlow()
+    val selectedRoutines: SnapshotStateMap<String, Boolean> = _selectedRoutines
 
-    val predefinedRoutines: StateFlow<List<RoutineModel>> = combine(_allPredefinedRoutines, _searchText) { routines, text ->
-        filterRoutines(routines, text)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    val customRoutines: StateFlow<List<RoutineModel>> = combine(
+        _allCustomRoutines,
+        _searchText,
+        _filterType
+    ) { routines, text, filter ->
+        when (filter) {
+            RoutineFilterType.ALL -> filterRoutines(routines, text)
+            RoutineFilterType.CUSTOM_ONLY -> filterRoutines(routines, text)
+            else -> emptyList()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val predefinedRoutines: StateFlow<List<RoutineModel>> = combine(
+        _allPredefinedRoutines,
+        _searchText,
+        _filterType
+    ) { routines, text, filter ->
+        when (filter) {
+            RoutineFilterType.ALL -> filterRoutines(routines, text)
+            RoutineFilterType.PREDEFINED_ONLY -> filterRoutines(routines, text)
+            else -> emptyList()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         loadRoutines()
@@ -60,8 +80,9 @@ class RoutineViewModel @Inject constructor(
             try {
                 _allCustomRoutines.value = customRepository.getUserRoutines()
                 _allPredefinedRoutines.value = predefinedRepository.getPredefinedRoutines()
+                Log.d("RoutineViewModel", "Routines loaded: ${_allCustomRoutines.value.size} custom, ${_allPredefinedRoutines.value.size} predefined")
             } catch (e: Exception) {
-                println("Error loading routines: ${e.message}")
+                Log.e("RoutineViewModel", "Error loading routines", e)
                 _allCustomRoutines.value = emptyList()
                 _allPredefinedRoutines.value = emptyList()
             }
@@ -69,10 +90,30 @@ class RoutineViewModel @Inject constructor(
     }
 
     private fun filterRoutines(routines: List<RoutineModel>, query: String): List<RoutineModel> {
-        return if (query.isEmpty()) {
-            routines // Mostrar todas las rutinas si no hay búsqueda
-        } else {
-            routines.filter { it.matchesSearchQuery(query) }
+        return if (query.isEmpty()) routines
+        else routines.filter { it.name.contains(query, true) }
+    }
+
+    fun setFilterType(type: RoutineFilterType) {
+        _filterType.value = type
+    }
+
+    fun toggleSelection(routineId: String, selected: Boolean) {
+        if (selected) _selectedRoutines[routineId] = true
+        else _selectedRoutines.remove(routineId)
+    }
+
+    fun deleteSelectedRoutines(onResult: (Boolean) -> Unit) {
+        val ids = _selectedRoutines.keys.toList()
+        viewModelScope.launch {
+            try {
+                customRepository.deleteRoutines(ids)
+                _selectedRoutines.clear()
+                loadRoutines()
+                onResult(true)
+            } catch (e: Exception) {
+                onResult(false)
+            }
         }
     }
 
@@ -82,29 +123,6 @@ class RoutineViewModel @Inject constructor(
 
     fun clearSearchQuery() {
         _searchText.value = ""
-    }
-
-    fun refreshRoutines() {
-        viewModelScope.launch {
-            try {
-                // Recarga las rutinas desde los repositorios
-                val updatedCustomRoutines = customRepository.getUserRoutines()
-                val updatedPredefinedRoutines = predefinedRepository.getPredefinedRoutines()
-
-                // Actualiza los flujos con los nuevos datos
-                _allCustomRoutines.value = updatedCustomRoutines
-                _allPredefinedRoutines.value = updatedPredefinedRoutines
-
-                // Opcional: Actualiza el estado del botón si depende de si hay rutinas
-                updateButtonConfigs(updatedCustomRoutines.isEmpty())
-            } catch (e: Exception) {
-                println("Error refreshing routines: ${e.message}")
-                // Opcional: Maneja el error, por ejemplo, manteniendo las listas vacías o mostrando un mensaje
-                _allCustomRoutines.value = emptyList()
-                _allPredefinedRoutines.value = emptyList()
-                updateButtonConfigs(true)
-            }
-        }
     }
 
     private fun updateButtonConfigs(isEmpty: Boolean) {

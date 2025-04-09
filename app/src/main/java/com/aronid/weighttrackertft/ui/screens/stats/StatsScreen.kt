@@ -110,10 +110,12 @@ fun StatsScreen(
                 }
             ){
                 Text(
-                text = "ver estadisticas"
+                text = "ver datos"
                 )
 
             }
+
+
         }
     }
 }

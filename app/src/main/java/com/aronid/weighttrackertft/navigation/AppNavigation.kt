@@ -163,7 +163,7 @@ fun AppNavigation(
             )
         ) { backStackEntry ->
             val routineId = backStackEntry.arguments?.getString("routineId")
-            val isPredefined = backStackEntry.arguments?.getBoolean("isPredefined") ?: false
+            val isPredefined = backStackEntry.arguments?.getBoolean("isPredefined") == true
             val viewModel: RoutineDetailsViewModel = hiltViewModel()
             RoutineDetailsScreen(
                 innerPadding = innerPadding,

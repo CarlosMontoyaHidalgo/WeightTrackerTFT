@@ -43,20 +43,28 @@ class RoutineDetailsViewModel @Inject constructor(
 
     fun loadRoutineDetails(routineId: String, isPredefined: Boolean = false) {
         viewModelScope.launch {
-            val loadedRoutine = if (isPredefined) {
-                routinePredefinedRepository.getRoutineById(routineId)?.copy(id = routineId)
-            } else {
-                customRepository.getRoutineById(routineId)?.copy(id = routineId)
-            }
-            _routine.value = loadedRoutine
-            val loadedExercises = if (isPredefined) {
-                routinePredefinedRepository.getExercisesForRoutine(routineId)
-            } else {
-                customRepository.getExercisesForRoutine(routineId)
-            }
-            _exercises.value = loadedExercises
+            try {
+                println("Loading routine details for ID: $routineId, isPredefined: $isPredefined")
+                val loadedRoutine = if (isPredefined) {
+                    routinePredefinedRepository.getRoutineById(routineId)?.copy(id = routineId)
+                } else {
+                    customRepository.getRoutineById(routineId)?.copy(id = routineId)
+                }
+                _routine.value = loadedRoutine
+                println("Routine loaded: ${loadedRoutine?.name}, exercises refs: ${loadedRoutine?.exercises?.size}")
 
-            _isFavorite.value = customRepository.isFavorite(routineId)
+                val loadedExercises = if (isPredefined) {
+                    routinePredefinedRepository.getExercisesForRoutine(routineId)
+                } else {
+                    customRepository.getExercisesForRoutine(routineId)
+                }
+                _exercises.value = loadedExercises
+                println("Exercises loaded: ${loadedExercises.size}, names: ${loadedExercises.map { it.name }}")
+
+                _isFavorite.value = customRepository.isFavorite(routineId)
+            } catch (e: Exception) {
+                println("Error loading routine details: ${e.message}")
+            }
         }
     }
 }

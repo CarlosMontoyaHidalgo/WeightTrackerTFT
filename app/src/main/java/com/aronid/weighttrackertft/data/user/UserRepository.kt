@@ -1,15 +1,12 @@
 package com.aronid.weighttrackertft.data.user
 
-import android.R.attr.tag
 import android.util.Log
 import com.aronid.weighttrackertft.constants.FirestoreCollections
-import com.aronid.weighttrackertft.data.questionnaire.UserDataState
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,7 +44,7 @@ class UserRepository @Inject constructor(
                     "profileImageUrl" to null,
                     "name" to "Usuario",
 
-                )
+                    )
             ).await()
             Result.success(user)
         } catch (e: Exception) {
@@ -57,6 +54,10 @@ class UserRepository @Inject constructor(
 
     fun getCurrentUser(): FirebaseUser {
         return auth.currentUser ?: throw IllegalStateException("User Not Available")
+    }
+
+    fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -110,9 +111,10 @@ class UserRepository @Inject constructor(
     suspend fun getCurrentUserWeight(): Double? {
         val userId = getCurrentUser().uid ?: return null
         return try {
-            val userDoc = userCollection.document(userId).get().await().toObject(UserModel::class.java)
+            val userDoc =
+                userCollection.document(userId).get().await().toObject(UserModel::class.java)
             userDoc?.weight
-        } catch (_:Exception){
+        } catch (_: Exception) {
             null
         }
     }
@@ -159,5 +161,46 @@ class UserRepository @Inject constructor(
             null
         }
     }
+
+    suspend fun updateUserWeight(newWeight: Double): Result<Unit> {
+        return try {
+            val userId = getCurrentUser().uid
+            userCollection.document(userId).update("weight", newWeight).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(Exception("Error al actualizar el peso: ${e.localizedMessage}", e))
+        }
+    }
+
+    suspend fun updateUserProfileImage(imageUrl: String): Result<Unit> {
+        return try {
+            val userId = getCurrentUser().uid
+            userCollection.document(userId).update("profileImageUrl", imageUrl).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(Exception("Error al actualizar la imagen de perfil: ${e.localizedMessage}", e))
+        }
+    }
+
+    suspend fun getUserProfile(): Result<UserModel> {
+        return try {
+            val userId = getCurrentUser().uid
+            val snapshot = userCollection.document(userId).get().await()
+
+            if (!snapshot.exists()) {
+                return Result.failure(Exception("Perfil de usuario no encontrado"))
+            }
+
+            val user = snapshot.toObject(UserModel::class.java)
+                ?: return Result.failure(Exception("Error al convertir el documento a UserModel"))
+
+            Result.success(user.copy(id = userId))
+        } catch (e: Exception) {
+            Result.failure(Exception("Error al obtener el perfil del usuario: ${e.localizedMessage}", e))
+        }
+    }
+
+
+
 
 }

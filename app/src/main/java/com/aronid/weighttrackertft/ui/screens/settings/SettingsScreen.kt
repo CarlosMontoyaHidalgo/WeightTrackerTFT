@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,13 +24,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
-import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
+import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable
-fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostController, settingsViewModel: SettingsViewModel) {
+fun SettingsScreen(
+    innerPadding: PaddingValues,
+    navHostController: NavHostController,
+    settingsViewModel: SettingsViewModel
+) {
 
     var showDialog by remember { mutableStateOf(false) }
     val state by settingsViewModel.buttonState.collectAsState()
@@ -128,6 +132,7 @@ fun SettingsScreen(innerPadding: PaddingValues, navHostController: NavHostContro
             )
 
 //            ButtonList(navHostController = navHostController)
+
         }
 
     }

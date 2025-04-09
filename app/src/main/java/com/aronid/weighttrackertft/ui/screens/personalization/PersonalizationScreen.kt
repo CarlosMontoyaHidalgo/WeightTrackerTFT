@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.dropdown.languageDropdown.LanguageDropdown
 import com.aronid.weighttrackertft.ui.components.dropdown.weightReminder.WeightReminderSelector
 import com.aronid.weighttrackertft.ui.components.dropdown.weightReminder.WeightReminderViewModel
@@ -21,7 +22,7 @@ import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialViewModel
 import java.util.Locale
 
 @Composable
-fun PersonalizationScreen(innerPadding: PaddingValues, navHostController: NavHostController){
+fun PersonalizationScreen(innerPadding: PaddingValues, navHostController: NavHostController) {
     val languageViewModel: InitialViewModel = hiltViewModel()
     val weightReminderViewModel: WeightReminderViewModel = hiltViewModel()
     val weightUnitSelectorViewModel: WeightUnitSelectorViewModel = hiltViewModel()
@@ -29,7 +30,7 @@ fun PersonalizationScreen(innerPadding: PaddingValues, navHostController: NavHos
     var currentLanguage by remember { mutableStateOf(Locale.getDefault().displayLanguage) }
 
 
-    Column(Modifier.padding(innerPadding)){
+    Column(Modifier.padding(innerPadding)) {
 //        LanguageDropdown(
 //            currentLanguage = currentLanguage,
 //            onLanguageSelected = { selectedLanguage ->
@@ -47,5 +48,6 @@ fun PersonalizationScreen(innerPadding: PaddingValues, navHostController: NavHos
         WeightUnitSelector(
             viewModel = weightUnitSelectorViewModel
         )
+        BackButton(navHostController = navHostController)
     }
 }

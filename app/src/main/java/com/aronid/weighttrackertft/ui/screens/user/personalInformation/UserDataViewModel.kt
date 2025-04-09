@@ -7,11 +7,14 @@ import com.aronid.weighttrackertft.data.goals.getGoalOptions
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
 import com.aronid.weighttrackertft.data.questionnaire.ButtonState
 import com.aronid.weighttrackertft.data.user.UserModel
+import com.aronid.weighttrackertft.data.user.UserProgressModel
+import com.aronid.weighttrackertft.data.user.UserProgressRepository
 import com.aronid.weighttrackertft.data.user.UserRepository
 import com.aronid.weighttrackertft.data.weight.WeightRepository
 import com.aronid.weighttrackertft.utils.button.getDefaultBorderConfig
 import com.aronid.weighttrackertft.utils.button.getDefaultButtonConfig
 import com.aronid.weighttrackertft.utils.toTitleCase
+import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UserDataViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val weightRepository: WeightRepository
+    private val userProgressRepository: UserProgressRepository,
+    private val weightRepository: WeightRepository // Conservamos WeightRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(UserModel())
     val state: StateFlow<UserModel> = _state.asStateFlow()
@@ -36,10 +40,22 @@ class UserDataViewModel @Inject constructor(
     private val _selectedGoal = MutableStateFlow("")
     val selectedGoal: StateFlow<String> = _selectedGoal.asStateFlow()
 
-    val weightUnit = weightRepository.weightUnit
+    val weightUnit: StateFlow<String> = weightRepository.weightUnit // Exponemos el weightUnit del repositorio
 
     private val _showNameError = MutableStateFlow(false)
     val showNameError: StateFlow<Boolean> = _showNameError
+
+    private val _showBirthdateError = MutableStateFlow(false)
+    val showBirthdateError: StateFlow<Boolean> = _showBirthdateError
+
+    private val _showEmailError = MutableStateFlow(false)
+    val showEmailError: StateFlow<Boolean> = _showEmailError
+
+    private val _showHeightError = MutableStateFlow(false)
+    val showHeightError: StateFlow<Boolean> = _showHeightError
+
+    private val _showWeightError = MutableStateFlow(false)
+    val showWeightError: StateFlow<Boolean> = _showWeightError
 
     fun onNameChanged(newName: String) {
         val formattedName = newName.toTitleCase()
@@ -52,9 +68,6 @@ class UserDataViewModel @Inject constructor(
         return if (name.isBlank()) "El nombre no puede estar vacío" else null
     }
 
-    private val _showBirthdateError = MutableStateFlow(false)
-    val showBirthdateError: StateFlow<Boolean> = _showBirthdateError
-
     fun onBirthdateChanged(newBirthdate: String) {
         _state.update { it.copy(birthdate = newBirthdate) }
         _showBirthdateError.value = validateBirthdate(newBirthdate) != null
@@ -62,11 +75,8 @@ class UserDataViewModel @Inject constructor(
     }
 
     fun validateBirthdate(birthdate: String): String? {
-        return if (birthdate.isBlank()) "El nombre no puede estar vacío" else null
+        return if (birthdate.isBlank()) "La fecha de nacimiento no puede estar vacía" else null
     }
-
-    private val _showEmailError = MutableStateFlow(false)
-    val showEmailError: StateFlow<Boolean> = _showEmailError
 
     fun onEmailChanged(newEmail: String) {
         _state.update { it.copy(email = newEmail) }
@@ -81,9 +91,6 @@ class UserDataViewModel @Inject constructor(
             else -> null
         }
     }
-
-    private val _showHeightError = MutableStateFlow(false)
-    val showHeightError: StateFlow<Boolean> = _showHeightError
 
     fun onHeightChanged(newHeight: String) {
         _state.update { it.copy(height = newHeight.toIntOrNull()) }
@@ -102,13 +109,11 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-    private val _showWeightError = MutableStateFlow(false)
-    val showWeightError: StateFlow<Boolean> = _showWeightError
-
     fun onWeightChanged(newWeight: String) {
         val weightValue = newWeight.toDoubleOrNull()
         if (weightValue != null) {
-            val weightInKg = if (weightUnit.value == "lbs") weightValue * 0.453592 else weightValue
+            // Convertimos a kg según la unidad seleccionada
+            val weightInKg = if (weightUnit.value == "Libras") weightValue * 0.453592 else weightValue
             _state.update { it.copy(weight = weightInKg) }
         } else {
             _state.update { it.copy(weight = null) }
@@ -127,23 +132,20 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-
     suspend fun loadUserData() {
         val user = userRepository.getCurrentUser()
-        user.let { currentUser ->
-            viewModelScope.launch {
-                try {
-                    val userData = userRepository.getUserData(currentUser.uid)
-                    userData?.let {
-                        _state.value = it
-                        originalData = it.copy()
-                        _selectedGoal.value = it.goal ?: ""
-                        Log.d("UserDataViewModel", "User data loaded: $it")
-                        checkFormValidity()
-                    } ?: Log.w("UserDataViewModel", "No user data found for ${currentUser.uid}")
-                } catch (e: Exception) {
-                    Log.e("UserDataViewModel", "Error loading user data", e)
-                }
+        viewModelScope.launch {
+            try {
+                val userData = userRepository.getUserData(user.uid)
+                userData?.let {
+                    _state.value = it
+                    originalData = it.copy()
+                    _selectedGoal.value = it.goal ?: ""
+                    Log.d("UserDataViewModel", "User data loaded: $it")
+                    checkFormValidity()
+                } ?: Log.w("UserDataViewModel", "No user data found for ${user.uid}")
+            } catch (e: Exception) {
+                Log.e("UserDataViewModel", "Error loading user data", e)
             }
         }
     }
@@ -191,35 +193,44 @@ class UserDataViewModel @Inject constructor(
 
     fun saveUserData() {
         val user = userRepository.getCurrentUser()
-        user.let { currentUser ->
-            viewModelScope.launch {
-                try {
-                    val currentState = _state.value
-                    val updates = mutableMapOf<String, Any>()
+        viewModelScope.launch {
+            try {
+                val currentState = _state.value
+                val updates = mutableMapOf<String, Any>()
 
-                    if (currentState.name != originalData.name) updates["name"] = currentState.name
-                    if (currentState.birthdate != originalData.birthdate) updates["birthdate"] =
-                        currentState.birthdate
-                    if (currentState.email != originalData.email) updates["email"] =
-                        currentState.email
-                    if (currentState.gender != originalData.gender) updates["gender"] =
-                        currentState.gender ?: ""
-                    if (currentState.goal != originalData.goal) updates["goal"] =
-                        currentState.goal ?: ""
-                    if (currentState.height != originalData.height) updates["height"] =
-                        currentState.height ?: ""
-                    if (currentState.weight != originalData.weight) updates["weight"] =
-                        currentState.weight ?: ""
+                if (currentState.name != originalData.name) updates["name"] = currentState.name
+                if (currentState.birthdate != originalData.birthdate) updates["birthdate"] = currentState.birthdate
+                if (currentState.email != originalData.email) updates["email"] = currentState.email
+                if (currentState.gender != originalData.gender) updates["gender"] = currentState.gender ?: ""
+                if (currentState.goal != originalData.goal) updates["goal"] = currentState.goal ?: ""
+                if (currentState.height != originalData.height) updates["height"] = currentState.height ?: 0
+                if (currentState.weight != originalData.weight) updates["weight"] = currentState.weight ?: 0.0
 
-                    if (updates.isNotEmpty()) {
-                        userRepository.updateUserFields(currentUser.uid, updates)
-                        originalData = currentState.copy()
-                        Log.d("UserDataViewModel", "User data saved successfully: $updates")
+                if (updates.isNotEmpty()) {
+                    userRepository.updateUserFields(user.uid, updates)
+                    Log.d("UserDataViewModel", "User data saved successfully: $updates")
+
+                    // Guardar el peso en user_progress si cambió
+                    if (currentState.weight != originalData.weight && currentState.weight != null) {
+                        val progress = UserProgressModel(
+                            userId = "", // El repositorio lo llenará
+                            weight = currentState.weight, // Siempre en kg
+                            timestamp = Timestamp.now(),
+                            caloriesConsumed = null,
+                            activityLevel = null,
+                            note = "Peso actualizado desde perfil"
+                        )
+                        userProgressRepository.saveProgress(progress).fold(
+                            onSuccess = { Log.d("UserDataViewModel", "Weight saved to user_progress") },
+                            onFailure = { e -> Log.e("UserDataViewModel", "Error saving weight to user_progress", e) }
+                        )
                     }
-                    checkFormValidity()
-                } catch (e: Exception) {
-                    Log.e("UserDataViewModel", "Error saving user data", e)
+
+                    originalData = currentState.copy()
                 }
+                checkFormValidity()
+            } catch (e: Exception) {
+                Log.e("UserDataViewModel", "Error saving user data", e)
             }
         }
     }
