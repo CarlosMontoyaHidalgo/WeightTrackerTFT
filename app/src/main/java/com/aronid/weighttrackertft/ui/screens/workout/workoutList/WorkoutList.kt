@@ -39,7 +39,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.SimpleDateFilterDialog
 import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
@@ -112,13 +114,6 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
             }
 
             if (showFilterDialog) {
-//                SimpleDateFilterDialog(
-//                    onDateRangeSelected = { startDate, endDate ->
-//                        workoutListViewModel.setDateFilter(startDate, endDate)
-//                    },
-//                    onDismiss = { showFilterDialog = false }
-//                )
-
                 WorkoutRangeCalendar(
                     viewModel = calendarViewModel,
                     onDateRangeSelected = { startDate, endDate ->
@@ -138,9 +133,8 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
                 )
-                .fillMaxSize() // Ocupa todo el espacio disponible
+                .fillMaxSize()
         ) {
-            // Lista que ocupa toda la altura
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -166,32 +160,35 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                                     workoutListViewModel.toggleSelection(workout.id, checked)
                                 },
                                 navHostController = navHostController,
+                                onCardClick = {
+                                    navHostController.navigate(NavigationRoutes.WorkoutSummary.createRoute(workout.id))
+                                }
                             )
                         }
                     }
                 }
             }
-
-            // Botón de "Volver atrás" superpuesto
-            Button(
-                onClick = { navHostController.popBackStack() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                shape = CircleShape,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 8.dp)
-                    .shadow(4.dp, CircleShape),
-                border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_go_back),
-                    contentDescription = stringResource(R.string.go_back),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            BackButton(navHostController)
+//            // Botón de "Volver atrás" superpuesto
+//            Button(
+//                onClick = { navHostController.popBackStack() },
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.primary,
+//                    contentColor = MaterialTheme.colorScheme.onPrimary
+//                ),
+//                shape = CircleShape,
+//                modifier = Modifier
+//                    .align(Alignment.BottomCenter)
+//                    .padding(bottom = 8.dp)
+//                    .shadow(4.dp, CircleShape),
+//                border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
+//            ) {
+//                Icon(
+//                    painter = painterResource(R.drawable.ic_go_back),
+//                    contentDescription = stringResource(R.string.go_back),
+//                    tint = MaterialTheme.colorScheme.onPrimary
+//                )
+//            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.routines.details
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
@@ -30,14 +31,54 @@ class RoutineDetailsViewModel @Inject constructor(
     private val _isFavorite = MutableStateFlow<Boolean>(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
 
-    init {
-        _isFavorite.value = false
-    }
+//    init {
+//        _isFavorite.value = false
+//    }
+
+//    fun toggleFavorite(routineId: String, isPredefined: Boolean) {
+//        viewModelScope.launch {
+//            customRepository.toggleFavorite(routineId, isPredefined)
+//            _isFavorite.value = customRepository.isFavorite(routineId)
+//        }
+//    }
+//
+//    fun loadRoutineDetails(routineId: String, isPredefined: Boolean = false) {
+//        viewModelScope.launch {
+//            try {
+//                println("Loading routine details for ID: $routineId, isPredefined: $isPredefined")
+//                val loadedRoutine = if (isPredefined) {
+//                    routinePredefinedRepository.getRoutineById(routineId)?.copy(id = routineId)
+//                } else {
+//                    customRepository.getRoutineById(routineId)?.copy(id = routineId)
+//                }
+//                _routine.value = loadedRoutine
+//                println("Routine loaded: ${loadedRoutine?.name}, exercises refs: ${loadedRoutine?.exercises?.size}")
+//
+//                val loadedExercises = if (isPredefined) {
+//                    routinePredefinedRepository.getExercisesForRoutine(routineId)
+//                } else {
+//                    customRepository.getExercisesForRoutine(routineId)
+//                }
+//                _exercises.value = loadedExercises
+//                println("Exercises loaded: ${loadedExercises.size}, names: ${loadedExercises.map { it.name }}")
+//
+//                _isFavorite.value = customRepository.isFavorite(routineId)
+//            } catch (e: Exception) {
+//                println("Error loading routine details: ${e.message}")
+//            }
+//        }
+//    }
 
     fun toggleFavorite(routineId: String, isPredefined: Boolean) {
         viewModelScope.launch {
-            customRepository.toggleFavorite(routineId, isPredefined)
-            _isFavorite.value = customRepository.isFavorite(routineId)
+            try {
+                customRepository.toggleFavorite(routineId, isPredefined)
+                val updatedFavoriteStatus = customRepository.isFavorite(routineId)
+                _isFavorite.value = updatedFavoriteStatus
+                Log.d("ViewModel", "Favorito actualizado a: $updatedFavoriteStatus")
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error al alternar favorito: ${e.message}")
+            }
         }
     }
 

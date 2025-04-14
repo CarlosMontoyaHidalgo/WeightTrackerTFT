@@ -3,6 +3,7 @@ package com.aronid.weighttrackertft.data.routine
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.PropertyName
+import java.util.UUID
 
 data class RoutineModel(
     @DocumentId val id: String = "",
@@ -14,6 +15,7 @@ data class RoutineModel(
     @PropertyName("userId") val userId: String = "",
     @PropertyName("targetMuscles") val targetMuscles: List<String> = emptyList(),
     @PropertyName("isFavorite") val isFavorite: Boolean = false,
+    @PropertyName("sectionId") val sectionId: String? = null,
 
     ) {
     init {
@@ -38,4 +40,10 @@ data class RoutineModel(
         )
         return matchingCombinations.any{ it.contains(query, ignoreCase = true) }
     }
+
+    data class SectionModel(
+        @DocumentId val id: String = UUID.randomUUID().toString(),
+        @PropertyName("name") val name: String = "",
+        @PropertyName("routineIds") val routineIds: MutableList<String> = mutableListOf()
+    )
 }

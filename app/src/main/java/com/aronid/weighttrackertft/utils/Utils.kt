@@ -68,6 +68,9 @@ fun Timestamp.formatShort(): String {
     return this.toLocalDate().format(formatter)
 }
 
+fun Double.formatToSinglePrecision(): String {
+    return String.format("%.1f", this)
+}
 
 
 

@@ -213,6 +213,9 @@ class WorkoutViewModel @Inject constructor(
             .toSet()
             .toList()
 
+        val workoutType = determineWorkoutType(_exercisesWithSeries.value, totalVolume, _workoutDuration.value / 1000)
+        val intensity = calculateIntensity(_exercisesWithSeries.value, totalVolume, _workoutDuration.value / 1000, userWeight)
+
         return WorkoutModel(
             id = "",
             userId = userRepository.getCurrentUser().uid,
@@ -220,11 +223,71 @@ class WorkoutViewModel @Inject constructor(
             exercises = _exercisesWithSeries.value,
             calories = totalCalories.toInt(),
             volume = totalVolume.toInt(),
-            intensity = 100.0,
-            workoutType = "Mixto",
+            intensity = intensity,
+            workoutType = workoutType,
             primaryMuscleIds = primaryMuscleIds,
             secondaryMuscleIds = secondaryMuscleIds,
-            duration = _workoutDuration.value / 1000 //almacenar en segundos
+            duration = _workoutDuration.value / 1000
         )
     }
+}
+
+
+private fun determineWorkoutType(
+    exercises: List<ExerciseWithSeries>,
+    totalVolume: Double,
+    durationSeconds: Long
+): String {
+    val totalSeries = exercises.sumOf { it.series.size }
+    val avgRepsPerSeries = exercises.flatMap { it.series }
+        .filter { it.isDone }
+        .mapNotNull { it.reps?.toIntOrNull() }
+        .average()
+        .takeIf { !it.isNaN() } ?: 0.0
+    val avgWeightPerSeries = exercises.flatMap { it.series }
+        .filter { it.isDone }
+        .mapNotNull { it.weight?.toDoubleOrNull() }
+        .average()
+        .takeIf { !it.isNaN() } ?: 0.0
+    val hasWeights = exercises.any { it.requiresWeight }
+    val durationMinutes = durationSeconds / 60
+
+    return when {
+        // Fuerza: Alto peso, pocas repeticiones
+        hasWeights && avgWeightPerSeries > 20.0 && avgRepsPerSeries <= 8.0 -> "Fuerza"
+        // Resistencia: Muchas repeticiones, bajo peso
+        avgRepsPerSeries > 12.0 && (!hasWeights || avgWeightPerSeries < 15.0) -> "Resistencia"
+        // Cardio: Sin pesos, larga duración
+        !hasWeights && durationMinutes > 30 -> "Cardio"
+        // Mixto: Combinación de factores o no encaja claramente en otra categoría
+        else -> "Mixto"
+    }
+}
+
+private fun calculateIntensity(
+    exercises: List<ExerciseWithSeries>,
+    totalVolume: Double,
+    durationSeconds: Long,
+    userWeight: Double
+): Double {
+    val totalCompletedSeries = exercises.flatMap { it.series }.count { it.isDone }
+    val totalReps = exercises.flatMap { it.series }
+        .filter { it.isDone }
+        .sumOf { it.reps?.toIntOrNull() ?: 0 }
+    val durationMinutes = durationSeconds / 60.0
+
+    // Normalizar volumen relativo al peso del usuario
+    val volumeIntensity = (totalVolume / userWeight).coerceIn(0.0, 50.0) // Máx 50% de contribución
+
+    // Intensidad por repeticiones y series completadas
+    val effortIntensity = (totalCompletedSeries * 2 + totalReps * 0.5).coerceIn(0.0, 30.0) // Máx 30%
+
+    // Intensidad por duración (inversa: menos tiempo con más volumen = más intenso)
+    val timeIntensity = if (durationMinutes > 0) {
+        (totalVolume / durationMinutes).coerceIn(0.0, 20.0) // Máx 20%
+    } else 0.0
+
+    // Suma ponderada para un rango de 0 a 100
+    val intensity = (volumeIntensity + effortIntensity + timeIntensity).coerceIn(0.0, 100.0)
+    return if (intensity > 0) intensity else 10.0 // Mínimo 10 si hay actividad
 }

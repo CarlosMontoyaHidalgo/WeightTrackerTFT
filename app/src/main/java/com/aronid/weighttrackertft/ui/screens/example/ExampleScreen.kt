@@ -14,14 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.aronid.weighttrackertft.ui.components.charts.aaa.BarChartsExamples
-import com.aronid.weighttrackertft.ui.components.charts.aaa.BubbleChartExamples
-import com.aronid.weighttrackertft.ui.components.charts.aaa.DonutChartExample
-import com.aronid.weighttrackertft.ui.components.charts.aaa.LineAndBarChartExample
-import com.aronid.weighttrackertft.ui.components.charts.aaa.LineChartExample
-import com.aronid.weighttrackertft.ui.components.charts.aaa.PieChartExample
-import com.aronid.weighttrackertft.ui.components.charts.aaa.TrainingRadarChartExample
-import com.aronid.weighttrackertft.ui.components.charts.aaa.WaveChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.BarChartsExamples
+import com.aronid.weighttrackertft.ui.components.charts.examples.BubbleChartExamples
+import com.aronid.weighttrackertft.ui.components.charts.examples.DonutChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.LineAndBarChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.LineChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.PieChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.TrainingRadarChartExample
+import com.aronid.weighttrackertft.ui.components.charts.examples.WaveChartExample
 
 @Composable
 fun ExampleScreen(innerPadding: PaddingValues, navHostController: NavHostController) {

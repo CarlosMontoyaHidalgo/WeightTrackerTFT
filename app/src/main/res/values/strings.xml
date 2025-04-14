@@ -126,7 +126,7 @@
     <string name="no_workouts_for_day">No workouts for this day.</string>
     <string name="workout">Workout</string>
     <string name="calories">Calories: %1$s kcal</string>
-    <string name="volume">Volume: %1$s kg</string>
+    <string name="volume">Volume</string>
     <string name="type">Type: %1$s</string>
     <string name="intensity">Intensity: %1$s%</string>
     <string name="date">Date: %1$s</string>
@@ -223,5 +223,12 @@
 
 
     <string name="selected">Selected</string>
+
+    <string name="exercises_performed">Exercises Performed</string>
+    <string name="unknown_exercise">Unknown Exercise</string>
+    <string name="set_number">Set %1$d</string>
+    <string name="reps">Reps: %1$s</string>
+    <string name="weight_data">Weight: %1$s kg</string>
+    <string name="no_valid_series">No Sets with Complete Data</string>
 
 </resources>

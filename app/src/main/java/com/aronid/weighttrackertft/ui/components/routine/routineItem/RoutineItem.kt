@@ -12,14 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,22 +34,23 @@ import com.aronid.weighttrackertft.ui.screens.routines.RoutineViewModel
 fun RoutineItem(
     routine: RoutineModel,
     navHostController: NavHostController,
-    isPredefined: Boolean,
+    isPredefined: Boolean? = null,
     isChecked: Boolean = false,
     showCheckbox: Boolean = false,
-    onCheckedChange: (Boolean) -> Unit = {}
+    onCheckedChange: (Boolean) -> Unit = {},
 ) {
     val viewModel: RoutineViewModel = hiltViewModel()
+    val isFavorite by viewModel.favoriteRoutines.collectAsState()
 
-    val isChecked by remember { derivedStateOf {
-        viewModel.selectedRoutines.containsKey(routine.id)
-    }}
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
-                val route = NavigationRoutes.RoutineDetails.createRoute(routine.id, isPredefined)
+                val route = NavigationRoutes.RoutineDetails.createRoute(
+                    routine.id,
+                    isPredefined == true
+                )
                 println("Route: $route")
                 navHostController.navigate(route)
             },
@@ -62,26 +64,43 @@ fun RoutineItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            if (showCheckbox && !isPredefined) {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { checked -> viewModel.toggleSelection(routine.id, checked) },
-                    modifier = Modifier
-                )
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(text = routine.name)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = routine.goal)
             }
+            if (showCheckbox && !isPredefined!!) {
+                Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = onCheckedChange,
+                    modifier = Modifier
+                )
+            }
+            if (!showCheckbox) {
+                Row {
+                    IconButton(onClick = {
+                        viewModel.toggleFavoriteOptimistic(
+                            routine.id,
+                            isPredefined ?: false
+                        )
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (routine.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border
+                            ),
+                            contentDescription = "Toggle favorite",
+                            tint = Color(0xFFFFD700)
+                        )
+                    }
 
-            Row {
-                // Botón para iniciar entrenamiento
-                if (!showCheckbox){
+                    // Botón para iniciar entrenamiento
                     IconButton(
                         onClick = {
                             navHostController.navigate(
-                                NavigationRoutes.Workout.createRoute(routine.id, isPredefined)
+                                NavigationRoutes.Workout.createRoute(
+                                    routine.id,
+                                    isPredefined == true
+                                )
                             )
                         }
                     ) {
@@ -93,16 +112,22 @@ fun RoutineItem(
                 }
 
                 // Botón de edición solo para rutinas personalizadas
-                if (!isPredefined) {
-                    IconButton(
-                        onClick = {
-                            navHostController.navigate(NavigationRoutes.EditRoutine.createRoute(routine.id))
+                isPredefined?.let {
+                    if (!it) {
+                        IconButton(
+                            onClick = {
+                                navHostController.navigate(
+                                    NavigationRoutes.EditRoutine.createRoute(
+                                        routine.id
+                                    )
+                                )
+                            }
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                contentDescription = "Edit routine"
+                            )
                         }
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_edit),
-                            contentDescription = "Edit routine"
-                        )
                     }
                 }
             }

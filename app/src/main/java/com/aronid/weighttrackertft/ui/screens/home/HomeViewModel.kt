@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.DayOfWeek
 import java.time.ZoneOffset
 import javax.inject.Inject
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val workoutRepository: WorkoutRepository,
@@ -27,7 +26,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _weeklyWorkouts = MutableStateFlow<List<WorkoutModel>>(emptyList())
-    val weeklyWorkouts: StateFlow <List<WorkoutModel>> = _weeklyWorkouts.asStateFlow()
+    val weeklyWorkouts: StateFlow<List<WorkoutModel>> = _weeklyWorkouts.asStateFlow()
 
     private val _userName = MutableStateFlow<String>("")
     val userName: StateFlow<String> = _userName.asStateFlow()
@@ -38,8 +37,8 @@ class HomeViewModel @Inject constructor(
     init {
         fetchWeeklyWorkouts()
         fetchUserData()
+        fetchFavorites()
     }
-
 
     private fun fetchWeeklyWorkouts() {
         viewModelScope.launch {
@@ -52,7 +51,7 @@ class HomeViewModel @Inject constructor(
 
             val workouts = workoutRepository.getWorkoutsInDateRange(startDate, endDate)
             _weeklyWorkouts.value = workouts
-            _favorites.value = routineCustomRepository.getUserFavorites()
+            fetchFavorites() // Separar la carga de favoritos
         }
     }
 
@@ -72,4 +71,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // Método público para recargar favoritos
+    fun fetchFavorites() {
+        viewModelScope.launch {
+            val favoritesList = routineCustomRepository.getUserFavorites()
+            _favorites.value = favoritesList
+            Log.d("HomeViewModel", "Favoritos recargados: ${favoritesList.size}")
+        }
+    }
 }

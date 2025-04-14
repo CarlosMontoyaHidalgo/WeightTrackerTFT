@@ -1,4 +1,4 @@
-package com.aronid.weighttrackertft.ui.components.charts.aaa
+package com.aronid.weighttrackertft.ui.components.charts.examples
 
 import android.widget.Toast
 import androidx.compose.foundation.Canvas

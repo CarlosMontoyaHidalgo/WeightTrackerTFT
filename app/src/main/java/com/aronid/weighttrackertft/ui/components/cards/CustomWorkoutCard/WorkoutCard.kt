@@ -23,7 +23,6 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
 import com.google.firebase.Timestamp
-
 @Composable
 fun WorkoutCard(
     modifier: Modifier = Modifier,
@@ -42,120 +41,126 @@ fun WorkoutCard(
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        onClick = { onCardClick() }
     ) {
-        Row(
+        Column( // Cambiamos Row por Column para más espacio vertical
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Text(
-                    text = workout.workoutType.ifEmpty { "Entrenamiento sin nombre" },
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
-
-                Text(
-                    text = "Fecha: ${workout.date?.toDate()?.toString() ?: "No disponible"}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Primarios: ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold
+                        text = workout.workoutType.ifEmpty { "Entrenamiento sin nombre" },
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        items(workout.primaryMuscleIds) { muscle ->
-                            MyTag(text = muscle.ifEmpty { "Ninguno" })
-                        }
-                    }
+                    Text(
+                        text = "Fecha: ${workout.date?.toDate()?.toString() ?: "No disponible"}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Secundarios: ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold
+                if (showCheckbox) {
+                    Checkbox(
+                        checked = isChecked,
+                        onCheckedChange = { onCheckedChange(it) },
+                        modifier = Modifier
                     )
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        items(workout.secondaryMuscleIds) { muscle ->
-                            MyTag(text = muscle.ifEmpty { "Ninguno" })
-                        }
+                }
+            }
+
+            // Métricas adicionales
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                MetricItem(label = "Calorías", value = "${workout.calories} kcal")
+                MetricItem(label = "Volumen", value = "${workout.volume} kg")
+                MetricItem(label = "Intensidad", value = workout.intensity.toString())
+            }
+
+            // Músculos primarios
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Primarios: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(workout.primaryMuscleIds) { muscle ->
+                        MyTag(text = muscle.ifEmpty { "Ninguno" })
                     }
                 }
             }
 
-            if (showCheckbox) {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { onCheckedChange(it) },
-                    modifier = Modifier
+            // Músculos secundarios
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Secundarios: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(workout.secondaryMuscleIds) { muscle ->
+                        MyTag(text = muscle.ifEmpty { "Ninguno" })
+                    }
+                }
             }
 
+            if (workout.exercises.isNotEmpty()) {
+                Text(
+                    text = "Ejercicios (${workout.exercises.size}):",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(workout.exercises.take(2)) { exercise ->
+                        MyTag(text = exercise.exerciseName.toString())
+                    }
+                    if (workout.exercises.size > 2) {
+                        item {
+                            MyTag(text = "+${workout.exercises.size - 2} más")
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun WorkoutCardPreviewWithDelete() {
-    val sampleWorkout = WorkoutModel(
-        id = "123",
-        workoutType = "Fuerza",
-        date = Timestamp.now(),
-        primaryMuscleIds = listOf("chest", "triceps"),
-        secondaryMuscleIds = listOf("shoulders")
-    )
-
-    MaterialTheme {
-        WorkoutCard(
-            workout = sampleWorkout,
-            onDeleteClick = { /* Simular eliminación */ },
-            showCheckbox = true
+fun MetricItem(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun WorkoutCardPreviewWithoutDelete() {
-    val sampleWorkout = WorkoutModel(
-        id = "123",
-        workoutType = "Fuerza",
-        date = Timestamp.now(),
-        primaryMuscleIds = listOf("chest", "triceps"),
-        secondaryMuscleIds = listOf("shoulders")
-    )
-
-    MaterialTheme {
-        WorkoutCard(workout = sampleWorkout)
-    }
-}
-//@Preview
-//@Composable
-//fun WorkoutCardPreview() {
-//    WorkoutCard({})
-//}

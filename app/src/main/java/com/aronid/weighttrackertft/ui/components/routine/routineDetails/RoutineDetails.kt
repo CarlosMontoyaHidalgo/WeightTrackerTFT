@@ -31,6 +31,7 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.routine.RoutineModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseCard.ExerciseCard
 import com.aronid.weighttrackertft.ui.screens.routines.details.RoutineDetailsViewModel
 
@@ -53,7 +54,6 @@ fun RoutineDetailsContent(
     ) {
         val (headerRef, titleRef, favoriteRef, cardsRef, buttonRef) = createRefs()
 
-// Ícono de favoritos en la parte superior derecha
         IconButton(
             onClick = {
                 routine?.id?.let {
@@ -93,6 +93,7 @@ fun RoutineDetailsContent(
             }
         }
 
+        BackButton(navHostController)
         routine?.let { rt ->
             Button(
                 onClick = {
@@ -156,6 +157,7 @@ fun RoutineDetailsContent(
                     )
                 }
             }
+
         }
     }
 }

@@ -4,8 +4,10 @@ package com.aronid.weighttrackertft.ui.screens.workout.summary
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
 import com.aronid.weighttrackertft.data.questionnaire.ButtonState
+import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
 import com.aronid.weighttrackertft.data.workout.WorkoutRepository
 import com.aronid.weighttrackertft.utils.button.getDefaultBorderConfig
 import com.aronid.weighttrackertft.utils.button.getDefaultButtonConfig
@@ -39,6 +41,9 @@ class WorkoutSummaryViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _exercises = MutableStateFlow<List<ExerciseWithSeries>>(emptyList())
+    val exercises: StateFlow<List<ExerciseWithSeries>> = _exercises.asStateFlow()
 
     private fun updateButtonConfigs() {
         _buttonState.update {
@@ -87,6 +92,7 @@ class WorkoutSummaryViewModel @Inject constructor(
                     }
 
                     _allMuscles.value = allMusclesMap.toList()
+                    _exercises.value = workout.exercises
                     _saveState.value = "Entrenamiento guardado"
                     updateButtonConfigs()
                 } ?: run {

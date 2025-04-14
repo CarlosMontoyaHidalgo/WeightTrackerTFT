@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,7 @@ import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationB
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
@@ -38,6 +40,9 @@ fun HomeScreen(
     val workouts by viewModel.weeklyWorkouts.collectAsState()
     val name by viewModel.userName.collectAsState()
     val favorites by viewModel.favorites.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.fetchFavorites()
+    }
 
     var showDialog by rememberSaveable { mutableStateOf(false) }
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
@@ -85,12 +90,13 @@ fun HomeScreen(
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Entrenamientos favoritos",
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(8.dp) // Fixed: Changed 'custom' to valid padding parameter
+                    modifier = Modifier.padding(8.dp)
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -161,14 +167,14 @@ fun HomeScreen(
                 Text(text = "Ver todas las rutinas")
             }
 
-            Button(onClick = { navHostController.navigate(NavigationRoutes.Exercises.route) }) {
-                Text(text = "Ver ejercicios")
-            }
+//            Button(onClick = { navHostController.navigate(NavigationRoutes.Exercises.route) }) {
+//                Text(text = "Ver ejercicios")
+//            }
+
             Button(onClick = { navHostController.navigate(NavigationRoutes.Example.route) }) {
                 Text(text = "Ver ejemplo")
             }
 
-            // Added: Restore the dialog functionality from the previous version
             if (showDialog && selectedDate != null) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },

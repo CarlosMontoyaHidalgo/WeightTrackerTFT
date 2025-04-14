@@ -235,6 +235,8 @@ fun AppNavigation(
 
 
 
+
+
         composable(NavigationRoutes.WorkoutList.route) {
             WorkoutList(innerPadding, navHostController)
         }

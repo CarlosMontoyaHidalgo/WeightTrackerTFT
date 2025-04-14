@@ -123,7 +123,7 @@
     <string name="no_workouts_for_day">No hay entrenamientos para este día.</string>
     <string name="workout">Entrenamiento</string>
     <string name="calories">Calorías: %1$s kcal</string>
-    <string name="volume">Volumen: %1$s kg</string>
+    <string name="volume">Volumen</string>
     <string name="type">Tipo: %1$s</string>
     <string name="intensity">Intensidad: %1$s%</string>
     <string name="date">Fecha: %1$s</string>
@@ -218,6 +218,12 @@
 
     <string name="language_flag">Bandera del idioma</string>
     <string name="selected">Seleccionado</string>
+    <string name="exercises_performed">Ejercicios realizados</string>
+    <string name="unknown_exercise">Ejercicio desconocido</string>
+    <string name="set_number">Serie %1$d</string>
+    <string name="reps">Reps: %1$s</string>
+    <string name="weight_data">Peso: %1$s kg</string>
+    <string name="no_valid_series">No hay series con datos completos</string>
 
 
 
