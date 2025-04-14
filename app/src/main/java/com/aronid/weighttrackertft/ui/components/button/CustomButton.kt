@@ -16,14 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.aronid.weighttrackertft.ui.theme.Black
-import com.aronid.weighttrackertft.ui.theme.White
 
 @Composable
 fun CustomButton(
     text: String? = null,
-    containerColor: Color = Black,
-    textColor: Color = White,
+    containerColor: Color = MaterialTheme.colorScheme.onBackground,
+    textColor: Color = MaterialTheme.colorScheme.background,
     imageId: Int? = null,
     borderColor: Color? = null,
     borderWidth: Int = 1,

@@ -2,7 +2,8 @@ package com.aronid.weighttrackertft.ui.screens.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aronid.weighttrackertft.data.UserRepository
+import com.aronid.weighttrackertft.data.questionnaire.QuestionnaireRepository
+import com.aronid.weighttrackertft.data.user.UserRepository
 import com.aronid.weighttrackertft.ui.screens.auth.state.LoginState
 import com.aronid.weighttrackertft.utils.handleAuthException
 import com.aronid.weighttrackertft.utils.validateEmail
@@ -15,7 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val questionnaireRepository: QuestionnaireRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
@@ -40,8 +44,7 @@ class LoginViewModel @Inject constructor(private val userRepository: UserReposit
         updateLoginEnabled()
     }
 
-    fun loginUser(onSuccess: () -> Unit) {
-        if (!_state.value.isFormValid) return
+    fun loginUser(onSuccess: (Boolean) -> Unit) {
 
         _state.update { it.copy(isLoading = true, error = null) }
 
@@ -51,11 +54,18 @@ class LoginViewModel @Inject constructor(private val userRepository: UserReposit
                 _state.value.password
             )
 
-            result.onSuccess {
-                onSuccess()
+            result.onSuccess { user ->
+                val userId = user.uid
+                val hasCompletedQuestionnaire = questionnaireRepository.getQuestionnaireStatus(userId)
+                if (hasCompletedQuestionnaire) {
+                    onSuccess(true)
+                } else {
+                    onSuccess(false)
+                }
             }.onFailure { exception ->
                 val errorMessage = handleAuthException(exception)
                 _state.update { it.copy(error = errorMessage) }
+                onSuccess(false)
             }
 
             _state.update { it.copy(isLoading = false) }

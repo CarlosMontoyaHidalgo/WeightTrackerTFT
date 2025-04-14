@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?><!-- This is a placeholder file for the Spanish language. -->
-
 <resources>
     <string name="app_name">Weight Tracker</string>
+    <string name="app_logo_description">Weight Tracker</string>
 
-    <!-- Botón -->
+    <!-- Button -->
     <string name="login">Iniciar sesión</string>
     <string name="sign_up">Registrarse</string>
-    <string name="sign_up_free">Registrarse Gratis</string>
+    <string name="sign_up_free">Regístrate</string>
     <string name="continue_with_google">Continuar con Google</string>
-    <string name="ic_back">Icono de volver</string>
+    <string name="ic_back">Icono de atrás</string>
+    <string name="next">Siguiente</string>
+    <string name="prev">Anterior</string>
+    <string name="skip">Omitir</string>
+    <string name="submit">Enviar</string>
 
-    <!-- Idioma -->
+    <!-- Alert Dialog -->
+    <string name="alert_title">Alerta</string>
+    <string name="alert_message">¿Estás seguro de que deseas salir?</string>
+    <string name="alert_positive">Sí</string>
+    <string name="alert_negative">No</string>
+
+    <!-- Language -->
     <string name="spanish">Español</string>
     <string name="english">Inglés</string>
 
-    <!-- Campo de correo electrónico -->
+    <!-- Email Field -->
     <string name="email">Correo electrónico</string>
-    <string name="invalid_email">Dirección de correo no válida</string>
+    <string name="invalid_email">Dirección de correo electrónico no válida</string>
     <string name="ic_invalid_email">Icono de correo electrónico</string>
 
-    <!-- Campo de contraseña -->
+    <!-- Password Field -->
     <string name="password">Contraseña</string>
     <string name="password_error">La contraseña debe tener al menos 6 caracteres</string>
     <string name="ic_invalid_password">Icono de contraseña</string>
     <string name="hide_password">Ocultar contraseña</string>
     <string name="show_password">Mostrar contraseña</string>
 
-    <!-- Mensajes de error -->
+    <!-- Error Messages -->
     <string name="complete_questionnaire">Completar cuestionario</string>
     <string name="error_user_not_found">Usuario no encontrado</string>
     <string name="error_invalid_credentials">Datos incorrectos</string>
@@ -35,4 +45,186 @@
     <string name="error_email_invalid">Correo electrónico no válido</string>
     <string name="error_password_empty">Contraseña vacía</string>
     <string name="error_password_length">Longitud de contraseña incorrecta</string>
+
+    <!-- LifeStyle Screen -->
+    <string name="life_style">Estilo de vida</string>
+    <string name="activity_level">Nivel de actividad</string>
+    <string name="sedentary">Sedentario</string>
+    <string name="lightly_active">Ligera actividad</string>
+    <string name="moderately_active">Actividad moderada</string>
+    <string name="very_active">Muy activo</string>
+    <string name="goal">Objetivo</string>
+    <string name="maintain_weight">Mantener peso</string>
+    <string name="lose_weight">Perder peso</string>
+
+    <!-- PersonalInfo Screen -->
+    <string name="personal_info">Información personal</string>
+    <string name="name">Nombre</string>
+    <string name="birth_date">Fecha de nacimiento</string>
+
+    <!-- PhysicalData Screen -->
+    <string name="physical_data">Datos físicos</string>
+    <string name="height">Altura</string>
+    <string name="height_cm">Altura (cm)</string>
+
+    <string name="weight">Peso</string>
+
+    <!-- Questionnaire Screen -->
+    <string name="questionnaire">Cuestionario</string>
+    <string name="privacy">Privacidad</string>
+    <string name="privacy_policy">📢 Información importante sobre tu privacidad</string>
+    <string name="privacy_policy_description">
+    📢 Nunca compartiremos tus datos con terceros.\n\n
+    🔒 En WeightTrackerTFT, nos tomamos tu privacidad y seguridad muy en serio.\n\n
+    📊 Los datos que ingreses en este cuestionario nos ayudarán a personalizar tu experiencia, brindándote recomendaciones y estadísticas adaptadas a tus objetivos.\n\n
+    ✅ Seguridad garantizada: Toda la información se almacena de forma segura y solo será utilizada dentro de la aplicación.\n\n
+    📌 Uso de los datos: Los datos recopilados nos permitirán ofrecerte un mejor seguimiento de tu progreso, incluyendo análisis y gráficos personalizados.\n\n
+    ⚙️ Tú tienes el control: Puedes actualizar o eliminar tu información en cualquier momento desde la configuración de la app.\n\n
+    👉 Al continuar, aceptas que utilizaremos estos datos solo para mejorar tu experiencia en WeightTrackerTFT.
+    </string>
+    <string name="accept_terms_and_conditions">He leído y acepto el uso de mis datos</string>
+    <string name="accept_terms_description">Al hacer clic en Aceptar, aceptas que utilizaremos tus datos para personalizar tu experiencia y proporcionarte estadísticas adaptadas a tus objetivos.</string>
+    <string name="start_questionnaire">Comenzar cuestionario</string>
+
+    <!-- Home Screen -->
+    <string name="home">Inicio</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Configuración</string>
+
+    <!-- Activity Levels -->
+    <string name="activity_level_sedentary">Sedentario</string>
+    <string name="activity_level_sedentary_desc">Poco o ningún ejercicio</string>
+    <string name="activity_level_moderate">Moderado</string>
+    <string name="activity_level_moderate_desc">Ejercicio 3&#8211;4 veces por semana</string>
+    <string name="activity_level_active">Activo</string>
+    <string name="activity_level_active_desc">Ejercicio diario intenso</string>
+
+    <!-- Goals -->
+    <string name="goals">Objetivos</string>
+    <string name="goal_lose_weight">Perder peso</string>
+    <string name="goal_lose_weight_desc">Reducir grasa corporal</string>
+    <string name="goal_maintain">Mantener peso</string>
+    <string name="goal_maintain_desc">Conservar peso actual</string>
+    <string name="goal_gain_muscle">Ganar músculo</string>
+    <string name="goal_gain_muscle_desc">Aumentar masa muscular</string>
+
+    <string name="finish_workout">¿Finalizar entrenamiento?</string>
+    <string name="finish_workout_confirmation">¿Estás seguro de que quieres finalizar el entrenamiento?</string>
+    <string name="finish">Finalizar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
+    <string name="exercise">Ejercicio</string>
+    <string name="back">Atrás</string>
+    <string name="info">Info</string>
+    <string name="navigating_with_workout_id">Navegando con ID de entrenamiento:</string>
+
+    <string name="welcome">Bienvenido, %1$s!</string>
+    <string name="no_workouts_for_day">No hay entrenamientos para este día.</string>
+    <string name="workout">Entrenamiento</string>
+    <string name="calories">Calorías: %1$s kcal</string>
+    <string name="volume">Volumen</string>
+    <string name="type">Tipo: %1$s</string>
+    <string name="intensity">Intensidad: %1$s%</string>
+    <string name="date">Fecha: %1$s</string>
+    <string name="not_available">No disponible</string>
+    <string name="workout_details">Entrenamiento %1$d:\n- Calorías: %2$s kcal\n- Volumen: %3$s kg\n- Tipo: %4$s\n- Intensidad: %5$s%%\n- Fecha: %6$s</string>
+    <string name="single_workout_details">Entrenamiento:\n- Calorías: %1$s kcal\n- Volumen: %2$s kg\n- Tipo: %3$s\n- Intensidad: %4$s%%\n- Fecha: %5$s</string>
+
+    <string name="workouts_of">Entrenamientos del %1$s</string>
+    <string name="progress">Progreso</string>
+    <string name="exercises">Ejercicios</string>
+    <string name="expand_language_menu">Expandir menú de idiomas</string>
+
+    <string name="daily">Diario</string>
+    <string name="every_3_days">Cada 3 días</string>
+    <string name="weekly">Semanal</string>
+    <string name="every_2_weeks">Cada 2 semanas</string>
+    <string name="every_month">Cada mes</string>
+    <string name="expand_reminder_options">Expandir opciones de recordatorio</string>
+
+    <string name="choose_exercises">Elegir Ejercicios</string>
+    <string name="no_exercises_available">No hay ejercicios disponibles</string>
+    <string name="selected_exercises">Ejercicios seleccionados:</string>
+    <string name="confirm_selection">Confirmar Selección</string>
+
+    <string name="details">Detalles</string>
+    <string name="routine_created">Rutina creada!</string>
+    <string name="create_routine">Crear Rutina</string>
+    <string name="description">Descripción</string>
+    <string name="target_muscles">Músculos objetivo</string>
+    <string name="select_exercises">Seleccionar Ejercicios</string>
+
+    <string name="start_routine">Empezar rutina</string>
+
+    <string name="edit_routine">Editar Rutina</string>
+    <string name="add_exercises">Añadir Ejercicios</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="routine_updated_successfully">Rutina actualizada correctamente</string>
+    <string name="name_cannot_be_empty">El nombre no puede estar vacío</string>
+
+    <string name="search_routines_placeholder">Buscar rutinas…</string>
+    <string name="my_routines">Mis Rutinas</string>
+    <string name="no_custom_routines">No hay rutinas personalizadas</string>
+    <string name="create_new_routine">Crear nueva rutina</string>
+    <string name="create_new_routine_toast">Crear nueva rutina</string>
+    <string name="no_custom_routines_found">No se encontraron rutinas personalizadas</string>
+    <string name="predefined_routines">Rutinas Predefinidas</string>
+    <string name="loading_predefined_routines">Cargando rutinas predefinidas…</string>
+    <string name="no_predefined_routines_found">No se encontraron rutinas predefinidas</string>
+    <string name="add_icon_description">Agregar</string>
+
+    <string name="customization_settings">Configuración de Personalización</string>
+    <string name="change_theme">Cambiar Tema</string>
+    <string name="change_language">Cambiar Idioma</string>
+    <string name="change_font_size">Cambiar Tamaño de Fuente</string>
+
+    <string name="equipment_settings">Configuración de Equipos</string>
+    <string name="add_equipment">Agregar Equipo</string>
+    <string name="remove_equipment">Eliminar Equipo</string>
+    <string name="view_equipment_list">Ver Lista de Equipos</string>
+
+    <string name="goals_settings">Configuración de Objetivos</string>
+    <string name="set_new_goal">Establecer Nuevo Objetivo</string>
+    <string name="view_goals">Ver Objetivos</string>
+    <string name="edit_goals">Editar Objetivos</string>
+
+    <string name="user_settings">Configuración de Usuario</string>
+    <string name="change_personal_information">Cambiar Información Personal</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="notification_settings">Configuración de Notificaciones</string>
+
+    <string name="personal_data">Datos Personales</string>
+    <string name="customization">Personalización</string>
+    <string name="logout">Cerrar Sesión</string>
+
+    <string name="weight_label">Peso (%1$s)</string>
+
+    <string name="expand_goal_options">Expandir opciones de objetivos</string>
+
+    <string name="save">Guardar</string>
+
+    <string name="calories_burned">Calorías quemadas</string>
+    <string name="kcal_unit">kcal</string>
+    <string name="kg_unit">kg</string>
+    <string name="no_data_available">No hay datos disponibles</string>
+
+    <string name="workouts_deleted">¡Entrenamientos eliminados!</string>
+    <string name="delete_error">Error al eliminar</string>
+    <string name="delete_workouts_confirmation_title">¿Estás seguro de eliminar estos workouts?</string>
+    <string name="delete_workouts_confirmation_message">No podrás recuperarlos</string>
+    <string name="no_workouts_available">No hay entrenamientos disponibles</string>
+    <string name="go_back">Volver atrás</string>
+
+    <string name="language_flag">Bandera del idioma</string>
+    <string name="selected">Seleccionado</string>
+    <string name="exercises_performed">Ejercicios realizados</string>
+    <string name="unknown_exercise">Ejercicio desconocido</string>
+    <string name="set_number">Serie %1$d</string>
+    <string name="reps">Reps: %1$s</string>
+    <string name="weight_data">Peso: %1$s kg</string>
+    <string name="no_valid_series">No hay series con datos completos</string>
+
+
+
 </resources>
