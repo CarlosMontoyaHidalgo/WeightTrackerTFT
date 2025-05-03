@@ -1,11 +1,13 @@
 package com.aronid.weighttrackertft.ui.components.charts.examples
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
@@ -24,6 +26,7 @@ import co.yml.charts.ui.barchart.models.GroupBarChartData
 import co.yml.charts.ui.barchart.models.GroupSeparatorConfig
 import co.yml.charts.ui.barchart.models.SelectionHighlightData
 
+@Preview
 @Composable
 fun BarChartsExamples(){
     Column {
@@ -40,7 +43,11 @@ fun BarChartsExamples(){
 @Composable
 fun BarchartWithSolidBars() {
     val maxRange = 50
+
     val barData = DataUtils.getBarChartData(50, maxRange, BarChartType.VERTICAL, DataCategoryOptions())
+    barData.forEach {
+        Log.d("BarChartTest", "Label: ${it.label}, Value: ${it.point}")
+    }
     val yStepSize = 10
 
     val xAxisData = AxisData.Builder()

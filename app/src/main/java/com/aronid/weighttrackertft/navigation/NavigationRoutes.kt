@@ -23,7 +23,8 @@ sealed class NavigationRoutes(val route: String) {
     object Customization : NavigationRoutes("customization")
     object Equipment : NavigationRoutes("equipment")
 
-    object SplashScreen: NavigationRoutes("splashScreen")
+    object SplashScreen : NavigationRoutes("splashScreen")
+    object ChatbotScreen : NavigationRoutes("chatbot")
 
     /*Workouts*/
     object Workout : NavigationRoutes("workout/{routineId}?isPredefined={isPredefined}") {
@@ -31,7 +32,8 @@ sealed class NavigationRoutes(val route: String) {
             return "workout/$routineId?isPredefined=$isPredefined"
         }
     }
-    object WorkoutSummary : NavigationRoutes("workoutSummary/{workoutId}"){
+
+    object WorkoutSummary : NavigationRoutes("workoutSummary/{workoutId}") {
         fun createRoute(workoutId: String) = "workoutSummary/$workoutId"
     }
 
@@ -45,25 +47,31 @@ sealed class NavigationRoutes(val route: String) {
             "routine_details/$routineId?isPredefined=$isPredefined"
     }
 
-    object EditRoutine : NavigationRoutes("edit_routine/{routineId}"){
+    object EditRoutine : NavigationRoutes("edit_routine/{routineId}") {
         fun createRoute(routineId: String) = "edit_routine/$routineId"
     }
-    object Training: NavigationRoutes("training/{routineId}"){
+
+    object Training : NavigationRoutes("training/{routineId}") {
         fun createRoute(routineId: String) = "training/$routineId"
     }
 
-    object CreateRoutine : NavigationRoutes("createRoutine")
+    object CreateRoutine : NavigationRoutes("createRoutine") {
+        fun createRoute(routineId: String) = "createRoutine/$routineId"
+    }
+
+
     object ChooseExercises : NavigationRoutes("chooseExercises")
     object Personalization : NavigationRoutes("personalization")
 
-    object ExerciseDetails : NavigationRoutes("exerciseDetails/{exerciseId}"){
+    object ExerciseDetails : NavigationRoutes("exerciseDetails/{exerciseId}") {
         fun createRoute(exerciseId: String) = "exerciseDetails/$exerciseId"
     }
 
     object UserData : NavigationRoutes("userData")
 
     object Charts : NavigationRoutes("charts")
-
+    object Calendar : NavigationRoutes("calendar")
+    //object Charts2 : NavigationRoutes("charts2")
 
 
 }

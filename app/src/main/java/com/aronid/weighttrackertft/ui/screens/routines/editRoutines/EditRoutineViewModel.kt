@@ -26,29 +26,64 @@ class EditRoutineViewModel @Inject constructor(
     private val _allExercises = MutableStateFlow<List<ExerciseModel>>(emptyList())
     val allExercises: StateFlow<List<ExerciseModel>> = _allExercises.asStateFlow()
 
+    private val _targetMuscles = MutableStateFlow<List<String>>(emptyList())
+    val targetMuscles: StateFlow<List<String>> = _targetMuscles.asStateFlow()
+
+    private val _availableMuscles = MutableStateFlow<List<String>>(
+        listOf("Pecho", "Tríceps", "Espalda", "Bíceps", "Piernas", "Hombros", "Abdomen")
+    )
+    val availableMuscles: StateFlow<List<String>> = _availableMuscles.asStateFlow()
+
+    sealed class State {
+        object Loading : State()
+        object Success : State()
+        data class Error(val message: String) : State()
+        object Initial : State()
+    }
+
+    private val _state = MutableStateFlow<State>(State.Initial)
+    val state: StateFlow<State> = _state.asStateFlow()
+
+    init {
+        loadAllExercises()
+    }
+
     fun loadRoutine(routineId: String) {
         viewModelScope.launch {
-            val loadedRoutine = routineRepository.getRoutineById(routineId)
-            _routine.value = loadedRoutine
-            _exercises.value = routineRepository.getExercisesForRoutine(routineId)
+            try {
+                val loadedRoutine = routineRepository.getRoutineById(routineId)
+                _routine.value = loadedRoutine
+                _exercises.value = routineRepository.getExercisesForRoutine(routineId)
+                _targetMuscles.value = loadedRoutine?.targetMuscles ?: emptyList()
+            } catch (e: Exception) {
+                _state.value = State.Error(e.message ?: "Error al cargar rutina")
+            }
         }
     }
 
-    fun updateRoutine(name: String, goal: String, description: String, exerciseIds: List<String>) {
+    fun updateRoutine(name: String, goal: String, description: String, targetMuscles: List<String>) {
+        _state.value = State.Loading
         val updatedRoutine = _routine.value?.copy(
             name = name,
             goal = goal,
-            description = description
+            description = description,
+            targetMuscles = targetMuscles
         )
         updatedRoutine?.let {
             viewModelScope.launch {
                 try {
-                    routineRepository.updateRoutine(it, exerciseIds)
+                    routineRepository.updateRoutine(it, _exercises.value.map { ex -> ex.id })
+                    _state.value = State.Success
                 } catch (e: Exception) {
-                    // Aquí podrías exponer el error a través de un StateFlow para mostrarlo en la UI
-                    println("Error al actualizar rutina: ${e.message}")
+                    _state.value = State.Error(e.message ?: "Error al actualizar rutina")
                 }
             }
+        }
+    }
+
+    fun addExercise(exercise: ExerciseModel) {
+        if (!_exercises.value.any { it.id == exercise.id }) {
+            _exercises.value = _exercises.value + exercise
         }
     }
 
@@ -56,13 +91,17 @@ class EditRoutineViewModel @Inject constructor(
         _exercises.value = _exercises.value.filter { it.id != exerciseId }
     }
 
-    fun getAllExercises() {
+    private fun loadAllExercises() {
         viewModelScope.launch {
-            _allExercises.value = routineRepository.getAllExercises()
+            try {
+                _allExercises.value = routineRepository.getAllExercises()
+            } catch (e: Exception) {
+                _state.value = State.Error(e.message ?: "Error al cargar ejercicios")
+            }
         }
     }
 
-    fun addExercises(newExercises: List<ExerciseModel>) {
-        _exercises.value += newExercises
+    fun updateTargetMuscles(muscles: List<String>) {
+        _targetMuscles.value = muscles
     }
 }

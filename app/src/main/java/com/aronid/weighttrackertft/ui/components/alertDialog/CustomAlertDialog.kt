@@ -21,7 +21,8 @@ fun CustomAlertDialog(
     text: String,
     confirmButtonText: String,
     dismissButtonText: String,
-    imageUrl: String? = null
+    imageUrl: String? = null,
+    customContent: (@Composable () -> Unit)? = null
 ) {
     if (showDialog) {
         AlertDialog(
@@ -34,6 +35,7 @@ fun CustomAlertDialog(
                     if (imageUrl != null) {
                         Image(painter = painterResource(/*imageUrl.toInt()*/ R.drawable.background), contentDescription = "")
                     }
+                    customContent?.invoke()
                 }
             },
             confirmButton = {

@@ -16,6 +16,7 @@ data class RoutineModel(
     @PropertyName("targetMuscles") val targetMuscles: List<String> = emptyList(),
     @PropertyName("isFavorite") val isFavorite: Boolean = false,
     @PropertyName("sectionId") val sectionId: String? = null,
+    @PropertyName("section") val section: SectionModel? = null,
 
     ) {
     init {

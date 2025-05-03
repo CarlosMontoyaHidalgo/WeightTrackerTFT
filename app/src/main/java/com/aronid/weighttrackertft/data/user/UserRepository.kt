@@ -19,6 +19,27 @@ class UserRepository @Inject constructor(
 
     private val userCollection = firestore.collection(FirestoreCollections.USERS)
 
+    suspend fun getCurrentUserHeight(): Double? {
+        val userId = auth.currentUser?.uid ?: return null
+        return try {
+            val snapshot = firestore.collection("users").document(userId).get().await()
+            snapshot.getDouble("height")
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun updateUserHeight(height: Double): Boolean {
+        return try {
+            val userId = auth.currentUser?.uid ?: return false
+            firestore.collection("users").document(userId)
+                .update("height", height)
+                .await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     suspend fun loginUser(email: String, password: String): Result<FirebaseUser> {
         return try {
@@ -178,7 +199,12 @@ class UserRepository @Inject constructor(
             userCollection.document(userId).update("profileImageUrl", imageUrl).await()
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(Exception("Error al actualizar la imagen de perfil: ${e.localizedMessage}", e))
+            Result.failure(
+                Exception(
+                    "Error al actualizar la imagen de perfil: ${e.localizedMessage}",
+                    e
+                )
+            )
         }
     }
 
@@ -196,11 +222,14 @@ class UserRepository @Inject constructor(
 
             Result.success(user.copy(id = userId))
         } catch (e: Exception) {
-            Result.failure(Exception("Error al obtener el perfil del usuario: ${e.localizedMessage}", e))
+            Result.failure(
+                Exception(
+                    "Error al obtener el perfil del usuario: ${e.localizedMessage}",
+                    e
+                )
+            )
         }
     }
-
-
 
 
 }

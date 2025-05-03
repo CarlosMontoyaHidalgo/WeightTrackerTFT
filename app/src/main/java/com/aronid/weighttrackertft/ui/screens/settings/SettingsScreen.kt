@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,6 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
-import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
 import com.aronid.weighttrackertft.utils.button.ButtonType
@@ -40,8 +40,6 @@ fun SettingsScreen(
     var showDialog by remember { mutableStateOf(false) }
     val state by settingsViewModel.buttonState.collectAsState()
     val buttonConfigs = state.baseState.buttonConfigs
-//    val name by settingsViewModel.userName.collectAsState()
-
 
     LaunchedEffect(Unit) {
         settingsViewModel.updateButtonConfigs()
@@ -64,7 +62,6 @@ fun SettingsScreen(
                 contentDescription = stringResource(id = R.string.settings),
                 painter = painterResource(id = R.drawable.ic_account_default)
             )
-//            Text(name)
 
             NewCustomButton(
                 text = stringResource(id = R.string.personal_data),
@@ -72,7 +69,7 @@ fun SettingsScreen(
                     navHostController.navigate(NavigationRoutes.UserData.route)
                 },
                 buttonType = ButtonType.FILLED,
-                containerColor = Color.Black,
+                containerColor = MaterialTheme.colorScheme.primary,
                 textConfig = buttonConfigs.textConfig,
                 layoutConfig = buttonConfigs.layoutConfig,
                 stateConfig = buttonConfigs.stateConfig,
@@ -85,7 +82,7 @@ fun SettingsScreen(
                     navHostController.navigate(NavigationRoutes.Personalization.route)
                 },
                 buttonType = ButtonType.FILLED,
-                containerColor = Color.Black,
+                containerColor = MaterialTheme.colorScheme.primary,
                 textConfig = buttonConfigs.textConfig,
                 layoutConfig = buttonConfigs.layoutConfig,
                 stateConfig = buttonConfigs.stateConfig,
@@ -93,12 +90,12 @@ fun SettingsScreen(
             )
 
             NewCustomButton(
-                text = "History Workout",
+                text = stringResource(id = R.string.workout_history),
                 onClick = {
                     navHostController.navigate(NavigationRoutes.WorkoutList.route)
                 },
                 buttonType = ButtonType.FILLED,
-                containerColor = Color.Black,
+                containerColor = MaterialTheme.colorScheme.primary,
                 textConfig = buttonConfigs.textConfig,
                 layoutConfig = buttonConfigs.layoutConfig,
                 stateConfig = buttonConfigs.stateConfig,
@@ -130,8 +127,6 @@ fun SettingsScreen(
                 confirmButtonText = stringResource(id = R.string.alert_positive),
                 dismissButtonText = stringResource(id = R.string.alert_negative)
             )
-
-//            ButtonList(navHostController = navHostController)
 
         }
 

@@ -35,7 +35,8 @@ class WorkoutViewModel @Inject constructor(
 
     private val _routineId = MutableStateFlow<String?>(null)
     private val _exercisesWithSeries = MutableStateFlow<List<ExerciseWithSeries>>(emptyList())
-    val exercisesWithSeries: StateFlow<List<ExerciseWithSeries>> = _exercisesWithSeries.asStateFlow()
+    val exercisesWithSeries: StateFlow<List<ExerciseWithSeries>> =
+        _exercisesWithSeries.asStateFlow()
 
     private val _currentExerciseIndex = MutableStateFlow(0)
     val currentExerciseIndex: StateFlow<Int> = _currentExerciseIndex.asStateFlow()
@@ -60,7 +61,7 @@ class WorkoutViewModel @Inject constructor(
     }
 
     private fun startTimer() {
-        if(!isTimerRunning){
+        if (!isTimerRunning) {
             isTimerRunning = true
             startTime = System.currentTimeMillis()
             viewModelScope.launch {
@@ -73,7 +74,7 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
-    fun stopTimer(){
+    fun stopTimer() {
         isTimerRunning = false
     }
 
@@ -94,9 +95,9 @@ class WorkoutViewModel @Inject constructor(
             val exerciseRefs = loadedRoutine?.exercises ?: emptyList()
             val exercises = exerciseRefs.mapNotNull { ref ->
                 try {
-                ref.get().await().toObject(ExerciseModel::class.java)
+                    ref.get().await().toObject(ExerciseModel::class.java)
 
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     Log.e("WorkoutViewModel", "Error loading exercise: ${e.message}", e)
                     null
                 }
@@ -106,7 +107,14 @@ class WorkoutViewModel @Inject constructor(
                     exerciseName = exercise.name,
                     description = exercise.description,
                     imageUrl = exercise.imageUrl,
-                    series = listOf(SeriesItem(setNumber = 1, weight = "", reps = "", isDone = false)),
+                    series = listOf(
+                        SeriesItem(
+                            setNumber = 1,
+                            weight = "",
+                            reps = "",
+                            isDone = false
+                        )
+                    ),
                     requiresWeight = exercise.requiresWeight,
                     primaryMuscleRef = exercise.primaryMuscle,
                     secondaryMusclesRef = exercise.secondaryMuscle
@@ -116,7 +124,8 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentExercise(): ExerciseWithSeries? = _exercisesWithSeries.value.getOrNull(_currentExerciseIndex.value)
+    fun getCurrentExercise(): ExerciseWithSeries? =
+        _exercisesWithSeries.value.getOrNull(_currentExerciseIndex.value)
 
     fun navigateToNextExercise() {
         if (_currentExerciseIndex.value < _exercisesWithSeries.value.size - 1) _currentExerciseIndex.value++
@@ -154,10 +163,18 @@ class WorkoutViewModel @Inject constructor(
         _exercisesWithSeries.value = _exercisesWithSeries.value.mapIndexed { exIndex, exercise ->
             if (exIndex == _currentExerciseIndex.value) {
                 val updatedSeries = exercise.series.toMutableList()
-                val toggledSeries = updatedSeries[seriesIndex].copy(isDone = !updatedSeries[seriesIndex].isDone)
+                val toggledSeries =
+                    updatedSeries[seriesIndex].copy(isDone = !updatedSeries[seriesIndex].isDone)
                 updatedSeries[seriesIndex] = toggledSeries
                 if (seriesIndex == updatedSeries.lastIndex && toggledSeries.isDone) {
-                    updatedSeries.add(SeriesItem(setNumber = updatedSeries.size + 1, weight = "", reps = "", isDone = false))
+                    updatedSeries.add(
+                        SeriesItem(
+                            setNumber = updatedSeries.size + 1,
+                            weight = "",
+                            reps = "",
+                            isDone = false
+                        )
+                    )
                 }
                 exercise.copy(series = updatedSeries)
             } else exercise
@@ -170,9 +187,11 @@ class WorkoutViewModel @Inject constructor(
         try {
             val workout = calculateAndSetWorkoutData()
             val savedWorkout = workoutRepository.saveWorkout(workout)
-            val primaryMusclesData = muscleRepository.fetchMusclesFromIds(savedWorkout.primaryMuscleIds.toSet())
+            val primaryMusclesData =
+                muscleRepository.fetchMusclesFromIds(savedWorkout.primaryMuscleIds.toSet())
             _primaryMuscles.value = primaryMusclesData.map { it.name }
-            val secondaryMusclesData = muscleRepository.fetchMusclesFromIds(savedWorkout.secondaryMuscleIds.toSet())
+            val secondaryMusclesData =
+                muscleRepository.fetchMusclesFromIds(savedWorkout.secondaryMuscleIds.toSet())
             _secondaryMuscles.value = secondaryMusclesData.map { it.name }
             _saveState.value = "Entrenamiento guardado"
             return savedWorkout
@@ -204,7 +223,7 @@ class WorkoutViewModel @Inject constructor(
 
 
         val primaryMuscleIds = _exercisesWithSeries.value
-            .map { it.primaryMuscleRef?.id ?: "No muscle ref"}
+            .map { it.primaryMuscleRef?.id ?: "No muscle ref" }
             .toSet()
             .toList()
 
@@ -213,8 +232,17 @@ class WorkoutViewModel @Inject constructor(
             .toSet()
             .toList()
 
-        val workoutType = determineWorkoutType(_exercisesWithSeries.value, totalVolume, _workoutDuration.value / 1000)
-        val intensity = calculateIntensity(_exercisesWithSeries.value, totalVolume, _workoutDuration.value / 1000, userWeight)
+        val workoutType = determineWorkoutType(
+            _exercisesWithSeries.value,
+            totalVolume,
+            _workoutDuration.value / 1000
+        )
+        val intensity = calculateIntensity(
+            _exercisesWithSeries.value,
+            totalVolume,
+            _workoutDuration.value / 1000,
+            userWeight
+        )
 
         return WorkoutModel(
             id = "",
@@ -280,7 +308,8 @@ private fun calculateIntensity(
     val volumeIntensity = (totalVolume / userWeight).coerceIn(0.0, 50.0) // Máx 50% de contribución
 
     // Intensidad por repeticiones y series completadas
-    val effortIntensity = (totalCompletedSeries * 2 + totalReps * 0.5).coerceIn(0.0, 30.0) // Máx 30%
+    val effortIntensity =
+        (totalCompletedSeries * 2 + totalReps * 0.5).coerceIn(0.0, 30.0) // Máx 30%
 
     // Intensidad por duración (inversa: menos tiempo con más volumen = más intenso)
     val timeIntensity = if (durationMinutes > 0) {
@@ -289,5 +318,5 @@ private fun calculateIntensity(
 
     // Suma ponderada para un rango de 0 a 100
     val intensity = (volumeIntensity + effortIntensity + timeIntensity).coerceIn(0.0, 100.0)
-    return if (intensity > 0) intensity else 10.0 // Mínimo 10 si hay actividad
+    return if (intensity > 0) intensity else 10.0
 }

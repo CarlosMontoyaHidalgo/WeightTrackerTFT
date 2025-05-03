@@ -23,7 +23,9 @@ fun SeriesRow(
     requiresWeight: Boolean,
     onWeightChange: (String) -> Unit,
     onRepsChange: (String) -> Unit,
-    onToggleCompleted: () -> Unit
+    onToggleCompleted: () -> Unit,
+    previousWeight: String = "",
+    previousReps: String = ""
 ) {
 
     Row(
@@ -42,7 +44,12 @@ fun SeriesRow(
                 onValueChange = { newValue ->
                     onWeightChange(newValue)
                 },
-                label = { Text("KG") },
+                label = {
+                    Text(
+                        if (previousWeight.isNotEmpty()) "KG (prev $previousWeight)"
+                        else "KG"
+                    )
+                },
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -53,7 +60,12 @@ fun SeriesRow(
             onValueChange = { newValue ->
                 onRepsChange(newValue)
             },
-            label = { Text("Reps") },
+            label = {
+                Text(
+                    if (previousReps.isNotEmpty()) "Reps (prev $previousReps)"
+                    else "Reps"
+                )
+            },
             modifier = Modifier.weight(1f),
             maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -72,6 +84,53 @@ fun SeriesRow(
 @Preview
 @Composable
 fun SeriesRowPreview() {
+    SeriesRow(
+        seriesNumber = 1,
+        weight = "",
+        reps = "",
+        isCompleted = false,
+        onWeightChange = {},
+        onRepsChange = {},
+        onToggleCompleted = {},
+        requiresWeight = true
+    )
+}
+
+@Preview(name = "No reps")
+@Composable
+fun SeriesRowPreviewNoReps() {
+    SeriesRow(
+        seriesNumber = 1,
+        weight = "",
+        reps = "",
+        isCompleted = false,
+        onWeightChange = {},
+        onRepsChange = {},
+        onToggleCompleted = {},
+        requiresWeight = false
+    )
+}
+
+@Preview(name = "Con datos previos")
+@Composable
+fun SeriesRowWithHistoryPreview() {
+    SeriesRow(
+        seriesNumber = 1,
+        weight = "60",
+        reps = "12",
+        previousWeight = "55",
+        previousReps = "10",
+        isCompleted = false,
+        onWeightChange = {},
+        onRepsChange = {},
+        onToggleCompleted = {},
+        requiresWeight = true
+    )
+}
+
+@Preview(name = "Sin datos previos")
+@Composable
+fun SeriesRowWithoutHistoryPreview() {
     SeriesRow(
         seriesNumber = 1,
         weight = "",

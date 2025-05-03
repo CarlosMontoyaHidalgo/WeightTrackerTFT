@@ -45,6 +45,9 @@ android {
 
 dependencies {
 
+    implementation(libs.itext)
+    implementation(libs.open.csv)
+
     // Firebase dependencies
     implementation(platform(libs.firebase.bom)) // Firebase Bill of Materials (BoM) to manage Firebase dependencies versions
     implementation(libs.firebase.crashlytics) // Firebase Crashlytics for crash reporting
@@ -61,6 +64,10 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+
+    implementation(libs.okhttp)
+
+    implementation(libs.androidx.compose.animation)
 
 // Jetpack Compose dependencies
     implementation(libs.compose.material.icons.extended) // Extended Material Icons for Jetpack Compose

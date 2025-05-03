@@ -25,7 +25,7 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 @Composable
 fun LineAndBarChartExample(){
     Column {
-        BarWithLineChart()
+        //BarWithLineChart()
         BarWithLineChartAndBackground()
     }
 }

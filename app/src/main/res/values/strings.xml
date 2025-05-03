@@ -231,4 +231,44 @@
     <string name="weight_data">Weight: %1$s kg</string>
     <string name="no_valid_series">No Sets with Complete Data</string>
 
+    <!-- Nueva cadena para el conteo de entrenamientos -->
+    <string name="workout_count">You have %d workouts registered</string>
+    <string name="no_workouts">No workouts registered</string>
+    <string name="workout_history">Workout history</string>
+    <string name="open_chatbot">Open Chatbot</string>
+    <string name="view_all_routines">View all routines</string>
+    <string name="logo_description">Application logo</string>
+    <string name="clear_date_range">Clear date range</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="set_goal">Set goal</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="tab_calories">Calories</string>
+    <string name="tab_volume">Volume</string>
+    <string name="tab_weight">Weight</string>
+    <string name="tab_bmi">BMI</string>
+
+    <string name="your_progress">Your Progress</string>
+    <string name="search_placeholder">Search…</string>
+
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="filter">Filter</string>
+    <string name="all_routines">All</string>
+    <string name="my_routines_filter">My Routines</string>
+    <string name="predefined_routines_filter">Predefined</string>
+    <string name="favorite_routines_filter">Favorites</string>
+    <string name="favorite_routines_title">Favorite Routines</string>
+    <string name="delete_routines">Delete routines</string>
+    <string name="confirm_delete_routines">Delete the %d selected routines?</string>
+    <string name="routines_deleted">Routines deleted</string>
+    <string name="error_deleting">Error deleting</string>
+
+    <string name="export_dialog_title">Export Workouts</string>
+    <string name="export_dialog_message">Choose the format to export your workout data:</string>
+    <string name="export_csv">Export as CSV</string>
+    <string name="export_pdf">Export as PDF</string>
+    <string name="export_success">Data exported successfully</string>
+    <string name="export_error">Error exporting data</string>
+    <string name="export_button_description">Export workout data</string>
 </resources>

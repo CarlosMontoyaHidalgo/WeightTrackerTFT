@@ -38,10 +38,12 @@ class ChartsViewModel @Inject constructor(
     private val _volumeData = MutableStateFlow<Map<String, Int>>(emptyMap())
     val volumeData: StateFlow<Map<String, Int>> = _volumeData.asStateFlow()
 
-    private val _weightData = MutableStateFlow<Map<String, Double>>(emptyMap()) // Historial de pesos como Double
+    private val _weightData =
+        MutableStateFlow<Map<String, Double>>(emptyMap()) // Historial de pesos como Double
     val weightData: StateFlow<Map<String, Double>> = _weightData.asStateFlow()
 
-    private val _currentWeight = MutableStateFlow<Double?>(null) // Peso actual del perfil como Double
+    private val _currentWeight =
+        MutableStateFlow<Double?>(null) // Peso actual del perfil como Double
     val currentWeight: StateFlow<Double?> = _currentWeight.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
@@ -50,18 +52,31 @@ class ChartsViewModel @Inject constructor(
     private var currentWeek = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear())
     private var currentYear = LocalDate.now().year
 
+    private val _currentHeight = MutableStateFlow<Double?>(null)
+    val currentHeight: StateFlow<Double?> = _currentHeight.asStateFlow()
+
     init {
         loadDataByWeek(currentWeek, currentYear)
-        loadCurrentWeight() // Cargar el peso actual al iniciar
+        loadInitialData() // Cargar el peso actual al iniciar
     }
 
-    private fun loadCurrentWeight() {
+    private fun loadInitialData() {
         viewModelScope.launch {
             val result = userRepository.getUserProfile()
             result.onSuccess { user ->
                 _currentWeight.value = user.weight
+                _currentHeight.value = userRepository.getCurrentUserHeight()
             }.onFailure {
                 _currentWeight.value = null
+                _currentHeight.value = null
+            }
+        }
+    }
+
+    fun updateUserHeight(newHeight: Double) {
+        viewModelScope.launch {
+            userRepository.updateUserHeight(newHeight).let { success ->
+                if (success) _currentHeight.value = newHeight
             }
         }
     }
@@ -86,11 +101,15 @@ class ChartsViewModel @Inject constructor(
                 _totalCalories.value = caloriesData.value.values.sum()
                 _volumeData.value = groupByDayForVolume(workouts, start, end)
 
-                val progressResult = userProgressRepository.getProgressInDateRange(start, end, userId)
+                val progressResult =
+                    userProgressRepository.getProgressInDateRange(start, end, userId)
                 progressResult.onSuccess { progressEntries ->
                     // Log para verificar los datos de peso recuperados
                     progressEntries.forEach {
-                        Log.d("PesosDebug", "Peso: ${it.weight} - Fecha: ${it.timestamp.toDate()} - UID: ${it.userId}")
+                        Log.d(
+                            "PesosDebug",
+                            "Peso: ${it.weight} - Fecha: ${it.timestamp.toDate()} - UID: ${it.userId}"
+                        )
                     }
                     _weightData.value = groupByDayForWeight(progressEntries, start, end)
                 }.onFailure {
@@ -155,7 +174,11 @@ class ChartsViewModel @Inject constructor(
         }
     }
 
-    private fun groupByDayForCalories(workouts: List<WorkoutModel>, startDate: Timestamp, endDate: Timestamp): Map<String, Int> {
+    private fun groupByDayForCalories(
+        workouts: List<WorkoutModel>,
+        startDate: Timestamp,
+        endDate: Timestamp
+    ): Map<String, Int> {
         val result = mutableMapOf<String, Int>()
         val calendar = Calendar.getInstance().apply { time = startDate.toDate() }
         val endCalendar = Calendar.getInstance().apply { time = endDate.toDate() }
@@ -175,7 +198,11 @@ class ChartsViewModel @Inject constructor(
         return result
     }
 
-    private fun groupByDayForVolume(workouts: List<WorkoutModel>, startDate: Timestamp, endDate: Timestamp): Map<String, Int> {
+    private fun groupByDayForVolume(
+        workouts: List<WorkoutModel>,
+        startDate: Timestamp,
+        endDate: Timestamp
+    ): Map<String, Int> {
         val result = mutableMapOf<String, Int>()
         val calendar = Calendar.getInstance().apply { time = startDate.toDate() }
         val endCalendar = Calendar.getInstance().apply { time = endDate.toDate() }
@@ -195,7 +222,11 @@ class ChartsViewModel @Inject constructor(
         return result
     }
 
-    private fun groupByDayForWeight(progressEntries: List<UserProgressModel>, startDate: Timestamp, endDate: Timestamp): Map<String, Double> {
+    private fun groupByDayForWeight(
+        progressEntries: List<UserProgressModel>,
+        startDate: Timestamp,
+        endDate: Timestamp
+    ): Map<String, Double> {
         val result = mutableMapOf<String, Double>()
         val calendar = Calendar.getInstance().apply { time = startDate.toDate() }
         val endCalendar = Calendar.getInstance().apply { time = endDate.toDate() }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,13 +44,10 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.FloatingActionButton.MyFloatingActionButton
 import com.aronid.weighttrackertft.ui.components.button.BackButton
-import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.routine.routineItem.RoutineItem
 import com.aronid.weighttrackertft.ui.screens.routines.RoutineFilterType
 import com.aronid.weighttrackertft.ui.screens.routines.RoutineViewModel
-import com.aronid.weighttrackertft.utils.button.ButtonType
-import com.aronid.weighttrackertft.utils.button.IconConfig
-import com.aronid.weighttrackertft.utils.button.IconPosition
+
 
 @Composable
 fun RoutineSearchBar(
@@ -73,6 +69,9 @@ fun RoutineSearchBar(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
     val selectedRoutines = viewModel.selectedRoutines
+
+    val showFloatingActionButton =
+        !(filterType == RoutineFilterType.CUSTOM_ONLY && customRoutines.isEmpty())
 
     Scaffold(
         topBar = {
@@ -132,7 +131,7 @@ fun RoutineSearchBar(
                             else MaterialTheme.colorScheme.primaryContainer
                         )
                     ) {
-                        Text(if (showCheckbox) "Cancelar" else "Editar")
+                        Text(if (showCheckbox) stringResource(R.string.cancel) else stringResource(R.string.edit))
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -157,7 +156,7 @@ fun RoutineSearchBar(
                                 else MaterialTheme.colorScheme.primaryContainer
                             )
                         ) {
-                            Text("Filtrar")
+                            stringResource(R.string.filter)
                         }
                     }
                 }
@@ -173,33 +172,36 @@ fun RoutineSearchBar(
                         FilterChip(
                             selected = filterType == RoutineFilterType.ALL,
                             onClick = { viewModel.setFilterType(RoutineFilterType.ALL) },
-                            label = { Text("Todas") }
+                            label = { Text(stringResource(R.string.all_routines)) }
                         )
                         FilterChip(
                             selected = filterType == RoutineFilterType.CUSTOM_ONLY,
                             onClick = { viewModel.setFilterType(RoutineFilterType.CUSTOM_ONLY) },
-                            label = { Text("Mis Rutinas") }
+                            label = { Text(stringResource(R.string.my_routines)) }
                         )
                         FilterChip(
                             selected = filterType == RoutineFilterType.PREDEFINED_ONLY,
                             onClick = { viewModel.setFilterType(RoutineFilterType.PREDEFINED_ONLY) },
-                            label = { Text("Predefinidas") }
+                            label = { Text(stringResource(R.string.predefined_routines_filter)) }
                         )
                         FilterChip(
                             selected = filterType == RoutineFilterType.FAVORITES,
                             onClick = { viewModel.setFilterType(RoutineFilterType.FAVORITES) },
-                            label = { Text("Favoritos") }
+                            label = { Text(stringResource(R.string.favorite_routines_filter)) }
                         )
                     }
                 }
             }
         },
         floatingActionButton = {
-            MyFloatingActionButton(
-                onClick = {
-                    navHostController.navigate(NavigationRoutes.CreateRoutine.route)
-                }
-            )
+            if (showFloatingActionButton) {
+                MyFloatingActionButton(
+                    onClick = {
+                        navHostController.navigate(NavigationRoutes.CreateRoutine.route)
+                    }
+                )
+
+            }
         },
 
         ) { paddingValues ->
@@ -247,12 +249,40 @@ fun RoutineSearchBar(
                 )
             }
 
+//            if (searchText.isEmpty() && customRoutines.isEmpty()) {
+//                NewCustomButton(
+//                    modifier = Modifier.padding(
+//                        horizontal = 16.dp,
+//                        vertical = 8.dp
+//                    ),
+//                    onClick = {
+//
+//                        navHostController.navigate(NavigationRoutes.CreateRoutine.route)
+//                    },
+//                    text = stringResource(R.string.create_new_routine),
+//                    buttonType = ButtonType.ELEVATED,
+//                    containerColor = Color.Blue,
+//                    textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
+//                    layoutConfig = buttonConfigs.layoutConfig,
+//                    stateConfig = buttonConfigs.stateConfig,
+//                    borderConfig = buttonConfigs.borderConfig,
+//                    iconConfig = IconConfig(
+//                        iconId = R.drawable.ic_add,
+//                        iconPosition = IconPosition.END,
+//                        iconContentDescription = stringResource(R.string.add_icon_description),
+//                        iconSize = 24.dp,
+//                        iconSpacing = 8.dp,
+//                        iconTint = Color.White
+//                    )
+//                )
+//            }
             // Content
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
             ) {
+
 
                 if (filterType == RoutineFilterType.FAVORITES) {
                     item {
@@ -280,110 +310,90 @@ fun RoutineSearchBar(
                             )
                         }
                     }
-                }
+                } else {
+                    if (filterType != RoutineFilterType.FAVORITES) {
+                        // Custom Routines Section
+                        if (filterType != RoutineFilterType.PREDEFINED_ONLY) {
+                            item {
+                                Text(
+                                    text = stringResource(R.string.my_routines),
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                            //Empty Custom Routines
+                            if (customRoutines.isEmpty()) {
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        CircularProgressIndicator()
+                                        Text(
+                                            text = if (searchText.isEmpty()) stringResource(R.string.no_custom_routines)
+                                            else stringResource(R.string.no_custom_routines_found),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
 
 
-                if (filterType != RoutineFilterType.FAVORITES) {
-
-
-                    // Custom Routines Section
-                    if (filterType != RoutineFilterType.PREDEFINED_ONLY) {
-                        item {
-                            Text(
-                                text = stringResource(R.string.my_routines),
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
+                                    }
+                                }
+                            } else {
+                                items(customRoutines) { routine ->
+                                    RoutineItem(
+                                        routine = routine,
+                                        navHostController = navHostController,
+                                        isPredefined = false,
+                                        isChecked = selectedRoutines.containsKey(routine.id),
+                                        showCheckbox = showCheckbox,
+                                        onCheckedChange = { checked ->
+                                            viewModel.toggleSelection(routine.id, checked)
+                                        }
+                                    )
+                                }
+                            }
                         }
 
-                        if (customRoutines.isEmpty()) {
+                        // Predefined Routines Section
+                        if (filterType != RoutineFilterType.CUSTOM_ONLY) {
                             item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = if (searchText.isEmpty()) stringResource(R.string.no_custom_routines)
-                                        else stringResource(R.string.no_custom_routines_found),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                Text(
+                                    text = stringResource(R.string.predefined_routines),
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
 
-                                    if (searchText.isEmpty()) {
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                        NewCustomButton(
-                                            modifier = Modifier.padding(
-                                                horizontal = 16.dp,
-                                                vertical = 8.dp
-                                            ),
-                                            onClick = {
-
-                                                navHostController.navigate(NavigationRoutes.CreateRoutine.route)
-                                            },
-                                            text = stringResource(R.string.create_new_routine),
-                                            buttonType = ButtonType.ELEVATED,
-                                            containerColor = Color.Blue,
-                                            textConfig = buttonConfigs.textConfig.copy(textColor = Color.White),
-                                            layoutConfig = buttonConfigs.layoutConfig,
-                                            stateConfig = buttonConfigs.stateConfig,
-                                            borderConfig = buttonConfigs.borderConfig,
-                                            iconConfig = IconConfig(
-                                                iconId = R.drawable.ic_add,
-                                                iconPosition = IconPosition.END,
-                                                iconContentDescription = stringResource(R.string.add_icon_description),
-                                                iconSize = 24.dp,
-                                                iconSpacing = 8.dp,
-                                                iconTint = Color.White
-                                            )
+                            //Predefined Routines Empty
+                            if (predefinedRoutines.isEmpty()) {
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        CircularProgressIndicator()
+                                        Text(
+                                            text = if (searchText.isEmpty()) stringResource(R.string.loading_predefined_routines)
+                                            else stringResource(R.string.no_predefined_routines_found),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(16.dp)
                                         )
                                     }
                                 }
-                            }
-                        } else {
-                            items(customRoutines) { routine ->
-                                RoutineItem(
-                                    routine = routine,
-                                    navHostController = navHostController,
-                                    isPredefined = false,
-                                    isChecked = selectedRoutines.containsKey(routine.id),
-                                    showCheckbox = showCheckbox,
-                                    onCheckedChange = { checked ->
-                                        viewModel.toggleSelection(routine.id, checked)
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    // Predefined Routines Section
-                    if (filterType != RoutineFilterType.CUSTOM_ONLY) {
-                        item {
-                            Text(
-                                text = stringResource(R.string.predefined_routines),
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
-                        }
-
-                        if (predefinedRoutines.isEmpty()) {
-                            item {
-                                Text(
-                                    text = if (searchText.isEmpty()) stringResource(R.string.loading_predefined_routines)
-                                    else stringResource(R.string.no_predefined_routines_found),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                            }
-                        } else {
-                            items(predefinedRoutines) { routine ->
-                                RoutineItem(
-                                    routine = routine,
-                                    navHostController = navHostController,
-                                    isPredefined = true
-                                )
+                            } else {
+                                items(predefinedRoutines) { routine ->
+                                    RoutineItem(
+                                        routine = routine,
+                                        navHostController = navHostController,
+                                        isPredefined = true
+                                    )
+                                }
                             }
                         }
                     }

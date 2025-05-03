@@ -1,7 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.workout.summary
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,7 +43,6 @@ import co.yml.charts.common.components.Legends
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import com.aronid.weighttrackertft.R
-import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
 import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
@@ -82,9 +80,11 @@ fun WorkoutSummaryScreen(
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
         if (isLoading) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -275,14 +275,7 @@ fun DataSection(
     navHostController: NavHostController
 ) {
     val context = LocalContext.current
-    var toastShown by remember { mutableStateOf(false) }
 
-    LaunchedEffect(saveState) {
-        if (!toastShown && saveState != null) {
-            Toast.makeText(context, saveState, Toast.LENGTH_SHORT).show()
-            toastShown = true
-        }
-    }
 
     FormScreen(
         modifier = Modifier,
@@ -425,7 +418,8 @@ fun RoutineSection(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = exercise.exerciseName ?: stringResource(R.string.unknown_exercise),
+                                text = exercise.exerciseName
+                                    ?: stringResource(R.string.unknown_exercise),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -442,7 +436,10 @@ fun RoutineSection(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
-                                            text = stringResource(R.string.set_number, series.setNumber),
+                                            text = stringResource(
+                                                R.string.set_number,
+                                                series.setNumber
+                                            ),
                                             style = MaterialTheme.typography.bodyMedium,
                                             modifier = Modifier.weight(1f)
                                         )
@@ -452,7 +449,10 @@ fun RoutineSection(
                                             modifier = Modifier.weight(1f)
                                         )
                                         Text(
-                                            text = stringResource(R.string.weight_data, series.weight ?: ""),
+                                            text = stringResource(
+                                                R.string.weight_data,
+                                                series.weight ?: ""
+                                            ),
                                             style = MaterialTheme.typography.bodyMedium,
                                             modifier = Modifier.weight(1f)
                                         )

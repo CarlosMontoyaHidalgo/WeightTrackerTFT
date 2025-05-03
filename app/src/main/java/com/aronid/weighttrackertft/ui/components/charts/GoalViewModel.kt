@@ -80,4 +80,9 @@ class GoalViewModel @Inject constructor(
             _showGoalDialog.value = true
         }
     }
+
+    fun calculateBMI(weight: Double, height: Double): Double {
+        val heightInMeters = height / 100
+        return weight / (heightInMeters * heightInMeters)
+    }
 }

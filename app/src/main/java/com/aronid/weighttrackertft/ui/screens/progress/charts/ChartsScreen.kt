@@ -23,15 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
-import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.charts.GoalViewModel
 import com.aronid.weighttrackertft.ui.components.sections.calories.CaloriesSection
+import com.aronid.weighttrackertft.ui.components.sections.imc.BMISection
 import com.aronid.weighttrackertft.ui.components.sections.volume.VolumeSection
 import com.aronid.weighttrackertft.ui.components.sections.weight.WeightSection
 import com.aronid.weighttrackertft.utils.formatShort
@@ -48,6 +49,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
     val volumeData by viewModel.volumeData.collectAsStateWithLifecycle()
     val weightData by viewModel.weightData.collectAsStateWithLifecycle()
     val currentWeight by viewModel.currentWeight.collectAsStateWithLifecycle()
+    val currentHeight by viewModel.currentHeight.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     var showDateRangePicker by remember { mutableStateOf(false) }
@@ -56,8 +58,15 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
     var selectedTabIndex by remember { mutableStateOf(0) }
     var hasDateRangeSelected by remember { mutableStateOf(false) }
 
+    var heightInput by remember { mutableStateOf("") }
+    var bmiResult by remember { mutableStateOf<Double?>(null) }
 
-    val tabs = listOf("Calorías", "Volumen", "Peso")
+    val tabs = listOf(
+        stringResource(R.string.tab_calories),
+        stringResource(R.string.tab_volume),
+        stringResource(R.string.tab_weight),
+        stringResource(R.string.tab_bmi)
+    )
 
     Column(
         modifier = Modifier
@@ -73,7 +82,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
         ) {
             Column {
                 Text(
-                    text = "Tu Progreso",
+                    text = stringResource(R.string.your_progress),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -99,7 +108,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_x),
-                            contentDescription = "Borrar rango de fechas",
+                            contentDescription = stringResource(R.string.clear_date_range),
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
@@ -107,7 +116,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                 IconButton(onClick = { showDateRangePicker = true }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_calendar),
-                        contentDescription = "Select date range",
+                        contentDescription = stringResource(R.string.select_date_range),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -116,7 +125,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                     IconButton(onClick = { viewModelGoals.triggerGoalDialog() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_goal),
-                            contentDescription = "Select date range",
+                            contentDescription = stringResource(R.string.select_date_range),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -149,9 +158,16 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                 onWeightChange = { weightInput = it },
                 onSaveWeight = { viewModel.saveWeight(it) }
             )
+
+            3 -> BMISection(
+                currentWeight = currentWeight,
+                currentHeight = currentHeight,
+            )
+
+
         }
     }
-    BackButton(navHostController)
+    //BackButton(navHostController)
 
     if (showDateRangePicker) {
         WorkoutRangeCalendar(

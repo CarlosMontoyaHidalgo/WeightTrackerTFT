@@ -13,7 +13,9 @@ import com.aronid.weighttrackertft.ui.components.dropdown.weightUnitSelector.Wei
 import com.aronid.weighttrackertft.ui.screens.auth.initial.InitialScreen
 import com.aronid.weighttrackertft.ui.screens.auth.login.LoginScreen
 import com.aronid.weighttrackertft.ui.screens.auth.signup.SignUpScreen
-import com.aronid.weighttrackertft.ui.screens.example.ExampleScreen
+import com.aronid.weighttrackertft.ui.screens.calendar.CalendarScreen
+import com.aronid.weighttrackertft.ui.screens.chatbot.ChatbotScreen
+import com.aronid.weighttrackertft.ui.screens.chatbot.ChatbotViewModel
 import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseScreen
 import com.aronid.weighttrackertft.ui.screens.exercises.ExerciseViewModel
 import com.aronid.weighttrackertft.ui.screens.exercises.details.ExerciseDetailsScreen
@@ -65,13 +67,12 @@ fun AppNavigation(
         if (isUserLoggedIn) NavigationRoutes.Home.route else NavigationRoutes.Loading.route
 
     NavHost(navHostController, startDestination = startDestination) {
-
-        composable(NavigationRoutes.Example.route) {
+        /*composable(NavigationRoutes.Example.route) {
             ExampleScreen(innerPadding, navHostController)
-        }
+        }*/
 
         composable(NavigationRoutes.SplashScreen.route) {
-            SplashScreen(innerPadding, isUserLoggedIn ,navHostController)
+            SplashScreen(innerPadding, isUserLoggedIn, navHostController)
         }
 
         composable(NavigationRoutes.Loading.route) {
@@ -79,7 +80,8 @@ fun AppNavigation(
         }
 
         composable(NavigationRoutes.Initial.route) {
-            InitialScreen(innerPadding,
+            InitialScreen(
+                innerPadding,
                 navigateToLogin = { navHostController.navigate(NavigationRoutes.Login.route) },
                 navigateToSignUp = { navHostController.navigate(NavigationRoutes.SignUp.route) }
             )
@@ -94,8 +96,7 @@ fun AppNavigation(
         }
         composable(NavigationRoutes.Home.route) {
             val viewModel: HomeViewModel = hiltViewModel()
-            val calendarViewModel: CalendarViewModel = hiltViewModel()
-            HomeScreen(innerPadding, navHostController, viewModel, calendarViewModel)
+            HomeScreen(innerPadding, navHostController, viewModel)
         }
 
         composable(NavigationRoutes.Questionnaire.route) {
@@ -136,8 +137,7 @@ fun AppNavigation(
             GoalsScreen(innerPadding, viewModel = viewModel, navHostController = navHostController)
         }
         composable(NavigationRoutes.Stats.route) {
-            val calendarViewModel: CalendarViewModel = hiltViewModel()
-            StatsScreen(innerPadding, navHostController, calendarViewModel)
+            StatsScreen(navHostController)
         }
 
         composable(NavigationRoutes.Settings.route) {
@@ -254,7 +254,29 @@ fun AppNavigation(
             ChartsScreen(innerPadding, navHostController)
         }
 
-        composable(NavigationRoutes.FavoriteExercises.route){
+        /*
+        composable(NavigationRoutes.Charts2.route) {
+            WeightChartsScreen(innerPadding, navHostController)
+        }*/
+        composable(NavigationRoutes.Calendar.route) {
+            val calendarViewModel: CalendarViewModel = hiltViewModel()
+            CalendarScreen(innerPadding, calendarViewModel, navHostController)
+        }
+
+        composable(NavigationRoutes.ChatbotScreen.route) {
+            val viewModel: ChatbotViewModel = hiltViewModel()
+            val createRoutineViewModel: CreateRoutineViewModel = hiltViewModel()
+            ChatbotScreen(
+                innerPadding,
+                viewModel,
+                createRoutineViewModel = createRoutineViewModel,
+                navHostController
+            )
+        }
+
+
+
+        composable(NavigationRoutes.FavoriteExercises.route) {
 
         }
 

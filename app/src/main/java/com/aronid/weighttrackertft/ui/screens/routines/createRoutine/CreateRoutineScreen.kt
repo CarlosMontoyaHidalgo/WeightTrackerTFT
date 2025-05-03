@@ -5,18 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -36,9 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
-import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
-import com.aronid.weighttrackertft.ui.components.searchBar.muscle.MuscleSearchBar
+import com.aronid.weighttrackertft.ui.components.tabs.routines.details.RoutineDetailsTab
+import com.aronid.weighttrackertft.ui.components.tabs.routines.exercises.ExerciseSelectionTab
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +134,8 @@ fun CreateRoutineScreen(
                                     } else {
                                         selectedExerciseIds - exercise.id
                                     }
-                            }
+                            },
+                            isAddMode = false
                         )
                     }
                 }
@@ -177,113 +169,3 @@ fun CreateRoutineScreen(
     )
 }
 
-@Composable
-private fun RoutineDetailsTab(
-    name: String,
-    goal: String,
-    description: String,
-    targetMuscles: List<String>,
-    availableMuscles: List<String>,
-    onNameChange: (String) -> Unit,
-    onGoalChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onMuscleSelected: (List<String>) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        OutlinedTextField(
-            value = name,
-            onValueChange = onNameChange,
-            label = { Text(stringResource(R.string.name)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = goal,
-            onValueChange = onGoalChange,
-            label = { Text(stringResource(R.string.goal)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = onDescriptionChange,
-            label = { Text(stringResource(R.string.description)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Text(
-            text = stringResource(R.string.target_muscles),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        MuscleGrid(
-            muscles = availableMuscles,
-            selectedMuscles = targetMuscles,
-            onSelectionChanged = onMuscleSelected
-        )
-    }
-}
-
-@Composable
-private fun ExerciseSelectionTab(
-    availableExercises: List<ExerciseModel>,
-    selectedExerciseIds: List<String>,
-    onExerciseSelected: (ExerciseModel) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.selected_exercises),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        MuscleSearchBar(
-            exercises = availableExercises,
-            selectedExerciseIds = selectedExerciseIds,
-            onExerciseSelected = onExerciseSelected,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-        )
-    }
-}
-
-@Composable
-private fun MuscleGrid(
-    muscles: List<String>,
-    selectedMuscles: List<String>,
-    onSelectionChanged: (List<String>) -> Unit
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        items(muscles) { muscle ->
-            FilterChip(
-                selected = selectedMuscles.contains(muscle),
-                onClick = {
-                    val newSelection = if (selectedMuscles.contains(muscle)) {
-                        selectedMuscles - muscle
-                    } else {
-                        selectedMuscles + muscle
-                    }
-                    onSelectionChanged(newSelection)
-                },
-                label = { Text(muscle) },
-                modifier = Modifier.padding(4.dp)
-            )
-        }
-    }
-}

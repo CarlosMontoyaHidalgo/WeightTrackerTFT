@@ -36,6 +36,9 @@ class RoutineViewModel @Inject constructor(
     private val _state = MutableStateFlow(ButtonState())
     val state: StateFlow<ButtonState> = _state
 
+    init {
+    }
+
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText.asStateFlow()
 

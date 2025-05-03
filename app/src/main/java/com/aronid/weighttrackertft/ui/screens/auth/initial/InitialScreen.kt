@@ -11,24 +11,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.button.CustomButton
-import com.aronid.weighttrackertft.ui.components.dropdown.languageDropdown.LanguageDropdown
-import java.util.Locale
 
 @Composable
 fun InitialScreen(
@@ -36,10 +28,11 @@ fun InitialScreen(
     navigateToLogin: () -> Unit = {},
     navigateToSignUp: () -> Unit = {},
 ) {
+    /*
     val viewModel: InitialViewModel = hiltViewModel()
     val context = LocalContext.current
     var currentLanguage by remember { mutableStateOf(Locale.getDefault().displayLanguage) }
-
+*/
     Column(
         modifier = Modifier
             .padding(innerPadding)
@@ -76,6 +69,7 @@ fun InitialScreen(
             borderWidth = 2,
             onClick = navigateToSignUp
         )
+        /*
         CustomButton(
             stringResource(id = R.string.continue_with_google),
             containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -83,6 +77,7 @@ fun InitialScreen(
             imageId = R.drawable.ic_google,
             onClick = { /* continueWithGoogle() */ }
         )
+        */
         CustomButton(
             stringResource(id = R.string.login),
             containerColor = MaterialTheme.colorScheme.onPrimary,

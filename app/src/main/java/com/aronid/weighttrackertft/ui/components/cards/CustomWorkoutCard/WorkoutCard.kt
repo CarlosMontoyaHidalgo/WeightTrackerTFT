@@ -17,12 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
-import com.google.firebase.Timestamp
+
 @Composable
 fun WorkoutCard(
     modifier: Modifier = Modifier,
@@ -44,7 +43,7 @@ fun WorkoutCard(
         shape = RoundedCornerShape(8.dp),
         onClick = { onCardClick() }
     ) {
-        Column( // Cambiamos Row por Column para más espacio vertical
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -79,14 +78,13 @@ fun WorkoutCard(
                 }
             }
 
-            // Métricas adicionales
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MetricItem(label = "Calorías", value = "${workout.calories} kcal")
                 MetricItem(label = "Volumen", value = "${workout.volume} kg")
-                MetricItem(label = "Intensidad", value = workout.intensity.toString())
+                MetricItem(label = "Intensidad", value = workout.intensity.toDouble().toString())
             }
 
             // Músculos primarios
