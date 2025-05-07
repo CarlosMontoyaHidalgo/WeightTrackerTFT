@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -28,7 +34,7 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -40,15 +46,17 @@ import java.util.Locale
 fun WorkoutCalendar(
     workouts: List<WorkoutModel>,
     onDayClick: (LocalDate, List<WorkoutModel>) -> Unit,
-    viewModel: CalendarViewModel
+    viewModel: CalendarViewModel,
+    locale: Locale = Locale.getDefault()
 ) {
     val currentDate = remember { LocalDate.now() }
     val firstDayOfWeek = DayOfWeek.MONDAY
     val daysOfWeek = remember { daysOfWeek(firstDayOfWeek) }
 
     val accountCreationDate by viewModel.accountCreationDate.collectAsState()
-    val startDate = accountCreationDate?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
-        ?: currentDate.minusYears(1)
+    val startDate =
+        accountCreationDate?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
+            ?: currentDate.minusYears(1)
 
     val startMonth = remember { YearMonth.from(maxOf(startDate, currentDate.minusMonths(1))) }
     val endMonth = remember { YearMonth.now().plusMonths(100) }
@@ -65,7 +73,8 @@ fun WorkoutCalendar(
             state = state,
             dayContent = { day ->
                 val dayWorkouts = workouts.filter {
-                    val workoutDate = it.date?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
+                    val workoutDate = it.date?.toDate()?.toInstant()?.atZone(ZoneId.systemDefault())
+                        ?.toLocalDate()
                     workoutDate != null && !workoutDate.isBefore(startDate) && workoutDate == day.date
                 }
                 WorkoutDay(
@@ -78,15 +87,18 @@ fun WorkoutCalendar(
                 MonthHeader(
                     month = calendarMonth.yearMonth.month,
                     year = calendarMonth.yearMonth.year,
-                    daysOfWeek = daysOfWeek
+                    daysOfWeek = daysOfWeek,
+                    locale = locale,
+                    showArrows = accountCreationDate != null,
+                    state = state // Pass the state to MonthHeader
                 )
             }
         )
     }
 }
 
-// Helper function
-fun maxOf(date1: LocalDate, date2: LocalDate): LocalDate = if (date1.isAfter(date2)) date1 else date2
+fun maxOf(date1: LocalDate, date2: LocalDate): LocalDate =
+    if (date1.isAfter(date2)) date1 else date2
 
 @Composable
 fun WorkoutDay(day: CalendarDay, workouts: List<WorkoutModel>, onClick: (CalendarDay) -> Unit) {
@@ -136,32 +148,81 @@ fun WorkoutDay(day: CalendarDay, workouts: List<WorkoutModel>, onClick: (Calenda
 }
 
 @Composable
-private fun MonthHeader(month: java.time.Month, year: Int, daysOfWeek: List<DayOfWeek>, modifier: Modifier = Modifier) {
+private fun MonthHeader(
+    month: java.time.Month,
+    year: Int,
+    daysOfWeek: List<DayOfWeek>,
+    modifier: Modifier = Modifier,
+    locale: Locale,
+    showArrows: Boolean,
+    state: com.kizitonwose.calendar.compose.CalendarState // Added state parameter
+) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column(modifier = modifier.fillMaxWidth()) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            contentAlignment = Alignment.Center
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "${month.getDisplayName(TextStyle.FULL, Locale.getDefault())} $year",
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
-            )
+            if (showArrows) {
+                IconButton(onClick = {
+                    coroutineScope.launch {
+                        state.scrollToMonth(YearMonth.of(year, month).minusMonths(1))
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
+                        contentDescription = "Previous month",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                Box(modifier = Modifier.padding(start = 16.dp)) // Placeholder to maintain layout
+            }
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                val monthName = month.getDisplayName(TextStyle.FULL, locale)
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+                Text(
+                    text = "$monthName $year",
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+            if (showArrows) {
+                IconButton(onClick = {
+                    coroutineScope.launch {
+                        state.scrollToMonth(YearMonth.of(year, month).plusMonths(1))
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowRight,
+                        contentDescription = "Next month",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                Box(modifier = Modifier.padding(end = 16.dp)) // Placeholder to maintain layout
+            }
         }
-        MonthDaysOfWeekTitle(daysOfWeek = daysOfWeek)
+        MonthDaysOfWeekTitle(daysOfWeek = daysOfWeek, locale = locale)
     }
 }
 
 @Composable
-private fun MonthDaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
+private fun MonthDaysOfWeekTitle(daysOfWeek: List<DayOfWeek>, locale: Locale) {
     Row(modifier = Modifier.fillMaxWidth()) {
         for (dayOfWeek in daysOfWeek) {
+            val dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                text = dayName,
                 style = MaterialTheme.typography.bodySmall
             )
         }

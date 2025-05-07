@@ -36,9 +36,6 @@ class RoutineViewModel @Inject constructor(
     private val _state = MutableStateFlow(ButtonState())
     val state: StateFlow<ButtonState> = _state
 
-    init {
-    }
-
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText.asStateFlow()
 
@@ -97,20 +94,6 @@ class RoutineViewModel @Inject constructor(
     init {
         loadRoutines()
     }
-
-//    private fun loadRoutines() {
-//        viewModelScope.launch {
-//            try {
-//                _allCustomRoutines.value = customRepository.getUserRoutines()
-//                _allPredefinedRoutines.value = predefinedRepository.getPredefinedRoutines()
-//                Log.d("RoutineViewModel", "Routines loaded: ${_allCustomRoutines.value.size} custom, ${_allPredefinedRoutines.value.size} predefined")
-//            } catch (e: Exception) {
-//                Log.e("RoutineViewModel", "Error loading routines", e)
-//                _allCustomRoutines.value = emptyList()
-//                _allPredefinedRoutines.value = emptyList()
-//            }
-//        }
-//    }
 
     private fun filterRoutines(routines: List<RoutineModel>, query: String): List<RoutineModel> {
         return if (query.isEmpty()) routines
@@ -189,7 +172,7 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    private fun loadRoutines() {
+    fun loadRoutines() {
         viewModelScope.launch {
             try {
                 // Obtener rutinas y favoritos

@@ -271,4 +271,30 @@
     <string name="export_success">Data exported successfully</string>
     <string name="export_error">Error exporting data</string>
     <string name="export_button_description">Export workout data</string>
+
+    <string name="favorite_workouts">Favorite workouts</string>
+    <string name="no_favorite_workouts">You haven`t added any favorite workouts.</string>
+
+    <string name="favorite_routines">Favorite routines</string>
+    <string name="no_favorite_routines">You don`t have any favorite routines.</string>
+
+
+    <string name="set_calorie_goal">Set calorie goal</string>
+    <string name="set_calorie_goal_title">Set Calorie Goal</string>
+    <string name="set_calorie_goal_message">Enter your daily calorie goal:</string>
+    <string name="calorie_goal_label">Calorie goal (kcal)</string>
+
+    <string name="average_calories_title">Average Calories</string>
+
+    <string name="set_weight_title">Set Weight</string>
+    <string name="set_weight_message">Enter your current weight:</string>
+    <string name="weight_label_kg">Weight (kg)</string>
+
+    <string name="no_exercises_selected">No exercises selected</string>
+    <string name="remove_exercise">Remove exercise</string>
+
+
+    <string name="your_trainings">Your Trainings</string>
+    <string name="workouts">Workouts</string>
+    <string name="confirm">Confirm</string>
 </resources>

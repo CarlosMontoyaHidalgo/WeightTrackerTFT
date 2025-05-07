@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -55,15 +54,17 @@ fun FavoriteRoutineList(
         }
     }
     if (favoriteRoutines.isEmpty()) {
-        Column(modifier = modifier) {
+        Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "No favorite routines yet",
+                text = "Todavía no tienes entrenamientos favoritos",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(8.dp)
             )
+            /*
             Button(onClick = { navHostController.navigate(NavigationRoutes.Routines.route) }) {
                 Text(text = "Ver todas las rutinas")
-            }
+            }*/
+
         }
     } else {
         RoutineList(

@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.charts.lineCharts.CaloriesLineChartWithGridLines
 
 
@@ -26,9 +28,34 @@ fun CaloriesSection(
     caloriesData: Map<String, Int>,
     totalCalories: Int?,
     goalCalories: Int?,
+    averageCalories: Int?,
     isLoading: Boolean
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
+if (caloriesData.size > 1 && averageCalories != 0){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.average_calories_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = averageCalories.toString(),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+
+}
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,7 +83,7 @@ fun CaloriesSection(
                     )
                     Text(
                         text = "${totalCalories ?: "Cargando..."} kcal",
-                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
+                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 24.sp),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -82,8 +109,8 @@ fun CaloriesSection(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${goalCalories ?: "Cargando..."} kcal",
-                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
+                        text = "${goalCalories ?: "Establece un objetivo de"} kcal",
+                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 20.sp),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }

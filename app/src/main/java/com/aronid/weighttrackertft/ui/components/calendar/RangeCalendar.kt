@@ -24,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aronid.weighttrackertft.R
 import com.google.firebase.Timestamp
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -34,6 +36,7 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
@@ -203,7 +206,7 @@ fun WorkoutRangeCalendar(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Select Date Range") },
+        title = { Text(stringResource(R.string.select_date_range)) },
         text = {
             Box(modifier = Modifier.height(400.dp)) {
                 HorizontalCalendar(
@@ -254,7 +257,16 @@ fun WorkoutRangeCalendar(
                             }
                         )
                     },
-                    monthHeader = { month -> MonthHeader(month.yearMonth) }
+                    monthHeader = { month ->
+                        // Formatear el mes con la primera letra en mayúscula en español
+                        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es", "ES"))
+                        val monthText = month.yearMonth.format(formatter)
+                            .replaceFirstChar { it.titlecase(Locale("es", "ES")) }
+                        Text(
+                            text = monthText,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                 )
             }
         },
@@ -263,17 +275,17 @@ fun WorkoutRangeCalendar(
                 onClick = {
                     val startTimestamp = selectedStart?.date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.let { Timestamp(Date.from(it)) }
                     val endTimestamp = selectedEnd?.date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.let { Timestamp(Date.from(it)) }
-                    onDateRangeSelected(startTimestamp, endTimestamp ?: startTimestamp) // Use startTimestamp if end is null
+                    onDateRangeSelected(startTimestamp, endTimestamp ?: startTimestamp)
                     onDismiss()
                 },
                 enabled = selectedStart != null
             ) {
-                Text("Confirm")
+                Text(stringResource(R.string.confirm))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

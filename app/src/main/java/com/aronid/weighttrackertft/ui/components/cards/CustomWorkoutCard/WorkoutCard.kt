@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
+import com.aronid.weighttrackertft.utils.Translations
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun WorkoutCard(
@@ -34,6 +37,14 @@ fun WorkoutCard(
     navHostController: NavHostController? = null,
     onCardClick: () -> Unit = {}
 ) {
+    // Formatear la fecha en español
+    val formatter = SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
+    val formattedDate = workout.date?.toDate()?.let { formatter.format(it) } ?: "No disponible"
+
+    // Obtener etiquetas traducidas
+    val primaryMuscleLabel = Translations.uiStrings["primary_muscle_label"]?.get("es") ?: "Primarios"
+    val secondaryMusclesLabel = Translations.uiStrings["secondary_muscles_label"]?.get("es") ?: "Secundarios"
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -64,7 +75,7 @@ fun WorkoutCard(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Fecha: ${workout.date?.toDate()?.toString() ?: "No disponible"}",
+                        text = "Fecha: $formattedDate",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -84,7 +95,7 @@ fun WorkoutCard(
             ) {
                 MetricItem(label = "Calorías", value = "${workout.calories} kcal")
                 MetricItem(label = "Volumen", value = "${workout.volume} kg")
-                MetricItem(label = "Intensidad", value = workout.intensity.toDouble().toString())
+                MetricItem(label = "Intensidad", value = "${workout.intensity.toInt().toString()} %")
             }
 
             // Músculos primarios
@@ -92,7 +103,7 @@ fun WorkoutCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Primarios: ",
+                    text = "$primaryMuscleLabel: ",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -100,7 +111,8 @@ fun WorkoutCard(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(workout.primaryMuscleIds) { muscle ->
-                        MyTag(text = muscle.ifEmpty { "Ninguno" })
+                        val translatedMuscle = Translations.translateAndFormat(muscle, Translations.muscleTranslations)
+                        MyTag(text = translatedMuscle.ifEmpty { "Ninguno" })
                     }
                 }
             }
@@ -110,7 +122,7 @@ fun WorkoutCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Secundarios: ",
+                    text = "$secondaryMusclesLabel: ",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -118,7 +130,8 @@ fun WorkoutCard(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(workout.secondaryMuscleIds) { muscle ->
-                        MyTag(text = muscle.ifEmpty { "Ninguno" })
+                        val translatedMuscle = Translations.translateAndFormat(muscle, Translations.muscleTranslations)
+                        MyTag(text = translatedMuscle.ifEmpty { "Ninguno" })
                     }
                 }
             }
@@ -133,7 +146,11 @@ fun WorkoutCard(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(workout.exercises.take(2)) { exercise ->
-                        MyTag(text = exercise.exerciseName.toString())
+                        val translatedExercise = Translations.translateAndFormat(
+                            exercise.exerciseName.toString(),
+                            Translations.exerciseTranslations
+                        )
+                        MyTag(text = translatedExercise)
                     }
                     if (workout.exercises.size > 2) {
                         item {
@@ -161,4 +178,3 @@ fun MetricItem(label: String, value: String) {
         )
     }
 }
-

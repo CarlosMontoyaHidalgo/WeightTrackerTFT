@@ -226,7 +226,6 @@
     <string name="no_valid_series">No hay series con datos completos</string>
 
 
-
     <!-- Nueva cadena para el conteo de entrenamientos -->
     <string name="workout_count">Tienes %d entrenamientos registrados</string>
     <string name="no_workouts">No hay entrenamientos registrados</string>
@@ -270,5 +269,30 @@
     <string name="export_button_description">Exportar datos de entrenamientos</string>
 
 
+    <string name="favorite_workouts">Entrenamientos favoritos</string>
+    <string name="no_favorite_workouts">Todavía no tienes entrenamientos favoritos</string>
 
+    <string name="favorite_routines">Rutinas favoritas</string>
+    <string name="no_favorite_routines">Todavía no tienes rutinas favoritas</string>
+
+
+    <string name="set_calorie_goal">Establecer objetivo de calorías</string>
+    <string name="set_calorie_goal_title">Establecer Objetivo de Calorías</string>
+    <string name="set_calorie_goal_message">Ingresa tu objetivo diario de calorías:</string>
+    <string name="calorie_goal_label">Objetivo de calorías (kcal)</string>
+
+
+    <string name="average_calories_title">Promedio de Calorías</string>
+
+    <string name="set_weight_title">Establecer Peso</string>
+    <string name="set_weight_message">Ingresa tu peso actual:</string>
+    <string name="weight_label_kg">Peso (kg)</string>
+
+
+    <string name="no_exercises_selected">No hay ejercicios seleccionados</string>
+    <string name="remove_exercise">Eliminar ejercicio</string>
+    <string name="your_trainings">Tus entrenamientos</string>
+
+    <string name="workouts">Entrenamientos</string>
+    <string name="confirm">Confirmar</string>
 </resources>

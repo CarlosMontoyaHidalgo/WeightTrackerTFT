@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
+import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.charts.GoalViewModel
 import com.aronid.weighttrackertft.ui.components.sections.calories.CaloriesSection
@@ -41,6 +43,8 @@ import com.aronid.weighttrackertft.utils.formatShort
 fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostController) {
     val viewModel: ChartsViewModel = hiltViewModel()
     val viewModelGoals: GoalViewModel = hiltViewModel()
+    val averageCalories by viewModel.averageCalories.collectAsStateWithLifecycle()
+    var newWeightInput by remember { mutableStateOf("") }
 
 
     val caloriesData by viewModel.caloriesData.collectAsStateWithLifecycle()
@@ -51,12 +55,15 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
     val currentWeight by viewModel.currentWeight.collectAsStateWithLifecycle()
     val currentHeight by viewModel.currentHeight.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val showGoalDialog by viewModelGoals.showGoalDialog.collectAsStateWithLifecycle()
+    val showWeightDialog by viewModelGoals.showWeightDialog.collectAsStateWithLifecycle()
 
     var showDateRangePicker by remember { mutableStateOf(false) }
     var dateRangeText by remember { mutableStateOf(viewModel.getWeekRangeText()) }
     var weightInput by remember { mutableStateOf("") }
     var selectedTabIndex by remember { mutableStateOf(0) }
     var hasDateRangeSelected by remember { mutableStateOf(false) }
+    var goalInput by remember { mutableStateOf("") }
 
     var heightInput by remember { mutableStateOf("") }
     var bmiResult by remember { mutableStateOf<Double?>(null) }
@@ -130,6 +137,15 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                         )
                     }
                 }
+                if (selectedTabIndex == 2) {
+                    IconButton(onClick = { viewModelGoals.triggerWeightDialog() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_weight),
+                            contentDescription = stringResource(R.string.select_date_range),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             }
         }
 
@@ -148,7 +164,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
         Spacer(modifier = Modifier.height(16.dp))
 
         when (selectedTabIndex) {
-            0 -> CaloriesSection(caloriesData, totalCalories, goalCalories, isLoading)
+            0 -> CaloriesSection(caloriesData, totalCalories, goalCalories, averageCalories ,isLoading)
             1 -> VolumeSection(volumeData, isLoading)
             2 -> WeightSection(
                 weightData,
@@ -158,7 +174,6 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                 onWeightChange = { weightInput = it },
                 onSaveWeight = { viewModel.saveWeight(it) }
             )
-
             3 -> BMISection(
                 currentWeight = currentWeight,
                 currentHeight = currentHeight,
@@ -167,8 +182,69 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
 
         }
     }
-    //BackButton(navHostController)
+    if (showGoalDialog) {
+        CustomAlertDialog(
+            showDialog = showGoalDialog,
+            onDismiss = { viewModelGoals.dismissGoalDialog() },
+            onConfirm = {
+                val goal = goalInput.toIntOrNull()
+                if (goal != null) {
+                    viewModelGoals.setGoalCalories(goal)
+                }
+            },
+            title = stringResource(R.string.set_calorie_goal_title),
+            text = stringResource(R.string.set_calorie_goal_message),
+            confirmButtonText = stringResource(R.string.save),
+            dismissButtonText = stringResource(R.string.cancel),
+            customContent = {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = goalInput,
+                        onValueChange = { goalInput = it },
+                        label = { Text(stringResource(R.string.calorie_goal_label)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        isError = goalInput.toIntOrNull() == null && goalInput.isNotEmpty()
+                    )
+                }
+            }
+        )
+    }
 
+    if (showWeightDialog) {
+        CustomAlertDialog(
+            showDialog = showWeightDialog,
+            onDismiss = { viewModelGoals.dismissWeightDialog() },
+            onConfirm = {
+                val weight = newWeightInput.toDoubleOrNull()
+                if (weight != null) {
+                    viewModel.saveWeight(weight) // Use ChartsViewModel's saveWeight
+                }
+            },
+            title = stringResource(R.string.set_weight_title),
+            text = stringResource(R.string.set_weight_message),
+            confirmButtonText = stringResource(R.string.save),
+            dismissButtonText = stringResource(R.string.cancel),
+            customContent = {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = newWeightInput,
+                        onValueChange = { newWeightInput = it },
+                        label = { Text(stringResource(R.string.weight_label_kg)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        isError = newWeightInput.toDoubleOrNull() == null && newWeightInput.isNotEmpty()
+                    )
+                }
+            }
+        )
+    }
     if (showDateRangePicker) {
         WorkoutRangeCalendar(
             viewModel = hiltViewModel(),

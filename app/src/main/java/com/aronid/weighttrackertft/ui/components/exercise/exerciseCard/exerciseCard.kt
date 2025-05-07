@@ -28,6 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
+import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
+import com.aronid.weighttrackertft.utils.Translations.muscleTranslations
+import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
+import java.util.Locale
 
 @Composable
 fun ExerciseCard(
@@ -40,6 +44,7 @@ fun ExerciseCard(
     isSelected: Boolean = false,
     onToggleSelection: () -> Unit = {}
 ) {
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -60,7 +65,6 @@ fun ExerciseCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.background/*imageUrl.toInt()*/),
                 contentDescription = null,
@@ -72,7 +76,7 @@ fun ExerciseCard(
             Spacer(modifier = Modifier.padding(horizontal = 4.dp))
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = name,
+                    text = translateAndFormat(name, exerciseTranslations),
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
@@ -80,19 +84,18 @@ fun ExerciseCard(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     item {
                         MyTag(
-                            text = primaryMuscle,
+                            text = translateAndFormat(primaryMuscle, muscleTranslations),
                             modifier = Modifier.padding(16.dp)
                         )
                     }
                     items(secondaryMuscles) { muscle ->
                         MyTag(
-                            text = muscle,
+                            text = translateAndFormat(muscle, muscleTranslations),
                             modifier = Modifier
                         )
                     }
                 }
             }
-
         }
     }
 }

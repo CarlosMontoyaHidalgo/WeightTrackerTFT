@@ -32,6 +32,9 @@ class ChartsViewModel @Inject constructor(
     private val _caloriesData = MutableStateFlow<Map<String, Int>>(emptyMap())
     val caloriesData: StateFlow<Map<String, Int>> = _caloriesData.asStateFlow()
 
+    private val _averageCalories = MutableStateFlow<Int?>(null)
+    val averageCalories: StateFlow<Int?> = _averageCalories.asStateFlow()
+
     private val _totalCalories = MutableStateFlow<Int?>(null)
     val totalCalories: StateFlow<Int?> = _totalCalories.asStateFlow()
 
@@ -91,10 +94,13 @@ class ChartsViewModel @Inject constructor(
                 val userId = try {
                     userRepository.getCurrentUser().uid
                 } catch (e: Exception) {
-                    Log.e("LoadData", "Error al obtener UID", e)
                     _isLoading.value = false
                     return@launch
                 }
+
+                val daysCount = _caloriesData.value.size
+                val total = _totalCalories.value ?: 0
+                _averageCalories.value = if (daysCount > 1) total / daysCount else 0
 
                 val workouts = workoutRepository.getWorkoutsInDateRange(start, end)
                 _caloriesData.value = groupByDayForCalories(workouts, start, end)
@@ -104,24 +110,17 @@ class ChartsViewModel @Inject constructor(
                 val progressResult =
                     userProgressRepository.getProgressInDateRange(start, end, userId)
                 progressResult.onSuccess { progressEntries ->
-                    // Log para verificar los datos de peso recuperados
-                    progressEntries.forEach {
-                        Log.d(
-                            "PesosDebug",
-                            "Peso: ${it.weight} - Fecha: ${it.timestamp.toDate()} - UID: ${it.userId}"
-                        )
-                    }
+
                     _weightData.value = groupByDayForWeight(progressEntries, start, end)
                 }.onFailure {
                     _weightData.value = emptyMap()
-                    Log.e("PesosDebug", "Fallo al cargar pesos", it)
                 }
             } catch (e: Exception) {
                 _caloriesData.value = emptyMap()
                 _totalCalories.value = 0
                 _volumeData.value = emptyMap()
                 _weightData.value = emptyMap()
-                Log.e("LoadData", "Error inesperado", e)
+                _averageCalories.value = null
             } finally {
                 _isLoading.value = false
             }

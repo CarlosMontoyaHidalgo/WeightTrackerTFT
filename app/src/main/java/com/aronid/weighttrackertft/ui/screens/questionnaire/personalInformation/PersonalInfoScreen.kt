@@ -1,8 +1,11 @@
 package com.aronid.weighttrackertft.ui.screens.questionnaire.personalInformation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -12,9 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.WheelDatePickerBottomSheet.WheelDatePickerBottomSheet
@@ -55,7 +60,11 @@ fun PersonalInformationScreen(
                 }
             )
 
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 OutlinedTextField(
                     value = formatDate(state.birthdate),
                     onValueChange = { newDate ->
@@ -74,6 +83,7 @@ fun PersonalInformationScreen(
                         }
                     }
                 )
+                Spacer(Modifier.width(16.dp))
                 SmallButton(
                     imageId = R.drawable.ic_calendar,
                     onClick = { showDatePicker = true },

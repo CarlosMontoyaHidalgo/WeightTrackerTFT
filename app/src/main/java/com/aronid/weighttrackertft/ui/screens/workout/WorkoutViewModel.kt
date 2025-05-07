@@ -74,6 +74,7 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
+
     fun stopTimer() {
         isTimerRunning = false
     }
@@ -96,13 +97,20 @@ class WorkoutViewModel @Inject constructor(
             val exercises = exerciseRefs.mapNotNull { ref ->
                 try {
                     ref.get().await().toObject(ExerciseModel::class.java)
-
                 } catch (e: Exception) {
                     Log.e("WorkoutViewModel", "Error loading exercise: ${e.message}", e)
                     null
                 }
             }
             _exercisesWithSeries.value = exercises.map { exercise ->
+                // Fetch primary muscle name
+                val primaryMuscleName = exercise.primaryMuscle?.let { ref ->
+                    muscleRepository.fetchMuscleById(ref.id)?.name
+                }
+                // Fetch secondary muscle names
+                val secondaryMuscleNames = exercise.secondaryMuscle.mapNotNull { ref ->
+                    ref?.let { muscleRepository.fetchMuscleById(it.id)?.name }
+                }
                 ExerciseWithSeries(
                     exerciseName = exercise.name,
                     description = exercise.description,
@@ -117,8 +125,12 @@ class WorkoutViewModel @Inject constructor(
                     ),
                     requiresWeight = exercise.requiresWeight,
                     primaryMuscleRef = exercise.primaryMuscle,
-                    secondaryMusclesRef = exercise.secondaryMuscle
-
+                    secondaryMusclesRef = exercise.secondaryMuscle,
+                    instructions = exercise.instructions,
+                    met = exercise.met,
+                    type = exercise.type,
+                    primaryMuscleName = primaryMuscleName,
+                    secondaryMuscleNames = secondaryMuscleNames
                 )
             }
         }

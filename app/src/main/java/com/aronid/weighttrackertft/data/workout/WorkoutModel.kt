@@ -17,6 +17,7 @@ data class WorkoutModel(
     @PropertyName("primaryMuscleIds") val primaryMuscleIds: List<String> = emptyList(),
     @PropertyName("secondaryMuscleIds") val secondaryMuscleIds: List<String> = emptyList(),
     @PropertyName("duration") val duration: Long = 0L,
+
 )
 
 data class ExerciseWithSeries(
@@ -28,7 +29,13 @@ data class ExerciseWithSeries(
     @PropertyName("requiresWeight") val requiresWeight: Boolean = false,
     @PropertyName("primaryMuscleRef") val primaryMuscleRef: DocumentReference? = null,
     @PropertyName("secondaryMusclesRef") val secondaryMusclesRef: List<DocumentReference?> = emptyList(),
-
+    val instructions: Map<String, String>? = null,
+    val commonMistakes: Map<String, List<String>>? = null,
+    val tips: Map<String, List<String>>? = null,
+    val met: Double? = null,
+    val type: String? = null,
+    val primaryMuscleName: String? = null,
+    val secondaryMuscleNames: List<String> = emptyList()
     )
 
 data class SeriesItem(

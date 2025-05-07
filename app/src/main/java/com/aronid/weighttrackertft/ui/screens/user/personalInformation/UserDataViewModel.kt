@@ -27,7 +27,7 @@ import javax.inject.Inject
 class UserDataViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val userProgressRepository: UserProgressRepository,
-    private val weightRepository: WeightRepository // Conservamos WeightRepository
+    private val weightRepository: WeightRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(UserModel())
     val state: StateFlow<UserModel> = _state.asStateFlow()
@@ -40,7 +40,7 @@ class UserDataViewModel @Inject constructor(
     private val _selectedGoal = MutableStateFlow("")
     val selectedGoal: StateFlow<String> = _selectedGoal.asStateFlow()
 
-    val weightUnit: StateFlow<String> = weightRepository.weightUnit // Exponemos el weightUnit del repositorio
+    val weightUnit: StateFlow<String> = weightRepository.weightUnit
 
     private val _showNameError = MutableStateFlow(false)
     val showNameError: StateFlow<Boolean> = _showNameError
@@ -112,7 +112,6 @@ class UserDataViewModel @Inject constructor(
     fun onWeightChanged(newWeight: String) {
         val weightValue = newWeight.toDoubleOrNull()
         if (weightValue != null) {
-            // Convertimos a kg según la unidad seleccionada
             val weightInKg = if (weightUnit.value == "Libras") weightValue * 0.453592 else weightValue
             _state.update { it.copy(weight = weightInKg) }
         } else {
@@ -210,11 +209,10 @@ class UserDataViewModel @Inject constructor(
                     userRepository.updateUserFields(user.uid, updates)
                     Log.d("UserDataViewModel", "User data saved successfully: $updates")
 
-                    // Guardar el peso en user_progress si cambió
                     if (currentState.weight != originalData.weight && currentState.weight != null) {
                         val progress = UserProgressModel(
-                            userId = "", // El repositorio lo llenará
-                            weight = currentState.weight, // Siempre en kg
+                            userId = "",
+                            weight = currentState.weight,
                             timestamp = Timestamp.now(),
                             caloriesConsumed = null,
                             activityLevel = null,

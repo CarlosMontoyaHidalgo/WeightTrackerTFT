@@ -53,6 +53,7 @@ import com.aronid.weighttrackertft.ui.components.charts.radarCharts.MuscleRadarC
 import com.aronid.weighttrackertft.ui.components.charts.verticalCharts.MuscleVerticalBarChart
 import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.konfetti.KonfettiComponent
+import com.aronid.weighttrackertft.utils.Translations
 import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable
@@ -146,123 +147,6 @@ fun WorkoutSummaryScreen(
         }
     }
 
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color.White)
-//    ) {
-//        if (isLoading) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(Color.White),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.size(64.dp),
-//                    color = MaterialTheme.colorScheme.primary,
-//                    strokeWidth = 6.dp
-//                )
-//            }
-//        } else {
-//            KonfettiComponent(
-//                modifier = Modifier.fillMaxSize(),
-//                isActive = triggerKonfetti.value,
-//                durationMs = 2000L,
-//                onFinish = { triggerKonfetti.value = false }
-//            )
-//
-//            FormScreen(
-//                modifier = Modifier,
-//                innerPadding = innerPadding,
-//                isContentScrolleable = false,
-//                formContent = {
-//                    Text(text = saveState.toString())
-//                    CustomElevatedCard(
-//                        title = stringResource(R.string.calories_burned),
-//                        result = calories,
-//                        unitLabel = stringResource(R.string.kcal_unit),
-//                        contentColor = Color.Red
-//                    )
-//                    Spacer(modifier = Modifier.height(4.dp))
-//                    CustomElevatedCard(
-//                        iconResource = Icons.Filled.FitnessCenter,
-//                        title = stringResource(R.string.volume),
-//                        result = volume,
-//                        unitLabel = stringResource(R.string.kg_unit),
-//                        contentColor = MaterialTheme.colorScheme.primary
-//                    )
-//                    Spacer(modifier = Modifier.height(4.dp))
-//                    ElevatedCard(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .fillMaxHeight(),
-//                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-//                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-//                        shape = RoundedCornerShape(16.dp)
-//                    ) {
-//                        if (allMuscles.isNotEmpty()) {
-//                            val pagerState = rememberPagerState(pageCount = { 3 })
-//                            Column(
-//                                modifier = Modifier.fillMaxSize(),
-//                                horizontalAlignment = Alignment.CenterHorizontally
-//                            ) {
-//                                Text(
-//                                    text = "Músculos trabajados",
-//                                    style = MaterialTheme.typography.titleMedium,
-//                                    fontWeight = FontWeight.Bold,
-//                                    modifier = Modifier.padding(top = 16.dp)
-//                                )
-//                                Spacer(modifier = Modifier.height(8.dp))
-//                                // Leyenda para primarios y secundarios
-//                                Legends(
-//                                    legendsConfig = LegendsConfig(
-//                                        legendLabelList = listOf(
-//                                            LegendLabel(Color.Green, "Primarios"),
-//                                            LegendLabel(Color.Blue, "Secundarios")
-//                                        ),
-//                                        gridColumnCount = 2,
-//                                        textSize = 14.sp,
-//                                        colorBoxSize = 20.dp
-//                                    )
-//                                )
-//                                Spacer(modifier = Modifier.height(8.dp))
-//                                HorizontalPager(
-//                                    state = pagerState,
-//                                    modifier = Modifier.fillMaxSize()
-//                                ) { page ->
-//                                    when (page) {
-//                                        0 -> MuscleBarList(allMuscles)
-//                                        1 -> MuscleRadarChart(allMuscles)
-//                                        2 -> MuscleVerticalBarChart(allMuscles)
-//                                    }
-//                                }
-//                            }
-//                        } else {
-//                            Text(
-//                                text = stringResource(R.string.no_data_available),
-//                                modifier = Modifier.padding(16.dp),
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//                    }
-//                },
-//                formButton = {
-//                    NewCustomButton(
-//                        text = stringResource(R.string.close),
-//                        onClick = { navHostController.navigate(NavigationRoutes.Home.route) },
-//                        buttonType = ButtonType.FILLED,
-//                        containerColor = Color.Black,
-//                        textConfig = buttonConfigs.textConfig,
-//                        layoutConfig = buttonConfigs.layoutConfig,
-//                        stateConfig = buttonConfigs.stateConfig,
-//                        borderConfig = buttonConfigs.borderConfig
-//                    )
-//                }
-//            )
-//        }
-
 }
 
 @Composable
@@ -282,7 +166,6 @@ fun DataSection(
         innerPadding = innerPadding,
         isContentScrolleable = false,
         formContent = {
-            Text(text = "Datos")
             CustomElevatedCard(
                 title = stringResource(R.string.calories_burned),
                 result = calories,
@@ -303,7 +186,7 @@ fun DataSection(
                 text = stringResource(R.string.close),
                 onClick = { navHostController.navigate(NavigationRoutes.Home.route) },
                 buttonType = ButtonType.FILLED,
-                containerColor = Color.Black,
+                containerColor = MaterialTheme.colorScheme.primary,
                 textConfig = buttonConfigs.textConfig,
                 layoutConfig = buttonConfigs.layoutConfig,
                 stateConfig = buttonConfigs.stateConfig,
@@ -322,6 +205,16 @@ fun MuscleSection(
     allMuscles: List<Pair<String, Float>>,
     navHostController: NavHostController
 ) {
+    val musclesWorkedLabel =
+        Translations.uiStrings["description_label"]?.get("es") ?: "Músculos trabajados"
+    val primaryMuscleLabel =
+        Translations.uiStrings["primary_muscle_label"]?.get("es") ?: "Primarios"
+    val secondaryMusclesLabel =
+        Translations.uiStrings["secondary_muscles_label"]?.get("es") ?: "Secundarios"
+
+    val translatedMuscles = allMuscles.map { (muscleId, value) ->
+        Pair(Translations.translateAndFormat(muscleId, Translations.muscleTranslations), value)
+    }
 
     FormScreen(
         modifier = Modifier,
@@ -336,14 +229,14 @@ fun MuscleSection(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                if (allMuscles.isNotEmpty()) {
+                if (translatedMuscles.isNotEmpty()) {
                     val pagerState = rememberPagerState(pageCount = { 3 })
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Músculos trabajados",
+                            text = musclesWorkedLabel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 16.dp)
@@ -353,8 +246,8 @@ fun MuscleSection(
                         Legends(
                             legendsConfig = LegendsConfig(
                                 legendLabelList = listOf(
-                                    LegendLabel(Color.Green, "Primarios"),
-                                    LegendLabel(Color.Blue, "Secundarios")
+                                    LegendLabel(Color.Green, primaryMuscleLabel),
+                                    LegendLabel(Color.Blue, secondaryMusclesLabel)
                                 ),
                                 gridColumnCount = 2,
                                 textSize = 14.sp,
@@ -367,9 +260,9 @@ fun MuscleSection(
                             modifier = Modifier.fillMaxSize()
                         ) { page ->
                             when (page) {
-                                0 -> MuscleBarList(allMuscles)
-                                1 -> MuscleRadarChart(allMuscles)
-                                2 -> MuscleVerticalBarChart(allMuscles)
+                                0 -> MuscleBarList(translatedMuscles)
+                                1 -> MuscleRadarChart(translatedMuscles)
+                                2 -> MuscleVerticalBarChart(translatedMuscles)
                             }
                         }
                     }
@@ -384,7 +277,6 @@ fun MuscleSection(
         },
         formButton = {}
     )
-
 }
 
 @Composable
@@ -417,9 +309,15 @@ fun RoutineSection(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
+                            // Traducir el nombre del ejercicio
+                            val translatedExerciseName = exercise.exerciseName?.let {
+                                Translations.translateAndFormat(
+                                    it,
+                                    Translations.exerciseTranslations
+                                )
+                            } ?: stringResource(R.string.unknown_exercise)
                             Text(
-                                text = exercise.exerciseName
-                                    ?: stringResource(R.string.unknown_exercise),
+                                text = translatedExerciseName,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -433,6 +331,7 @@ fun RoutineSection(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(vertical = 2.dp),
+
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(

@@ -24,6 +24,10 @@ class GoalViewModel @Inject constructor(
     private val _showGoalDialog = MutableStateFlow(false)
     val showGoalDialog: StateFlow<Boolean> = _showGoalDialog
 
+    private val _showWeightDialog = MutableStateFlow(false)
+    val showWeightDialog: StateFlow<Boolean> = _showWeightDialog
+
+
     init {
         loadGoals()
     }
@@ -67,6 +71,8 @@ class GoalViewModel @Inject constructor(
         }
     }
 
+
+
     fun dismissGoalDialog() {
         _showGoalDialog.value = false
     }
@@ -84,5 +90,13 @@ class GoalViewModel @Inject constructor(
     fun calculateBMI(weight: Double, height: Double): Double {
         val heightInMeters = height / 100
         return weight / (heightInMeters * heightInMeters)
+    }
+
+    fun dismissWeightDialog() {
+        _showWeightDialog.value = false
+    }
+
+    fun triggerWeightDialog() {
+        _showWeightDialog.value = true
     }
 }

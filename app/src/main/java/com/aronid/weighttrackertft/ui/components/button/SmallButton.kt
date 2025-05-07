@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,12 +23,18 @@ fun SmallButton(
     modifier: Modifier? = Modifier,
     imageId: Int,
     onClick: () -> Unit,
-    containerColor: Color = MaterialTheme.colorScheme.onPrimary,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
 ) {
-    Button(onClick = onClick) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+        )
+    ) {
         Image(painterResource(id = imageId), contentDescription = null)
     }
 }
+
 @Composable
 fun CustomSmallIconButton(
     onClick: () -> Unit,
@@ -52,6 +59,7 @@ fun CustomSmallIconButton(
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewCustomSmallIconButton() {

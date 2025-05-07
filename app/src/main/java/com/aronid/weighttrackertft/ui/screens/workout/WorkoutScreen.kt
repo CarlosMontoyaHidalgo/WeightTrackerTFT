@@ -1,15 +1,22 @@
 package com.aronid.weighttrackertft.ui.screens.workout
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,7 +55,9 @@ import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
 import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
+import com.aronid.weighttrackertft.utils.Translations
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun WorkoutScreen(
@@ -64,9 +74,17 @@ fun WorkoutScreen(
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
     val workoutDuration by viewModel.workoutDuration.collectAsState()
+    val primaryMuscles by viewModel.primaryMuscles.collectAsState()
+    val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
+    Log.d("WorkoutScreen", "Exercises: $primaryMuscles")
+    Log.d("WorkoutScreen", "Exercises: $secondaryMuscles")
+    Log.d("WorkoutScreen", "Exercises: $currentExercise")
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
+currentExercise?.let { exercise ->
+    Log.d("WorkoutScreen", "Exercise: ${exercise.instructions}")
+}
     }
 
     ConstraintLayout(modifier = Modifier
@@ -92,7 +110,6 @@ fun WorkoutScreen(
                     finishConfirmation = false
                     viewModel.viewModelScope.launch {
                         val workout = viewModel.saveWorkoutData()
-                        Log.d("WorkoutScreen", "Navigating with workout ID: ${workout.id}")
                         navHostController.navigate(
                             NavigationRoutes.WorkoutSummary.createRoute(
                                 workout.id
@@ -112,9 +129,13 @@ fun WorkoutScreen(
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
                 onConfirm = {},
-                title = currentExercise?.exerciseName ?: "",
+                title = "",
                 text = "${currentExercise?.description}",
                 imageUrl = (currentExercise?.imageUrl ?: R.drawable.background).toString(),
+                customContent = {
+                    ExerciseInfo(currentExercise = currentExercise)
+
+                },
                 confirmButtonText = "",
                 dismissButtonText = stringResource(R.string.close)
             )
@@ -209,12 +230,14 @@ fun WorkoutHeader(
             ) {
                 currentExercise?.let { ex ->
                     Text(
-                        text = ex.exerciseName ?: stringResource(R.string.exercise),
+                        text = ex.exerciseName?.let { Translations.translateAndFormat(it, Translations.exerciseTranslations) }
+                            ?: stringResource(R.string.exercise),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                    Spacer(Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
                         contentDescription = stringResource(id = R.string.info),
@@ -295,5 +318,115 @@ fun WorkoutNavigationButtons(
                 modifier = Modifier.size(24.dp)
             )
         }
+    }
+}@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        currentExercise?.let { exercise ->
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Título con icono
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_dumbell),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = Translations.translateAndFormat(
+                                exercise.exerciseName ?: "Ejercicio sin nombre",
+                                Translations.exerciseTranslations
+                            ),
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+
+                    // Músculo principal
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            text = Translations.translateAndFormat("Primary Muscle", Translations.uiStrings),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                        ChipComponent(
+                            text = Translations.translateAndFormat(
+                                exercise.primaryMuscleName ?: "No especificado",
+                                Translations.muscleTranslations
+                            ),
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    }
+
+                    // Músculos secundarios
+                    if (exercise.secondaryMuscleNames.isNotEmpty()) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                text = Translations.translateAndFormat("Secondary Muscles", Translations.uiStrings),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                exercise.secondaryMuscleNames.forEach { muscle ->
+                                    ChipComponent(
+                                        text = Translations.translateAndFormat(muscle, Translations.muscleTranslations),
+                                        color = MaterialTheme.colorScheme.secondaryContainer
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } ?: item {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Selecciona un ejercicio",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun ChipComponent(text: String, color: Color) {
+    Box(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.medium)
+            .background(color)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }

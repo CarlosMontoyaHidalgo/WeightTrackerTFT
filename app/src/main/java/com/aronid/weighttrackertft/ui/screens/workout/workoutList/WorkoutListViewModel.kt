@@ -72,7 +72,6 @@ class WorkoutListViewModel @Inject constructor(
 
     fun toggleSelection(workoutId: String, selected: Boolean) {
         if (selected) _selectedWorkouts[workoutId] = true else _selectedWorkouts.remove(workoutId)
-        Log.d("WorkoutListViewModel", "Workout $workoutId selected: $selected")
     }
 
     fun deleteSelectedWorkouts(onResult: (Boolean) -> Unit) {
@@ -81,10 +80,9 @@ class WorkoutListViewModel @Inject constructor(
             try {
                 workoutRepository.deleteWorkouts(idsToDelete)
                 _selectedWorkouts.clear()
-                onResult(true) // Success
+                onResult(true)
             } catch (e: Exception) {
-                Log.e("WorkoutListViewModel", "Error deleting workouts: $idsToDelete", e)
-                onResult(false) // Error
+                onResult(false)
             }
         }
     }
@@ -102,12 +100,10 @@ class WorkoutListViewModel @Inject constructor(
         }
 
         _dateFilter.value = startDate to adjustedEndDate
-        Log.d("WorkoutListViewModel", "Date filter set: start=$startDate, end=$adjustedEndDate")
     }
 
     fun clearDateFilter() {
         _dateFilter.value = null to null
-        Log.d("WorkoutListViewModel", "Date filter cleared")
     }
 
     fun exportSelectedWorkoutsAsCsv(
@@ -118,12 +114,10 @@ class WorkoutListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                Log.d("CSV Export", "Exporting selected workouts: $workoutIds")
                 val workouts = workoutRepository.getWorkoutsByIds(
                     userRepository.getCurrentUser().uid,
                     workoutIds
                 )
-                Log.d("CSV Export", "Fetched workouts: $workouts")
                 val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
                 context.contentResolver.openOutputStream(uri)?.use { outputStream ->

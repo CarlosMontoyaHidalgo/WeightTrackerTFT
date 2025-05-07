@@ -15,6 +15,12 @@ data class ExerciseModel(
     @PropertyName("imageUrl") val imageUrl: String = "",
     @PropertyName("type") val type: String = "",
     @PropertyName("requiresWeight") val requiresWeight: Boolean = false,
+    val instructions: Map<String, String>? = null,
+    val commonMistakes: Map<String, List<String>>? = null,
+    val tips: Map<String, List<String>>? = null,
+    val met: Double? = null,
+    val primaryMuscleName: String? = null,
+    val secondaryMuscleNames: List<String> = emptyList()
 ) {
 
 

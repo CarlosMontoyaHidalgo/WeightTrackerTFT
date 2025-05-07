@@ -41,7 +41,7 @@ fun VolumeSection(volumeData: Map<String, Int>, isLoading: Boolean) {
                 )
                 Text(
                     text = "${volumeData.values.sum()} kg",
-                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
+                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = 24.sp),
                     color = MaterialTheme.colorScheme.secondary
                 )
             }

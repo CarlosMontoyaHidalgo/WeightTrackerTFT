@@ -29,6 +29,10 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseCard.ExerciseCard
 import com.aronid.weighttrackertft.ui.components.filter.muscleFilter.MuscleFilter
+import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
+import com.aronid.weighttrackertft.utils.Translations.muscleTranslations
+import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
+import java.util.Locale
 
 @Composable
 fun MuscleSearchBar(
@@ -43,6 +47,17 @@ fun MuscleSearchBar(
         .collectAsState(initial = exercises)
     val selectedMuscle by viewModel.selectedMuscle.collectAsState()
 
+    // Get the current locale to determine the language
+    val currentLocale = Locale.getDefault().language
+
+
+    // Translate muscle list for the filter
+    val translatedMuscleList = viewModel.muscleList.map { muscle ->
+        translateAndFormat(muscle, muscleTranslations)
+    }
+
+    // Translate selected muscle for the filter (if not null)
+    val translatedSelectedMuscle = selectedMuscle?.let { translateAndFormat(it, muscleTranslations) }
 
     Column(
         modifier = Modifier
@@ -82,22 +97,30 @@ fun MuscleSearchBar(
         )
 
         MuscleFilter(
-            muscleList = viewModel.muscleList,
-            selectedMuscle = selectedMuscle,
-            onMuscleSelected = { muscle -> viewModel.toggleMuscleFilter(muscle) },
-            onClearFilter = { viewModel.toggleMuscleFilter(selectedMuscle!!) },
+            muscleList = translatedMuscleList,
+            selectedMuscle = translatedSelectedMuscle,
+            onMuscleSelected = { muscle ->
+                // Map the translated muscle back to its original ID for the ViewModel
+                val originalMuscle = viewModel.muscleList.find { translateAndFormat(it, muscleTranslations) == muscle }
+                originalMuscle?.let { viewModel.toggleMuscleFilter(it) }
+            },
+            onClearFilter = {
+                translatedSelectedMuscle?.let { muscle ->
+                    val originalMuscle = viewModel.muscleList.find { translateAndFormat(it, muscleTranslations) == muscle }
+                    originalMuscle?.let { viewModel.toggleMuscleFilter(it) }
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Lista de resultados
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             items(filteredExercises) { exercise ->
                 ExerciseCard(
-                    name = exercise.name,
-                    primaryMuscle = exercise.primaryMuscle?.id ?: "",
-                    secondaryMuscles = exercise.secondaryMuscle.map { it.id },
+                    name = translateAndFormat(exercise.name, exerciseTranslations),
+                    primaryMuscle = translateAndFormat(exercise.primaryMuscle?.id ?: "", muscleTranslations),
+                    secondaryMuscles = exercise.secondaryMuscle.map { translateAndFormat(it.id, muscleTranslations) },
                     imageUrl = R.drawable.background,
                     isSelected = selectedExerciseIds.contains(exercise.id),
                     onCardClick = { onExerciseSelected(exercise) },
@@ -107,4 +130,3 @@ fun MuscleSearchBar(
         }
     }
 }
-

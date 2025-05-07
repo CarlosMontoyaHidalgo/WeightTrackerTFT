@@ -8,8 +8,8 @@ data class GoalOption(
 
 fun getGoalOptions(): List<GoalOption> {
     return listOf(
-        GoalOption("lose_weight", "Lose Weight", "Lose weight to improve health"),
-        GoalOption("maintain", "Maintain", "Maintain current weight"),
-        GoalOption("gain_muscle", "Gain Muscle", "Gain muscle mass")
+        GoalOption("lose_weight", "Perder peso", "Perder peso para mejorar la salud"),
+        GoalOption("maintain", "Mantener peso", "Mantener el peso actual"),
+        GoalOption("gain_muscle", "Ganar músculo", "Aumentar la masa muscular")
     )
 }

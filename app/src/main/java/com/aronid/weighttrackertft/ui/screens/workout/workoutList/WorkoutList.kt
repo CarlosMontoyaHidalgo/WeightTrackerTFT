@@ -3,21 +3,19 @@ package com.aronid.weighttrackertft.ui.screens.workout.workoutList
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +39,7 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.button.BackButton
+import com.aronid.weighttrackertft.ui.components.button.MyElevatedButton
 import com.aronid.weighttrackertft.ui.components.calendar.CalendarViewModel
 import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.cards.CustomWorkoutCard.WorkoutCard
@@ -61,8 +61,8 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
 
     val workoutsDeletedMessage = stringResource(id = R.string.workouts_deleted)
     val deleteErrorMessage = stringResource(id = R.string.delete_error)
-    val exportSuccessMessage = stringResource(id = R.string.export_success) // Add to strings.xml
-    val exportErrorMessage = stringResource(id = R.string.export_error) // Add to strings.xml
+    val exportSuccessMessage = stringResource(id = R.string.export_success)
+    val exportErrorMessage = stringResource(id = R.string.export_error)
 
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument()
@@ -140,35 +140,33 @@ fun WorkoutList(innerPadding: PaddingValues, navHostController: NavHostControlle
                             modifier = Modifier.padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Button(
+                            MyElevatedButton(
                                 onClick = {
                                     exportFormat = "csv"
                                     exportLauncher.launch("workouts_${System.currentTimeMillis()}.csv")
                                     showExportDialog = false
                                 },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(stringResource(R.string.export_csv))
-                            }
-
-                            Button(
+                                text = stringResource(R.string.export_csv),
+                                modifier = Modifier.fillMaxWidth(),
+                                textColor = Color(0xFF107c41),
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            MyElevatedButton(
                                 onClick = {
                                     exportFormat = "pdf"
                                     exportLauncher.launch("workouts_${System.currentTimeMillis()}.pdf")
                                     showExportDialog = false
                                 },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(stringResource(R.string.export_pdf))
-                            }
-
-                            OutlinedButton(
-                                onClick = { showExportDialog = false },
+                                text = stringResource(R.string.export_pdf),
                                 modifier = Modifier.fillMaxWidth(),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                            ) {
-                                Text(stringResource(R.string.cancel))
-                            }
+                                textColor = Color(0xFFb30b00),
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            MyElevatedButton(
+                                onClick = { showExportDialog = false },
+                                text = stringResource(R.string.cancel),
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                         }
                     }
                 )

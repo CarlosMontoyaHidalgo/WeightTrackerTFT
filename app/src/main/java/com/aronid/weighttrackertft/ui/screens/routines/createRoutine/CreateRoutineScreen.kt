@@ -55,22 +55,10 @@ fun CreateRoutineScreen(
     val buttonState by viewModel.buttonState.collectAsState()
     val buttonConfigs = buttonState.baseState.buttonConfigs
 
-    val navResult = navHostController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.getLiveData<List<String>>("selectedExerciseIds")
+    // Convert selectedExerciseIds to a list of ExerciseModel
+    val selectedExercises = availableExercises.filter { selectedExerciseIds.contains(it.id) }
 
     val routineCreatedMessage = stringResource(id = R.string.routine_created)
-
-    LaunchedEffect(navResult) {
-        navResult?.value?.let {
-            selectedExerciseIds = it
-            navHostController.currentBackStackEntry?.savedStateHandle?.remove<List<String>>("selectedExerciseIds")
-        }
-    }
-
-    LaunchedEffect(name, goal, description, selectedExerciseIds, targetMuscles) {
-        viewModel.checkFormValidity(name, goal, description, selectedExerciseIds, targetMuscles)
-    }
 
     LaunchedEffect(state) {
         when (val currentState = state) {
@@ -85,6 +73,10 @@ fun CreateRoutineScreen(
 
             else -> {}
         }
+    }
+
+    LaunchedEffect(name, goal, description, selectedExerciseIds, targetMuscles) {
+        viewModel.checkFormValidity(name, goal, description, selectedExerciseIds, targetMuscles)
     }
 
     Scaffold(
@@ -121,7 +113,11 @@ fun CreateRoutineScreen(
                             onNameChange = { name = it },
                             onGoalChange = { goal = it },
                             onDescriptionChange = { description = it },
-                            onMuscleSelected = { targetMuscles = it }
+                            onMuscleSelected = { targetMuscles = it },
+                            selectedExercises = selectedExercises,
+                            onExerciseRemove = { exerciseId ->
+                                selectedExerciseIds = selectedExerciseIds - exerciseId
+                            }
                         )
 
                         1 -> ExerciseSelectionTab(
@@ -163,9 +159,7 @@ fun CreateRoutineScreen(
                         borderConfig = buttonConfigs.borderConfig
                     )
                 }
-
             }
         }
     )
 }
-

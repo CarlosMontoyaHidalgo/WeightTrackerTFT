@@ -30,7 +30,6 @@ fun SignUpScreen(
     navHostController: NavHostController
 ) {
     val viewModel: SignUpViewModel = hiltViewModel()
-
     val state by viewModel.state.collectAsState()
 
     Column(

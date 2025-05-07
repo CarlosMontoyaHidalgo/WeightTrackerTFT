@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,10 @@ fun RoutineSearchBar(
 
     val showFloatingActionButton =
         !(filterType == RoutineFilterType.CUSTOM_ONLY && customRoutines.isEmpty())
+
+    LaunchedEffect(Unit) {
+       viewModel.loadRoutines()
+    }
 
     Scaffold(
         topBar = {
@@ -129,7 +134,8 @@ fun RoutineSearchBar(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (showCheckbox) MaterialTheme.colorScheme.secondaryContainer
                             else MaterialTheme.colorScheme.primaryContainer
-                        )
+                        ),
+                        enabled = customRoutines.isNotEmpty()
                     ) {
                         Text(if (showCheckbox) stringResource(R.string.cancel) else stringResource(R.string.edit))
                     }
@@ -156,7 +162,7 @@ fun RoutineSearchBar(
                                 else MaterialTheme.colorScheme.primaryContainer
                             )
                         ) {
-                            stringResource(R.string.filter)
+                            Text(stringResource(R.string.filter))
                         }
                     }
                 }
@@ -287,7 +293,7 @@ fun RoutineSearchBar(
                 if (filterType == RoutineFilterType.FAVORITES) {
                     item {
                         Text(
-                            text = "stringResource(R.string.favorite_routines)",
+                            text = stringResource(R.string.favorite_routines),
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
@@ -296,7 +302,7 @@ fun RoutineSearchBar(
                     if (favoriteRoutines.isEmpty()) {
                         item {
                             Text(
-                                text = "stringResource(R.string.no_favorites)",
+                                text = stringResource(R.string.no_favorite_routines),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(16.dp)
@@ -330,7 +336,6 @@ fun RoutineSearchBar(
                                             .padding(16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        CircularProgressIndicator()
                                         Text(
                                             text = if (searchText.isEmpty()) stringResource(R.string.no_custom_routines)
                                             else stringResource(R.string.no_custom_routines_found),

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
+import com.aronid.weighttrackertft.utils.Translations
 
 @Composable
 fun RoutineDetailsTab(
@@ -93,11 +94,10 @@ fun RoutineDetailsTab(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-
             when {
                 selectedExercises == null -> {
                     Text(
-                        text = "No hay ejercicios seleccionados",
+                        text = stringResource(R.string.no_exercises_selected),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(vertical = 8.dp)
@@ -106,7 +106,7 @@ fun RoutineDetailsTab(
 
                 selectedExercises.isEmpty() -> {
                     Text(
-                        text = "No hay ejercicios seleccionados",
+                        text = stringResource(R.string.no_exercises_selected),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(vertical = 8.dp)
@@ -128,7 +128,7 @@ fun RoutineDetailsTab(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = exercise.name,
+                                    text = Translations.translateAndFormat(exercise.name, Translations.exerciseTranslations),
                                     style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.weight(1f),
                                     maxLines = 1,
@@ -136,7 +136,7 @@ fun RoutineDetailsTab(
                                 )
                                 Icon(
                                     imageVector = Icons.Default.Close,
-                                    contentDescription = "Eliminar ejercicio",
+                                    contentDescription = stringResource(R.string.remove_exercise),
                                     modifier = Modifier
                                         .size(20.dp)
                                         .clickable { onExerciseRemove?.invoke(exercise.id) },
@@ -148,10 +148,8 @@ fun RoutineDetailsTab(
                 }
             }
         }
-
     }
 }
-
 
 @Composable
 private fun MuscleGrid(
@@ -182,7 +180,7 @@ private fun MuscleGrid(
                             }
                             onSelectionChanged(newSelection)
                         },
-                        label = { Text(muscle) },
+                        label = { Text(Translations.translateAndFormat(muscle, Translations.muscleTranslations)) },
                         modifier = Modifier
                             .weight(1f)
                             .padding(4.dp)

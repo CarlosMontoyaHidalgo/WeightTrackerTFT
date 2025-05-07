@@ -5,7 +5,6 @@ import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.exercises.ExerciseUtils.getMuscleIdsFromExercises
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -21,6 +20,16 @@ class MuscleRepository @Inject constructor(
             name
         } catch (e: Exception) {
             "Error"
+        }
+
+    }
+
+    suspend fun fetchMuscleById(muscleId: String): MuscleModel? {
+        return try {
+            val snapshot = muscleCollection.document(muscleId).get().await()
+            snapshot.toObject(MuscleModel::class.java)
+        } catch (e: Exception) {
+            null
         }
     }
 

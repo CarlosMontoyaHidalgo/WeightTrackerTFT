@@ -3,11 +3,11 @@ package com.aronid.weighttrackertft.ui.screens.settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,9 +26,8 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
-import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
+import com.aronid.weighttrackertft.ui.components.button.MyElevatedButton
 import com.aronid.weighttrackertft.ui.components.navigationBar.BottomNavigationBar.BottomNavigationBar
-import com.aronid.weighttrackertft.utils.button.ButtonType
 
 @Composable
 fun SettingsScreen(
@@ -62,57 +61,40 @@ fun SettingsScreen(
                 contentDescription = stringResource(id = R.string.settings),
                 painter = painterResource(id = R.drawable.ic_account_default)
             )
-
-            NewCustomButton(
+            Spacer(Modifier.height(24.dp))
+            MyElevatedButton(
+                onClick = { navHostController.navigate(NavigationRoutes.UserData.route) },
                 text = stringResource(id = R.string.personal_data),
-                onClick = {
-                    navHostController.navigate(NavigationRoutes.UserData.route)
-                },
-                buttonType = ButtonType.FILLED,
-                containerColor = MaterialTheme.colorScheme.primary,
-                textConfig = buttonConfigs.textConfig,
-                layoutConfig = buttonConfigs.layoutConfig,
-                stateConfig = buttonConfigs.stateConfig,
-                borderConfig = buttonConfigs.borderConfig
+                modifier = Modifier,
+                height = 50.dp
             )
 
-            NewCustomButton(
+            Spacer(Modifier.height(16.dp))
+            MyElevatedButton(
+                onClick = { navHostController.navigate(NavigationRoutes.Personalization.route) },
                 text = stringResource(id = R.string.customization),
-                onClick = {
-                    navHostController.navigate(NavigationRoutes.Personalization.route)
-                },
-                buttonType = ButtonType.FILLED,
-                containerColor = MaterialTheme.colorScheme.primary,
-                textConfig = buttonConfigs.textConfig,
-                layoutConfig = buttonConfigs.layoutConfig,
-                stateConfig = buttonConfigs.stateConfig,
-                borderConfig = buttonConfigs.borderConfig
+                modifier = Modifier,
+                height = 50.dp
             )
 
-            NewCustomButton(
+            Spacer(Modifier.height(16.dp))
+            MyElevatedButton(
+                onClick = { navHostController.navigate(NavigationRoutes.WorkoutList.route) },
                 text = stringResource(id = R.string.workout_history),
-                onClick = {
-                    navHostController.navigate(NavigationRoutes.WorkoutList.route)
-                },
-                buttonType = ButtonType.FILLED,
-                containerColor = MaterialTheme.colorScheme.primary,
-                textConfig = buttonConfigs.textConfig,
-                layoutConfig = buttonConfigs.layoutConfig,
-                stateConfig = buttonConfigs.stateConfig,
-                borderConfig = buttonConfigs.borderConfig
+                modifier = Modifier,
+                height = 50.dp
             )
 
-            NewCustomButton(
-                text = stringResource(id = R.string.logout),
+            Spacer(Modifier.height(16.dp))
+            MyElevatedButton(
                 onClick = {
                     showDialog = true
                 },
-                buttonType = ButtonType.FILLED,
-                containerColor = Color.Red,
-                textConfig = buttonConfigs.textConfig,
-                layoutConfig = buttonConfigs.layoutConfig,
-                stateConfig = buttonConfigs.stateConfig,
-                borderConfig = buttonConfigs.borderConfig
+                text = stringResource(id = R.string.logout),
+                modifier = Modifier,
+                buttonColor = Color.Red,
+                textColor = Color.White,
+                height = 50.dp
             )
 
             CustomAlertDialog(

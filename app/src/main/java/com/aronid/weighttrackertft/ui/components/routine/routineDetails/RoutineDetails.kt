@@ -169,7 +169,7 @@ fun RoutineDetailsContent(
         }
 
         NewCustomButton(
-            text = stringResource(id = R.string.personal_data),
+            text = stringResource(id = R.string.start_routine),
             onClick = {
                 routine?.id?.let {
                     navHostController.navigate(

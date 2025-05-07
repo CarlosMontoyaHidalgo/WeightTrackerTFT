@@ -3,6 +3,7 @@ package com.aronid.weighttrackertft.ui.components.authForm
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
@@ -16,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.aronid.weighttrackertft.ui.components.button.CustomButton
+import com.aronid.weighttrackertft.ui.components.button.MyElevatedButton
 import com.aronid.weighttrackertft.ui.components.fields.emailField.EmailField
 import com.aronid.weighttrackertft.ui.components.passwordField.PasswordField
 
@@ -37,7 +38,9 @@ fun AuthForm(
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(modifier = modifier
+        .padding(16.dp)
+        .fillMaxHeight()) {
         EmailField(
             email = email,
             onEmailChange = onEmailChange,
@@ -61,18 +64,23 @@ fun AuthForm(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
         }
+        Spacer(modifier = Modifier.weight(1f))
         if (isLoading) {
-            Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         } else {
-            CustomButton(
+            MyElevatedButton(
                 text = buttonText,
                 onClick = onSubmit,
-                enabled = isEnabled
+                enabled = isEnabled,
+                buttonColor = MaterialTheme.colorScheme.primary,
+                textColor = MaterialTheme.colorScheme.onPrimary,
+                height = 54.dp,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
