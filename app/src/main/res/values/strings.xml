@@ -1,3 +1,300 @@
+<!-- default: english -->
 <resources>
-    <string name="app_name">WeightTrackerTFT</string>
+    <string name="app_name">Weight Tracker</string>
+    <string name="app_logo_description">Weight Tracker</string>
+
+
+    <!-- Button -->
+    <string name="login">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_free">Sign Up</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="ic_back">Back Icon</string>
+    <string name="next">Next</string>
+    <string name="prev">Previous</string>
+    <string name="skip">Skip</string>
+    <string name="submit">Submit</string>
+
+    <!-- Alert Dialog -->
+    <string name="alert_title">Alert</string>
+    <string name="alert_message">Are you sure you want to exit?</string>
+    <string name="alert_positive">Yes</string>
+    <string name="alert_negative">No</string>
+
+
+    <!-- Language -->
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+
+    <!-- Email Field -->
+    <string name="email">Email</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="ic_invalid_email">Email Icon</string>
+
+    <!-- Password Field -->
+
+    <string name="password">Password</string>
+    <string name="password_error">Password must be at least 6 characters</string>
+    <string name="ic_invalid_password">Password Icon</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+
+    <!-- Error Messages -->
+
+    <string name="complete_questionnaire">Complete Questionnaire</string>
+    <string name="error_user_not_found">User not found</string>
+    <string name="error_invalid_credentials">Wrong data</string>
+    <string name="error_generic">Error generico</string>
+    <string name="error_email_empty">Empty email</string>
+    <string name="error_email_invalid">Invalid email</string>
+    <string name="error_password_empty">Empty password</string>
+    <string name="error_password_length">Password length wrong</string>
+
+    <!-- LifeStyle Screen -->
+    <string name="life_style">Life Style</string>
+    <string name="activity_level">Activity Level</string>
+    <string name="sedentary">Sedentary</string>
+    <string name="lightly_active">Lightly Active</string>
+    <string name="moderately_active">Moderately Active</string>
+    <string name="very_active">Very Active</string>
+    <string name="goal">Goal</string>
+    <string name="maintain_weight">Maintain Weight</string>
+    <string name="lose_weight">Lose Weight</string>
+
+    <!-- PersonalInfo Screen -->
+    <string name="personal_info">Personal Info</string>
+    <string name="name">Name</string>
+    <string name="birth_date">Birth Date</string>
+
+    <!-- PhysicalData Screen -->
+    <string name="physical_data">Physical Data</string>
+    <string name="height">Height</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="weight">Weight</string>
+
+    <!-- Questionnaire Screen -->
+    <string name="questionnaire">Questionnaire</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_policy">📢 Important about your privacy</string>
+    <string name="privacy_policy_description">
+    📢 We will never share your data with third parties.\n\n
+    🔒 At WeightTrackerTFT, we take your privacy and security very seriously.\n\n
+    📊 The data you enter in this questionnaire will help us personalize your experience, providing you with recommendations and statistics tailored to your goals.\n\n
+    ✅ Guaranteed security: All information is stored securely and will only be used within the app.\n\n
+    📌 Data usage: The collected data will allow us to offer you better tracking of your progress, including analysis and personalized charts.\n\n
+    ⚙️ You have control: You can update or delete your information at any time from the app settings.\n\n
+    👉 By continuing, you agree that we will use this data solely to improve your experience in WeightTrackerTFT.
+    </string>
+    <string name="accept_terms_and_conditions">I have read and accept the use of my data</string>
+    <string name="accept_terms_description">By clicking Accept, you agree that we will use your data to personalize your experience and provide you with statistics tailored to your goals.</string>
+    <string name="start_questionnaire">Start Questionnaire</string>
+
+    <!-- Home Screen -->
+    <string name="home">Home</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Settings</string>
+
+    <!-- Activity Levels -->
+    <string name="activity_level_sedentary">Sedentary</string>
+    <string name="activity_level_sedentary_desc">Little or no exercise</string>
+    <string name="activity_level_moderate">Moderate</string>
+    <string name="activity_level_moderate_desc">Exercise 3&#8211;4 times per week</string>
+    <string name="activity_level_active">Active</string>
+    <string name="activity_level_active_desc">Intense daily exercise</string>
+
+    <!-- Goals -->
+    <string name="goals">Goals</string>
+    <string name="goal_lose_weight">Lose Weight</string>
+    <string name="goal_lose_weight_desc">Reduce body fat</string>
+    <string name="goal_maintain">Maintain Weight</string>
+    <string name="goal_maintain_desc">Keep current weight</string>
+    <string name="goal_gain_muscle">Gain Muscle</string>
+    <string name="goal_gain_muscle_desc">Increase muscle mass</string>
+
+    <string name="finish_workout">¿Finalizar entrenamiento?</string>
+    <string name="finish_workout_confirmation">¿Estás seguro de que quieres finalizar el entrenamiento?</string>
+    <string name="finish">Finalizar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
+    <string name="exercise">Ejercicio</string>
+    <string name="back">Atrás</string>
+    <string name="info">Info</string>
+    <string name="navigating_with_workout_id">Navegando con ID de entrenamiento:</string>
+
+    <string name="welcome">Welcome, %1$s!</string>
+    <string name="no_workouts_for_day">No workouts for this day.</string>
+    <string name="workout">Workout</string>
+    <string name="calories">Calories: %1$s kcal</string>
+    <string name="volume">Volume</string>
+    <string name="type">Type: %1$s</string>
+    <string name="intensity">Intensity: %1$s%</string>
+    <string name="date">Date: %1$s</string>
+    <string name="workout_details">Workout %1$d:\n- Calories: %2$s kcal\n- Volume: %3$s kg\n- Type: %4$s\n- Intensity: %5$s%%\n- Date: %6$s</string>
+    <string name="single_workout_details">Workout:\n- Calories: %1$s kcal\n- Volume: %2$s kg\n- Type: %3$s\n- Intensity: %4$s%%\n- Date: %5$s</string>
+    <string name="not_available">Not available</string>
+
+    <string name="workouts_of">Workouts of %1$s</string>
+    <string name="progress">Progress</string>
+    <string name="exercises">Exercises</string>
+    <string name="expand_language_menu">Expand language menu</string>
+
+    <string name="daily">Daily</string>
+    <string name="every_3_days">Every 3 days</string>
+    <string name="weekly">Weekly</string>
+    <string name="every_2_weeks">Every 2 weeks</string>
+    <string name="every_month">Every month</string>
+    <string name="expand_reminder_options">Expand reminder options</string>
+
+    <string name="choose_exercises">Choose Exercises</string>
+    <string name="no_exercises_available">No exercises available</string>
+    <string name="selected_exercises">Selected exercises:</string>
+    <string name="confirm_selection">Confirm Selection</string>
+
+    <string name="details">Details</string>
+    <string name="routine_created">Routine created!</string>
+    <string name="create_routine">Create Routine</string>
+    <string name="description">Description</string>
+    <string name="target_muscles">Target muscles</string>
+    <string name="select_exercises">Select Exercises</string>
+
+    <string name="start_routine">Start routine</string>
+
+    <string name="edit_routine">Editar Rutina</string>
+    <string name="add_exercises">Añadir Ejercicios</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="routine_updated_successfully">Rutina actualizada correctamente</string>
+    <string name="name_cannot_be_empty">El nombre no puede estar vacío</string>
+
+    <string name="search_routines_placeholder">Search routines…</string>
+    <string name="my_routines">My Routines</string>
+    <string name="no_custom_routines">No custom routines available</string>
+    <string name="create_new_routine">Create new routine</string>
+    <string name="create_new_routine_toast">Create new routine</string>
+    <string name="no_custom_routines_found">No custom routines found</string>
+    <string name="predefined_routines">Predefined Routines</string>
+    <string name="loading_predefined_routines">Loading predefined routines…</string>
+    <string name="no_predefined_routines_found">No predefined routines found</string>
+    <string name="add_icon_description">Add</string>
+
+    <string name="customization_settings">Customization Settings</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="change_language">Change Language</string>
+    <string name="change_font_size">Change Font Size</string>
+
+    <string name="equipment_settings">Equipment Settings</string>
+    <string name="add_equipment">Add Equipment</string>
+    <string name="remove_equipment">Remove Equipment</string>
+    <string name="view_equipment_list">View Equipment List</string>
+
+    <string name="goals_settings">Goals Settings</string>
+    <string name="set_new_goal">Set New Goal</string>
+    <string name="view_goals">View Goals</string>
+    <string name="edit_goals">Edit Goals</string>
+
+    <string name="user_settings">User Settings</string>
+    <string name="change_personal_information">Change Personal Information</string>
+    <string name="change_password">Change Password</string>
+    <string name="notification_settings">Notification Settings</string>
+
+    <string name="personal_data">Personal Data</string>
+    <string name="customization">Customization</string>
+    <string name="logout">Logout</string>
+
+    <string name="weight_label">Weight (%1$s)</string>
+
+    <string name="expand_goal_options">Expand goal options</string>
+
+    <string name="save">Save</string>
+
+    <string name="calories_burned">Calories burned</string>
+    <string name="kcal_unit">kcal</string>
+    <string name="kg_unit">kg</string>
+    <string name="no_data_available">No data available</string>
+
+    <string name="workouts_deleted">Workouts deleted!</string>
+    <string name="delete_error">Error deleting</string>
+    <string name="delete_workouts_confirmation_title">Are you sure you want to delete these workouts?</string>
+    <string name="delete_workouts_confirmation_message">You won\'t be able to recover them</string>
+    <string name="no_workouts_available">No workouts available</string>
+    <string name="go_back">Go back</string>
+
+    <string name="language_flag">Language flag</string>
+
+
+    <string name="selected">Selected</string>
+
+    <string name="exercises_performed">Exercises Performed</string>
+    <string name="unknown_exercise">Unknown Exercise</string>
+    <string name="set_number">Set %1$d</string>
+    <string name="reps">Reps: %1$s</string>
+    <string name="weight_data">Weight: %1$s kg</string>
+    <string name="no_valid_series">No Sets with Complete Data</string>
+
+    <!-- Nueva cadena para el conteo de entrenamientos -->
+    <string name="workout_count">You have %d workouts registered</string>
+    <string name="no_workouts">No workouts registered</string>
+    <string name="workout_history">Workout history</string>
+    <string name="open_chatbot">Open Chatbot</string>
+    <string name="view_all_routines">View all routines</string>
+    <string name="logo_description">Application logo</string>
+    <string name="clear_date_range">Clear date range</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="set_goal">Set goal</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="tab_calories">Calories</string>
+    <string name="tab_volume">Volume</string>
+    <string name="tab_weight">Weight</string>
+    <string name="tab_bmi">BMI</string>
+
+    <string name="your_progress">Your Progress</string>
+    <string name="search_placeholder">Search…</string>
+
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="filter">Filter</string>
+    <string name="all_routines">All</string>
+    <string name="my_routines_filter">My Routines</string>
+    <string name="predefined_routines_filter">Predefined</string>
+    <string name="favorite_routines_filter">Favorites</string>
+    <string name="favorite_routines_title">Favorite Routines</string>
+    <string name="delete_routines">Delete routines</string>
+    <string name="confirm_delete_routines">Delete the %d selected routines?</string>
+    <string name="routines_deleted">Routines deleted</string>
+    <string name="error_deleting">Error deleting</string>
+
+    <string name="export_dialog_title">Export Workouts</string>
+    <string name="export_dialog_message">Choose the format to export your workout data:</string>
+    <string name="export_csv">Export as CSV</string>
+    <string name="export_pdf">Export as PDF</string>
+    <string name="export_success">Data exported successfully</string>
+    <string name="export_error">Error exporting data</string>
+    <string name="export_button_description">Export workout data</string>
+
+    <string name="favorite_workouts">Favorite workouts</string>
+    <string name="no_favorite_workouts">You haven`t added any favorite workouts.</string>
+
+    <string name="favorite_routines">Favorite routines</string>
+    <string name="no_favorite_routines">You don`t have any favorite routines.</string>
+
+
+    <string name="set_calorie_goal">Set calorie goal</string>
+    <string name="set_calorie_goal_title">Set Calorie Goal</string>
+    <string name="set_calorie_goal_message">Enter your daily calorie goal:</string>
+    <string name="calorie_goal_label">Calorie goal (kcal)</string>
+
+    <string name="average_calories_title">Average Calories</string>
+
+    <string name="set_weight_title">Set Weight</string>
+    <string name="set_weight_message">Enter your current weight:</string>
+    <string name="weight_label_kg">Weight (kg)</string>
+
+    <string name="no_exercises_selected">No exercises selected</string>
+    <string name="remove_exercise">Remove exercise</string>
+
+
+    <string name="your_trainings">Your Trainings</string>
+    <string name="workouts">Workouts</string>
+    <string name="confirm">Confirm</string>
 </resources>
