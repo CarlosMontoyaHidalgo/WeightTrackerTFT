@@ -1,6 +1,7 @@
 package com.aronid.weighttrackertft.ui.screens.workout
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,10 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,15 +51,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
+import com.aronid.weighttrackertft.ui.components.chatbot.ChatbotDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
 import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
+import com.aronid.weighttrackertft.ui.screens.chatbot.ChatbotViewModel
+import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.CreateRoutineViewModel
 import com.aronid.weighttrackertft.utils.Translations
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -65,7 +74,9 @@ fun WorkoutScreen(
     routineId: String?,
     isPredefined: Boolean,
     navHostController: NavHostController,
-    viewModel: WorkoutViewModel
+    viewModel: WorkoutViewModel,
+    chatbotViewModel: ChatbotViewModel = hiltViewModel(), // Added
+    createRoutineViewModel: CreateRoutineViewModel = hiltViewModel() // Added
 ) {
     val exercises by viewModel.exercisesWithSeries.collectAsState()
     val currentExerciseIndex by viewModel.currentExerciseIndex.collectAsState()
@@ -73,24 +84,27 @@ fun WorkoutScreen(
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
+    var showChatbot by remember { mutableStateOf(false) } // Added for chatbot dialog
     val workoutDuration by viewModel.workoutDuration.collectAsState()
     val primaryMuscles by viewModel.primaryMuscles.collectAsState()
     val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
+
     Log.d("WorkoutScreen", "Exercises: $primaryMuscles")
     Log.d("WorkoutScreen", "Exercises: $secondaryMuscles")
     Log.d("WorkoutScreen", "Exercises: $currentExercise")
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
-currentExercise?.let { exercise ->
-    Log.d("WorkoutScreen", "Exercise: ${exercise.instructions}")
-}
+        currentExercise?.let { exercise ->
+            Log.d("WorkoutScreen", "Exercise: ${exercise.instructions}")
+        }
     }
 
     ConstraintLayout(modifier = Modifier
         .fillMaxSize()
         .padding()) {
-        val (headerRef, seriesRef, timerRef, buttonsRef) = createRefs()
+        val (headerRef, seriesRef, timerRef, buttonsRef, fabRef) = createRefs()
+
         WorkoutHeader(
             currentExercise = currentExercise,
             onFinishClick = { finishConfirmation = true },
@@ -134,10 +148,18 @@ currentExercise?.let { exercise ->
                 imageUrl = (currentExercise?.imageUrl ?: R.drawable.background).toString(),
                 customContent = {
                     ExerciseInfo(currentExercise = currentExercise)
-
                 },
                 confirmButtonText = "",
                 dismissButtonText = stringResource(R.string.close)
+            )
+        }
+
+        if (showChatbot) {
+            ChatbotDialog(
+                viewModel = chatbotViewModel,
+                createRoutineViewModel = createRoutineViewModel,
+                navHostController = navHostController,
+                onDismiss = { showChatbot = false }
             )
         }
 
@@ -208,6 +230,47 @@ currentExercise?.let { exercise ->
                     }
                     .fillMaxWidth()
                     .padding(16.dp)
+            )
+        }
+/*
+        FloatingActionButton(
+            onClick = { showChatbot = true },
+            modifier = Modifier
+                .constrainAs(fabRef) {
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                },
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_info), // Replace with ic_chatbot if available
+                contentDescription = stringResource(R.string.open_chatbot),
+                modifier = Modifier.size(24.dp)
+            )
+        }
+*/
+        FloatingActionButton(
+            onClick = { showChatbot = true },
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .constrainAs(fabRef) {
+                    bottom.linkTo(parent.bottom, margin = 100.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                },
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = CircleShape,
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.bot_avatar_no_background),
+                contentDescription = stringResource(R.string.open_chatbot),
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
         }
     }

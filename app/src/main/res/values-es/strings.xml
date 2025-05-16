@@ -295,4 +295,13 @@
 
     <string name="workouts">Entrenamientos</string>
     <string name="confirm">Confirmar</string>
+
+    <string name="loading_exercise">Cargando ejercicio…</string>
+    <string name="exercise_image_description">Imagen de %1$s</string>
+    <string name="description_label">Descripción: %1$s</string>
+    <string name="no_description">No hay descripción disponible</string>
+    <string name="primary_muscle_label">Músculo principal</string>
+    <string name="secondary_muscles_label">Músculos secundarios</string>
+    <string name="error_loading_exercise">Error al cargar el ejercicio</string>
+
 </resources>
