@@ -1,7 +1,6 @@
 package com.aronid.weighttrackertft.ui.screens.workout
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -58,13 +53,16 @@ import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
-import com.aronid.weighttrackertft.ui.components.chatbot.ChatbotDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
 import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
 import com.aronid.weighttrackertft.ui.screens.chatbot.ChatbotViewModel
 import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.CreateRoutineViewModel
 import com.aronid.weighttrackertft.utils.Translations
+import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
+import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
+import com.aronid.weighttrackertft.utils.getExerciseId
+import com.aronid.weighttrackertft.utils.getExerciseImageResource
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -84,7 +82,7 @@ fun WorkoutScreen(
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
-    var showChatbot by remember { mutableStateOf(false) } // Added for chatbot dialog
+    //var showChatbot by remember { mutableStateOf(false) } // Added for chatbot dialog
     val workoutDuration by viewModel.workoutDuration.collectAsState()
     val primaryMuscles by viewModel.primaryMuscles.collectAsState()
     val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
@@ -100,9 +98,11 @@ fun WorkoutScreen(
         }
     }
 
-    ConstraintLayout(modifier = Modifier
-        .fillMaxSize()
-        .padding()) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding()
+    ) {
         val (headerRef, seriesRef, timerRef, buttonsRef, fabRef) = createRefs()
 
         WorkoutHeader(
@@ -143,29 +143,27 @@ fun WorkoutScreen(
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
                 onConfirm = {},
-                title = "",
-                text = "${currentExercise?.description}",
+                title = translateAndFormat(
+                    currentExercise?.exerciseName ?: "",
+                    exerciseTranslations
+                ),
+                text = "",
                 imageUrl = (currentExercise?.imageUrl ?: R.drawable.background).toString(),
                 customContent = {
                     ExerciseInfo(currentExercise = currentExercise)
                 },
+                imageResId = currentExercise?.exerciseName?.let {
+                    getExerciseImageResource(getExerciseId(it))
+                } ?: R.drawable.background,
                 confirmButtonText = "",
                 dismissButtonText = stringResource(R.string.close)
             )
         }
-
-        if (showChatbot) {
-            ChatbotDialog(
-                viewModel = chatbotViewModel,
-                createRoutineViewModel = createRoutineViewModel,
-                navHostController = navHostController,
-                onDismiss = { showChatbot = false }
-            )
-        }
-
-        ConstraintLayout(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .constrainAs(seriesRef) {
@@ -232,47 +230,6 @@ fun WorkoutScreen(
                     .padding(16.dp)
             )
         }
-/*
-        FloatingActionButton(
-            onClick = { showChatbot = true },
-            modifier = Modifier
-                .constrainAs(fabRef) {
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                },
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_info), // Replace with ic_chatbot if available
-                contentDescription = stringResource(R.string.open_chatbot),
-                modifier = Modifier.size(24.dp)
-            )
-        }
-*/
-        FloatingActionButton(
-            onClick = { showChatbot = true },
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .constrainAs(fabRef) {
-                    bottom.linkTo(parent.bottom, margin = 100.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                },
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            shape = CircleShape,
-            elevation = FloatingActionButtonDefaults.elevation(8.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bot_avatar_no_background),
-                contentDescription = stringResource(R.string.open_chatbot),
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
     }
 }
 
@@ -293,7 +250,12 @@ fun WorkoutHeader(
             ) {
                 currentExercise?.let { ex ->
                     Text(
-                        text = ex.exerciseName?.let { Translations.translateAndFormat(it, Translations.exerciseTranslations) }
+                        text = ex.exerciseName?.let {
+                            Translations.translateAndFormat(
+                                it,
+                                Translations.exerciseTranslations
+                            )
+                        }
                             ?: stringResource(R.string.exercise),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
@@ -310,14 +272,6 @@ fun WorkoutHeader(
                     )
                 } ?: CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }
-        },
-        navigationIcon = {
-//            IconButton(onClick = onBackClick) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_back),
-//                    contentDescription = "Volver"
-//                )
-//            }
         },
         actions = {
             Button(
@@ -382,7 +336,9 @@ fun WorkoutNavigationButtons(
             )
         }
     }
-}@OptIn(ExperimentalLayoutApi::class)
+}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
     LazyColumn(
@@ -399,32 +355,14 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                         .padding(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Título con icono
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_dumbell),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = Translations.translateAndFormat(
-                                exercise.exerciseName ?: "Ejercicio sin nombre",
-                                Translations.exerciseTranslations
-                            ),
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
 
                     // Músculo principal
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = Translations.translateAndFormat("Primary Muscle", Translations.uiStrings),
+                            text = Translations.translateAndFormat(
+                                "Primary Muscle",
+                                Translations.uiStrings
+                            ),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -441,7 +379,10 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                     if (exercise.secondaryMuscleNames.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = Translations.translateAndFormat("Secondary Muscles", Translations.uiStrings),
+                                text = Translations.translateAndFormat(
+                                    "Secondary Muscles",
+                                    Translations.uiStrings
+                                ),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )
@@ -451,13 +392,39 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                             ) {
                                 exercise.secondaryMuscleNames.forEach { muscle ->
                                     ChipComponent(
-                                        text = Translations.translateAndFormat(muscle, Translations.muscleTranslations),
+                                        text = Translations.translateAndFormat(
+                                            muscle,
+                                            Translations.muscleTranslations
+                                        ),
                                         color = MaterialTheme.colorScheme.secondaryContainer
                                     )
                                 }
                             }
                         }
                     }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        val language = Locale.getDefault().language
+                        val instructionText = currentExercise?.instructions?.get(language)
+                            ?: currentExercise?.instructions?.get("es")
+                            ?: ""
+
+                        Text(
+                            text = Translations.translateAndFormat(
+                                "Intrucciones",
+                                Translations.uiStrings
+                            ),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+
+                        Text(
+                            text = instructionText,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+
                 }
             }
         } ?: item {

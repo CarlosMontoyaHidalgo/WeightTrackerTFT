@@ -10,10 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import com.aronid.weighttrackertft.ui.components.MyTopNavigationBar
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.exercise.details.ExerciseDetailsContent
 
 @Composable
@@ -34,12 +33,12 @@ fun ExerciseDetailsScreen(
     Column(modifier = Modifier.padding(innerPadding)) {
         Scaffold(
             topBar = {
-                MyTopNavigationBar(
+                /*MyTopNavigationBar(
                     title = "${exercise?.name}",
                     onBackClick = { navHostController.popBackStack() },
                     backgroundColor = Color.Transparent,
                     contentColor = Color.Black,
-                )
+                )*/
             },
         ) { paddingValues ->
             ConstraintLayout(
@@ -53,6 +52,7 @@ fun ExerciseDetailsScreen(
                     secondaryMuscleNames = secondaryMuscleNames,
                     innerPadding = innerPadding
                 )
+                BackButton(navHostController)
             }
         }
     }

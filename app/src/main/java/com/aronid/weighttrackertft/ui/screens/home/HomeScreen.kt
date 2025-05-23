@@ -156,7 +156,7 @@ fun HomeScreen(
         ) {
             ElevatedCard(
                 onClick = {
-                    navHostController.navigate(NavigationRoutes.Calendar.route)
+                    //navHostController.navigate(NavigationRoutes.Calendar.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,6 +174,15 @@ fun HomeScreen(
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            MyElevatedButton(
+                onClick = { navHostController.navigate(NavigationRoutes.Calendar.route) },
+                text = "Ver calendario de entrenamientos",
+                modifier = Modifier
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             MyElevatedButton(

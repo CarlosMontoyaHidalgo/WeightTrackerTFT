@@ -32,6 +32,8 @@ import com.aronid.weighttrackertft.ui.components.filter.muscleFilter.MuscleFilte
 import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
 import com.aronid.weighttrackertft.utils.Translations.muscleTranslations
 import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
+import com.aronid.weighttrackertft.utils.getExerciseId
+import com.aronid.weighttrackertft.utils.getExerciseImageResource
 import java.util.Locale
 
 @Composable
@@ -121,7 +123,7 @@ fun MuscleSearchBar(
                     name = translateAndFormat(exercise.name, exerciseTranslations),
                     primaryMuscle = translateAndFormat(exercise.primaryMuscle?.id ?: "", muscleTranslations),
                     secondaryMuscles = exercise.secondaryMuscle.map { translateAndFormat(it.id, muscleTranslations) },
-                    imageUrl = R.drawable.background,
+                    imageResId = getExerciseImageResource(getExerciseId(exercise.name)),
                     isSelected = selectedExerciseIds.contains(exercise.id),
                     onCardClick = { onExerciseSelected(exercise) },
                     modifier = Modifier.padding(vertical = 4.dp)

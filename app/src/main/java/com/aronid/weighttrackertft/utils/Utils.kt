@@ -73,4 +73,6 @@ fun Double.formatToSinglePrecision(): String {
 }
 
 
-
+fun Int.formatToSinglePrecision(): String {
+    return String.format("%.1f", this.toDouble())
+}

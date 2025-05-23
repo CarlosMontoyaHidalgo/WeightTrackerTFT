@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.components.exercise.exerciseCard
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -7,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,25 +26,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.tags.MyTag
 import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
 import com.aronid.weighttrackertft.utils.Translations.muscleTranslations
 import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
-import java.util.Locale
 
 @Composable
 fun ExerciseCard(
     name: String,
     primaryMuscle: String,
     secondaryMuscles: List<String>,
-    imageUrl: Int,
+    @DrawableRes imageResId: Int,
     modifier: Modifier = Modifier,
     onCardClick: () -> Unit = {},
     isSelected: Boolean = false,
     onToggleSelection: () -> Unit = {}
 ) {
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -63,35 +60,42 @@ fun ExerciseCard(
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.background/*imageUrl.toInt()*/),
-                contentDescription = null,
+                painter = painterResource(imageResId),
+                contentDescription = translateAndFormat(name, exerciseTranslations),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(128.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
                 Text(
                     text = translateAndFormat(name, exerciseTranslations),
-                    modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     item {
                         MyTag(
                             text = translateAndFormat(primaryMuscle, muscleTranslations),
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
                     items(secondaryMuscles) { muscle ->
                         MyTag(
                             text = translateAndFormat(muscle, muscleTranslations),
-                            modifier = Modifier
+                            modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
                 }

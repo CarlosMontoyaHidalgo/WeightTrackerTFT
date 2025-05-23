@@ -1,5 +1,8 @@
 package com.aronid.weighttrackertft.ui.screens.progress.charts
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
+import com.aronid.weighttrackertft.ui.components.button.MyElevatedButton
 import com.aronid.weighttrackertft.ui.components.calendar.WorkoutRangeCalendar
 import com.aronid.weighttrackertft.ui.components.charts.GoalViewModel
 import com.aronid.weighttrackertft.ui.components.sections.calories.CaloriesSection
@@ -46,7 +52,6 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
     val averageCalories by viewModel.averageCalories.collectAsStateWithLifecycle()
     var newWeightInput by remember { mutableStateOf("") }
 
-
     val caloriesData by viewModel.caloriesData.collectAsStateWithLifecycle()
     val totalCalories by viewModel.totalCalories.collectAsStateWithLifecycle()
     val goalCalories by viewModelGoals.goalCalories.collectAsStateWithLifecycle()
@@ -60,13 +65,35 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
 
     var showDateRangePicker by remember { mutableStateOf(false) }
     var dateRangeText by remember { mutableStateOf(viewModel.getWeekRangeText()) }
+    Log.d("ChartsScreen", "Date range text: $dateRangeText")
     var weightInput by remember { mutableStateOf("") }
     var selectedTabIndex by remember { mutableStateOf(0) }
     var hasDateRangeSelected by remember { mutableStateOf(false) }
     var goalInput by remember { mutableStateOf("") }
+    var showExportDialog by remember { mutableStateOf(false) }
+    var exportFormat by remember { mutableStateOf("") }
 
     var heightInput by remember { mutableStateOf("") }
     var bmiResult by remember { mutableStateOf<Double?>(null) }
+
+    val context = LocalContext.current
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(
+            if (exportFormat == "csv") "text/csv" else "application/pdf"
+        )
+    ) { uri ->
+        if (uri != null) {
+            when (exportFormat) {
+                "csv" -> viewModel.exportDataAsCsv(context, uri, dateRangeText) { success ->
+                    // Handle success/failure (e.g., show a Toast)
+                }
+
+                "pdf" -> viewModel.exportDataAsPdf(context, uri, dateRangeText) { success ->
+                    // Handle success/failure (e.g., show a Toast)
+                }
+            }
+        }
+    }
 
     val tabs = listOf(
         stringResource(R.string.tab_calories),
@@ -102,10 +129,8 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                 )
             }
 
-
             Spacer(Modifier.weight(1f))
             Row {
-
                 if (hasDateRangeSelected) {
                     IconButton(onClick = {
                         viewModel.loadCurrentWeek()
@@ -132,7 +157,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                     IconButton(onClick = { viewModelGoals.triggerGoalDialog() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_goal),
-                            contentDescription = stringResource(R.string.select_date_range),
+                            contentDescription = stringResource(R.string.set_goal),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -141,10 +166,17 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                     IconButton(onClick = { viewModelGoals.triggerWeightDialog() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_weight),
-                            contentDescription = stringResource(R.string.select_date_range),
+                            contentDescription = stringResource(R.string.weight),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                }
+                IconButton(onClick = { showExportDialog = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_download),
+                        contentDescription = stringResource(R.string.export_pdf),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }
@@ -164,24 +196,30 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
         Spacer(modifier = Modifier.height(16.dp))
 
         when (selectedTabIndex) {
-            0 -> CaloriesSection(caloriesData, totalCalories, goalCalories, averageCalories ,isLoading)
+            0 -> CaloriesSection(
+                caloriesData,
+                totalCalories,
+                goalCalories,
+                averageCalories,
+                isLoading
+            )
+
             1 -> VolumeSection(volumeData, isLoading)
             2 -> WeightSection(
-                weightData,
-                currentWeight,
-                isLoading,
-                weightInput,
-                onWeightChange = { weightInput = it },
-                onSaveWeight = { viewModel.saveWeight(it) }
-            )
-            3 -> BMISection(
+                weightData = weightData,
                 currentWeight = currentWeight,
+                isLoading = isLoading,
+                weightInput = weightInput,
+                onWeightChange = { weightInput = it },
+                onSaveWeight = { viewModel.saveWeight(it) },
                 currentHeight = currentHeight,
+                caloriesData = caloriesData
             )
 
-
+            3 -> BMISection(currentWeight = currentWeight, currentHeight = currentHeight)
         }
     }
+
     if (showGoalDialog) {
         CustomAlertDialog(
             showDialog = showGoalDialog,
@@ -221,7 +259,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
             onConfirm = {
                 val weight = newWeightInput.toDoubleOrNull()
                 if (weight != null) {
-                    viewModel.saveWeight(weight) // Use ChartsViewModel's saveWeight
+                    viewModel.saveWeight(weight)
                 }
             },
             title = stringResource(R.string.set_weight_title),
@@ -245,6 +283,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
             }
         )
     }
+
     if (showDateRangePicker) {
         WorkoutRangeCalendar(
             viewModel = hiltViewModel(),
@@ -261,9 +300,50 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
             onDismiss = { showDateRangePicker = false }
         )
     }
+
+    if (showExportDialog) {
+        CustomAlertDialog(
+            showDialog = showExportDialog,
+            onDismiss = { showExportDialog = false },
+            onConfirm = {},
+            title = stringResource(R.string.export_dialog_title),
+            text = stringResource(R.string.export_dialog_message),
+            confirmButtonText = "",
+            dismissButtonText = "",
+            customContent = {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    MyElevatedButton(
+                        onClick = {
+                            exportFormat = "csv"
+                            exportLauncher.launch("progress_${System.currentTimeMillis()}.csv")
+                            showExportDialog = false
+                        },
+                        text = stringResource(R.string.export_csv),
+                        modifier = Modifier.fillMaxWidth(),
+                        textColor = Color(0xFF107c41)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    MyElevatedButton(
+                        onClick = {
+                            exportFormat = "pdf"
+                            exportLauncher.launch("progress_${System.currentTimeMillis()}.pdf")
+                            showExportDialog = false
+                        },
+                        text = stringResource(R.string.export_pdf),
+                        modifier = Modifier.fillMaxWidth(),
+                        textColor = Color(0xFFb30b00)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    MyElevatedButton(
+                        onClick = { showExportDialog = false },
+                        text = stringResource(R.string.cancel),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        )
+    }
 }
-
-
-
-
-
