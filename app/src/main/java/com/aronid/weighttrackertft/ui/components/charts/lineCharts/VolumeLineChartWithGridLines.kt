@@ -66,8 +66,11 @@ fun VolumeLineChartWithGridLines(volumeData: Map<String, Int>) {
 
     val yAxisData = AxisData.Builder()
         .steps(steps)
-        .labelData { index -> (maxY * index / steps).toInt().toString() }
-        .labelAndAxisLinePadding(15.dp)
+        .labelData { index ->
+            val value = (maxY * index / steps).toInt()
+            "$value kg"
+        }
+        .labelAndAxisLinePadding(25.dp)
         .axisLineColor(MaterialTheme.colorScheme.onSurfaceVariant)
         .axisLabelColor(MaterialTheme.colorScheme.onSurfaceVariant)
         .axisLabelDescription { "kg" }

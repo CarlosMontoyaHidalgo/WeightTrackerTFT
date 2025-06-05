@@ -28,8 +28,8 @@ import androidx.constraintlayout.compose.Dimension
 fun CustomElevatedCard(
     iconResource: ImageVector = Icons.Filled.LocalFireDepartment,
     title: String = "Title",
-    result: Int? = null,
-    unitLabel: String = "unit",
+    result: String? = null, // Changed from Int? to String?
+    unitLabel: String = "", // Default to empty since duration includes units
     contentColor: Color = Color.Red,
     modifier: Modifier = Modifier,
     elevation: Dp = 6.dp,
@@ -86,7 +86,7 @@ fun CustomElevatedCard(
             )
 
             Text(
-                text = "$result",
+                text = result ?: "--", // Display "--" if result is null
                 style = MaterialTheme.typography.displayMedium,
                 color = contentColor,
                 maxLines = 1,
@@ -115,7 +115,6 @@ fun CustomElevatedCard(
         }
     }
 }
-
 //@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 //@Composable
 //fun CustomElevatedCardPreview() {

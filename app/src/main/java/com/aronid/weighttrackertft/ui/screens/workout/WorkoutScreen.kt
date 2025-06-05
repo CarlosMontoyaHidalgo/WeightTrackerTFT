@@ -82,14 +82,7 @@ fun WorkoutScreen(
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
-    //var showChatbot by remember { mutableStateOf(false) } // Added for chatbot dialog
     val workoutDuration by viewModel.workoutDuration.collectAsState()
-    val primaryMuscles by viewModel.primaryMuscles.collectAsState()
-    val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
-
-    Log.d("WorkoutScreen", "Exercises: $primaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $secondaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $currentExercise")
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
@@ -133,7 +126,7 @@ fun WorkoutScreen(
                 },
                 title = stringResource(R.string.finish_workout),
                 text = stringResource(R.string.finish_workout_confirmation),
-                confirmButtonText = stringResource(R.string.finish),
+                confirmButtonText = stringResource(R.string.save),
                 dismissButtonText = stringResource(R.string.cancel)
             )
         }
@@ -281,7 +274,7 @@ fun WorkoutHeader(
                     contentColor = Color.White
                 )
             ) {
-                Text(stringResource(R.string.finish))
+                Text(stringResource(R.string.save))
             }
         },
         modifier = modifier

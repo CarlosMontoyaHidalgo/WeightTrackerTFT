@@ -2,25 +2,11 @@ package com.aronid.weighttrackertft.ui.components.charts.lineCharts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -31,18 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.ui.linechart.model.*
 import com.aronid.weighttrackertft.ui.components.charts.GoalViewModel
-
 
 @Composable
 fun CaloriesLineChartWithGridLines(
@@ -70,7 +46,7 @@ fun CaloriesLineChartWithGridLines(
     }
 
     val pointsData = caloriesData.entries.mapIndexed { index, entry ->
-        Point(index.toFloat(), entry.value.toFloat(), entry.key) // Seguimos usando Float para el gráfico
+        Point(index.toFloat(), entry.value.toFloat(), entry.key)
     }
     val maxY = pointsData.maxOfOrNull { it.y }?.toFloat() ?: 100f
     val steps = 5
@@ -86,11 +62,14 @@ fun CaloriesLineChartWithGridLines(
 
     val yAxisData = AxisData.Builder()
         .steps(steps)
-        .labelData { index -> (maxY * index / steps).toInt().toString() }
+        .labelData { index ->
+            val value = (maxY * index / steps).toInt()
+            "$value kcal"
+        }
         .labelAndAxisLinePadding(15.dp)
         .axisLineColor(MaterialTheme.colorScheme.onSurfaceVariant)
         .axisLabelColor(MaterialTheme.colorScheme.onSurfaceVariant)
-        .axisLabelDescription { "cal" }
+        .axisLabelDescription { "kcal" }
         .build()
 
     val lineChartData = LineChartData(
@@ -122,8 +101,8 @@ fun CaloriesLineChartWithGridLines(
                         labelColor = MaterialTheme.colorScheme.onSurface,
                         popUpLabel = { x, y ->
                             val dayLabel = pointsData.getOrNull(x.toInt())?.description ?: "Día ${x.toInt() + 1}"
-                            val goalText = goalCalories?.let { " (Meta: $it cal)" } ?: ""
-                            "$dayLabel: ${y.toInt()} Cal$goalText"
+                            val goalText = goalCalories?.let { " (Meta: $it kcal)" } ?: ""
+                            "$dayLabel: ${y.toInt()} kcal$goalText"
                         }
                     )
                 )
@@ -139,7 +118,6 @@ fun CaloriesLineChartWithGridLines(
     )
 
     Column {
-
         LineChart(
             modifier = Modifier
                 .fillMaxWidth()
@@ -157,14 +135,14 @@ fun CaloriesLineChartWithGridLines(
         val max = pointsData.maxOf { it.y }.toInt()
         val min = pointsData.minOf { it.y }.toInt()
         Text(
-            text = "Resumen: Promedio: $average cal | Máx: $max cal | Mín: $min cal",
+            text = "Resumen: Promedio: $average kcal | Máx: $max kcal | Mín: $min kcal",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(top = 8.dp)
         )
         goalCalories?.let { goal ->
             val suggestion = if (average > goal) {
-                "Mañana intenta mantenerte bajo $goal cal."
+                "Mañana intenta mantenerte bajo $goal kcal."
             } else {
                 "¡Sigue con este ritmo mañana!"
             }
@@ -200,6 +178,7 @@ fun CaloriesLineChartWithGridLines(
                         val goal = inputText.toIntOrNull()
                         if (goal != null && goal > 0) {
                             viewModel.setGoalCalories(goal)
+                            viewModel.dismissGoalDialog()
                         }
                     }
                 ) {

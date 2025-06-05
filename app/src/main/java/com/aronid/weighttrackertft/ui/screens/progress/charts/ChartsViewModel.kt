@@ -100,6 +100,26 @@ class ChartsViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentMonthRange(): Pair<LocalDate?, LocalDate?> {
+        val today = LocalDate.now()
+        val start = today.withDayOfMonth(1)
+        val end = today.withDayOfMonth(today.lengthOfMonth())
+        return Pair(start, end)
+    }
+
+    fun getCurrentYearRange(): Pair<LocalDate?, LocalDate?> {
+        val today = LocalDate.now()
+        val start = today.withDayOfYear(1)
+        val end = today.withDayOfYear(today.lengthOfYear())
+        return Pair(start, end)
+    }
+
+    fun getCurrentWeekRange(): Pair<LocalDate, LocalDate> {
+        val end = LocalDate.now()
+        val start = end.minusDays(6)
+        return start to end
+    }
+
     fun loadData(startTimestamp: Timestamp?, endTimestamp: Timestamp?) {
         viewModelScope.launch {
             _isLoading.value = true

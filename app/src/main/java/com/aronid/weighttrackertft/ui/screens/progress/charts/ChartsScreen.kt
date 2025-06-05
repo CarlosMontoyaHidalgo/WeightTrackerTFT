@@ -12,6 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,6 +51,23 @@ import com.aronid.weighttrackertft.ui.components.sections.imc.BMISection
 import com.aronid.weighttrackertft.ui.components.sections.volume.VolumeSection
 import com.aronid.weighttrackertft.ui.components.sections.weight.WeightSection
 import com.aronid.weighttrackertft.utils.formatShort
+import com.google.firebase.Timestamp
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
+
+fun LocalDate.toTimestamp(): Timestamp {
+    val instant = this.atStartOfDay(ZoneId.systemDefault()).toInstant()
+    return Timestamp(Date.from(instant))
+}
+
+
+fun LocalDate.formatShort(): String {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    return this.format(formatter)
+}
+
 
 @Composable
 fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostController) {
@@ -75,6 +99,9 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
 
     var heightInput by remember { mutableStateOf("") }
     var bmiResult by remember { mutableStateOf<Double?>(null) }
+
+    var selectedRangeType by remember { mutableStateOf("Semanal") } // O inicializa como quieras
+
 
     val context = LocalContext.current
     val exportLauncher = rememberLauncherForActivityResult(
@@ -137,6 +164,7 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
                         dateRangeText = viewModel.getWeekRangeText()
                         hasDateRangeSelected = false
                         showDateRangePicker = false
+                        selectedRangeType = ""
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_x),
@@ -182,6 +210,91 @@ fun ChartsScreen(innerPadding: PaddingValues, navHostController: NavHostControll
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilterChip(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(48.dp),
+                selected = selectedRangeType == "Mensual",
+                onClick = {
+                    selectedRangeType = "Mensual"
+                    val (start, end) = viewModel.getCurrentMonthRange()
+                    val startTimestamp = start?.toTimestamp()
+                    val endTimestamp = end?.toTimestamp()
+                    viewModel.loadData(startTimestamp, endTimestamp)
+                    dateRangeText = "${start?.formatShort()} - ${end?.formatShort()}"
+                    hasDateRangeSelected = true
+                },
+                label = {
+                    Text(
+                        "Mensual",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                leadingIcon = if (selectedRangeType == "Mensual") {
+                    {
+                        Icon(
+                            Icons.Filled.Done,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                } else null,
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+            )
+
+            // Botón Anual con tamaño fijo
+            FilterChip(
+                modifier = Modifier
+                    .width(120.dp) // Mismo tamaño que el anterior
+                    .height(48.dp), // Misma altura
+                selected = selectedRangeType == "Anual",
+                onClick = {
+                    selectedRangeType = "Anual"
+                    val (start, end) = viewModel.getCurrentYearRange()
+                    val startTimestamp = start?.toTimestamp()
+                    val endTimestamp = end?.toTimestamp()
+                    viewModel.loadData(startTimestamp, endTimestamp)
+                    dateRangeText = "${start?.formatShort()} - ${end?.formatShort()}"
+                    hasDateRangeSelected = true
+                },
+                label = {
+                    Text(
+                        "Anual",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center // Texto centrado
+                    )
+                },
+                leadingIcon = if (selectedRangeType == "Anual") {
+                    {
+                        Icon(
+                            Icons.Filled.Done,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                } else null,
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+            )
+        }
 
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->

@@ -76,3 +76,18 @@ fun Double.formatToSinglePrecision(): String {
 fun Int.formatToSinglePrecision(): String {
     return String.format("%.1f", this.toDouble())
 }
+
+
+fun formatDuration(seconds: Long?): String {
+    if (seconds == null || seconds <= 0) return "0s"
+
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val remainingSeconds = seconds % 60
+
+    return buildString {
+        if (hours > 0) append("${hours}h ")
+        if (minutes > 0 || hours > 0) append("${minutes}m ")
+        append("${remainingSeconds}s")
+    }.trim()
+}

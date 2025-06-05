@@ -26,11 +26,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.utils.Translations
+import com.aronid.weighttrackertft.utils.getExerciseId
+import com.aronid.weighttrackertft.utils.getExerciseImageResource
+import java.util.Locale
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -81,7 +83,7 @@ fun ExerciseDetailsContent(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         // Exercise Name
-                        Text(
+                        /*Text(
                             text = Translations.translateAndFormat(
                                 exercise.name ?: stringResource(R.string.exercise),
                                 Translations.exerciseTranslations
@@ -89,11 +91,16 @@ fun ExerciseDetailsContent(
                             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onSurface
                         )
-
+*/
                         // Image
                         Image(
+
                             painter = painterResource(
-                                id = exercise.imageUrl?.toIntOrNull()?.let { it } ?: R.drawable.background
+                                getExerciseImageResource(
+                                    getExerciseId(
+                                        exercise.name
+                                    )
+                                )
                             ),
                             contentDescription = stringResource(
                                 R.string.exercise_image_description,
@@ -106,16 +113,6 @@ fun ExerciseDetailsContent(
                             contentScale = ContentScale.Crop
                         )
 
-                        // Description
-                        Text(
-                            text = stringResource(
-                                R.string.description_label,
-                                exercise.description?.takeIf { it.isNotBlank() }
-                                    ?: stringResource(R.string.no_description)
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
 
                         // Primary Muscle
                         primaryMuscleName?.takeIf { it.isNotBlank() }?.let { name ->
@@ -128,7 +125,10 @@ fun ExerciseDetailsContent(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                                 MuscleChip(
-                                    text = Translations.translateAndFormat(name, Translations.muscleTranslations),
+                                    text = Translations.translateAndFormat(
+                                        name,
+                                        Translations.muscleTranslations
+                                    ),
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
                             }
@@ -160,6 +160,16 @@ fun ExerciseDetailsContent(
                                 }
                             }
                         }
+                        val language = Locale.getDefault().language
+                        val instructionText = exercise.instructions?.get(language)
+                            ?: exercise.instructions?.get("es")
+                            ?: ""
+                        // Description
+                        Text(
+                            text = instructionText,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }

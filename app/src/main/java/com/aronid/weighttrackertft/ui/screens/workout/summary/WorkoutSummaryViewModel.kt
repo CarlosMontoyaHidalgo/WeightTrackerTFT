@@ -1,10 +1,8 @@
 package com.aronid.weighttrackertft.ui.screens.workout.summary
 
-
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aronid.weighttrackertft.data.exercises.ExerciseModel
 import com.aronid.weighttrackertft.data.questionnaire.ButtonConfigs
 import com.aronid.weighttrackertft.data.questionnaire.ButtonState
 import com.aronid.weighttrackertft.data.workout.ExerciseWithSeries
@@ -29,6 +27,10 @@ class WorkoutSummaryViewModel @Inject constructor(
 
     private val _volume = MutableStateFlow<Int?>(null)
     val volume: StateFlow<Int?> = _volume.asStateFlow()
+
+    private val _durationMinutes = MutableStateFlow<Long?>(null)
+    val durationMinutes: StateFlow<Long?> = _durationMinutes.asStateFlow()
+
 
     private val _saveState = MutableStateFlow<String?>(null)
     val saveState: StateFlow<String?> = _saveState.asStateFlow()
@@ -58,14 +60,26 @@ class WorkoutSummaryViewModel @Inject constructor(
         }
     }
 
+    fun formatDuration(minutes: Int): String {
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        return when {
+            hours > 0 && remainingMinutes > 0 -> "${hours}h ${remainingMinutes}min"
+            hours > 0 -> "${hours}h"
+            else -> "${remainingMinutes}min"
+        }
+    }
+
     fun loadWorkoutById(workoutId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val workout = workoutRepository.getWorkoutById(workoutId)
+                Log.d("WorkoutSummaryViewModel", "Workout loaded: $workout")
                 workout?.let {
                     _calories.value = it.calories
                     _volume.value = it.volume
+                    _durationMinutes.value = it.duration // <- Aquí está la duración real
 
                     val validExercises = workout.exercises.filter { exercise ->
                         exercise.series.any { seriesItem ->
@@ -81,14 +95,12 @@ class WorkoutSummaryViewModel @Inject constructor(
                         exercise.secondaryMusclesRef.mapNotNull { it?.id }
                     }.distinct()
 
-                    // Combinar músculos primarios y secundarios con valores diferenciados
                     val allMusclesMap = mutableMapOf<String, Float>()
                     primaryMuscles.forEach { muscle ->
-                        allMusclesMap[muscle] = 100f // Máximo peso para primarios
+                        allMusclesMap[muscle] = 100f
                     }
                     secondaryMuscles.forEach { muscle ->
-                        // Solo asignar valor si no es primario (evitar sobrescritura)
-                        allMusclesMap.putIfAbsent(muscle, 50f) // Menor peso para secundarios
+                        allMusclesMap.putIfAbsent(muscle, 50f)
                     }
 
                     _allMuscles.value = allMusclesMap.toList()
