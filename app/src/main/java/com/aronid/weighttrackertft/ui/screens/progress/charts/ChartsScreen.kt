@@ -325,10 +325,6 @@ Log.d("ChartsScreen", "Selected tab index: $caloriesData")
                 weightData = weightData,
                 currentWeight = currentWeight,
                 isLoading = isLoading,
-                weightInput = weightInput,
-                onWeightChange = { weightInput = it },
-                onSaveWeight = { viewModel.saveWeight(it) },
-                currentHeight = currentHeight,
                 caloriesData = caloriesData,
                 rangeType = selectedRangeType
             )

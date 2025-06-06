@@ -25,11 +25,7 @@ fun WeightSection(
     weightData: Map<String, Double>,
     caloriesData: Map<String, Int>,
     currentWeight: Double?,
-    currentHeight: Double?,
     isLoading: Boolean,
-    weightInput: String,
-    onWeightChange: (String) -> Unit,
-    onSaveWeight: (Double) -> Unit,
     rangeType: String
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
