@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,6 +56,7 @@ import com.aronid.weighttrackertft.ui.components.formScreen.FormScreen
 import com.aronid.weighttrackertft.ui.components.konfetti.KonfettiComponent
 import com.aronid.weighttrackertft.utils.Translations
 import com.aronid.weighttrackertft.utils.button.ButtonType
+import com.aronid.weighttrackertft.utils.formatDuration
 
 @Composable
 fun WorkoutSummaryScreen(
@@ -74,6 +76,10 @@ fun WorkoutSummaryScreen(
     var selectedTabIndex by remember { mutableStateOf(0) }
     val exercises by viewModel.exercises.collectAsState()
     Log.d("WorkoutSummaryScreen", "$exercises")
+    val duration = viewModel.durationMinutes.collectAsState().value
+
+
+
 
     LaunchedEffect(workoutId) {
         workoutId?.let {
@@ -127,7 +133,8 @@ fun WorkoutSummaryScreen(
                 volume = volume,
                 buttonConfigs = buttonConfigs,
                 saveState = saveState,
-                navHostController = navHostController
+                navHostController = navHostController,
+                duration = duration
             )
 
             1 -> MuscleSection(
@@ -156,10 +163,10 @@ fun DataSection(
     volume: Int?,
     buttonConfigs: ButtonConfigs,
     saveState: String?,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    duration: Long?
 ) {
     val context = LocalContext.current
-
 
     FormScreen(
         modifier = Modifier,
@@ -167,8 +174,17 @@ fun DataSection(
         isContentScrolleable = false,
         formContent = {
             CustomElevatedCard(
+                iconResource = Icons.Filled.AccessTime,
+                title = "Duración",
+                result = formatDuration(duration), // Use formatted duration
+                unitLabel = "", // No unit label needed
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomElevatedCard(
                 title = stringResource(R.string.calories_burned),
-                result = calories,
+                result = calories?.toString(), // Convert Int? to String?
                 unitLabel = stringResource(R.string.kcal_unit),
                 contentColor = Color.Red
             )
@@ -176,7 +192,7 @@ fun DataSection(
             CustomElevatedCard(
                 iconResource = Icons.Filled.FitnessCenter,
                 title = stringResource(R.string.volume),
-                result = volume,
+                result = volume?.toString(), // Convert Int? to String?
                 unitLabel = stringResource(R.string.kg_unit),
                 contentColor = MaterialTheme.colorScheme.primary
             )
@@ -194,7 +210,6 @@ fun DataSection(
             )
         }
     )
-
 }
 
 @Composable

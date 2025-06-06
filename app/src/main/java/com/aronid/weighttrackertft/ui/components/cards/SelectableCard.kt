@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @SuppressLint("AutoboxingStateCreation")
@@ -35,7 +37,7 @@ fun SelectableCard(
                 description = options.description,
                 descriptionAlignment = TextAlign.Start,
                 isSelected = selectedOptionId == options.id,
-                selectedContainerColor = Color.Blue,
+                selectedContainerColor = MaterialTheme.colorScheme.primary,
                 padding = 16,
                 width = 375,
                 height = 125,
@@ -49,3 +51,31 @@ fun SelectableCard(
         }
     }
 }
+
+
+@Preview(showBackground = true, name = "Selectable Card Preview")
+@Composable
+fun SelectableCardPreview() {
+    SelectableCard(
+        options = listOf(
+            CardTextOptionData(
+                id = "1",
+                text = "Option 1",
+                description = "This is the first option description"
+            ),
+            CardTextOptionData(
+                id = "2",
+                text = "Option 2",
+                description = "This is the second option description"
+            ),
+            CardTextOptionData(
+                id = "3",
+                text = "Option 3",
+                description = "This is the third option description"
+            )
+        ),
+        selectedOptionId = "2", // Simulate Option 2 as selected
+        onOptionSelected = { /* Do nothing in preview */ }
+    )
+}
+

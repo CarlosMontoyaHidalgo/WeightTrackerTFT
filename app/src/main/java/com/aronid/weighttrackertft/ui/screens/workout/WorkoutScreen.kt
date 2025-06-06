@@ -82,14 +82,7 @@ fun WorkoutScreen(
     val currentExercise = exercises.getOrNull(currentExerciseIndex)
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
-    //var showChatbot by remember { mutableStateOf(false) } // Added for chatbot dialog
     val workoutDuration by viewModel.workoutDuration.collectAsState()
-    val primaryMuscles by viewModel.primaryMuscles.collectAsState()
-    val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
-
-    Log.d("WorkoutScreen", "Exercises: $primaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $secondaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $currentExercise")
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
@@ -133,7 +126,7 @@ fun WorkoutScreen(
                 },
                 title = stringResource(R.string.finish_workout),
                 text = stringResource(R.string.finish_workout_confirmation),
-                confirmButtonText = stringResource(R.string.finish),
+                confirmButtonText = stringResource(R.string.save),
                 dismissButtonText = stringResource(R.string.cancel)
             )
         }
@@ -255,14 +248,15 @@ fun WorkoutHeader(
                                 it,
                                 Translations.exerciseTranslations
                             )
-                        }
-                            ?: stringResource(R.string.exercise),
+                        } ?: stringResource(R.string.exercise),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f) // Constrain text width
+                            .padding(end = 8.dp) // Space between text and info button
                     )
-                    Spacer(Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
                         contentDescription = stringResource(id = R.string.info),
@@ -274,14 +268,16 @@ fun WorkoutHeader(
             }
         },
         actions = {
+            Spacer(modifier = Modifier.width(8.dp)) // Add space before the Save button
             Button(
                 onClick = onFinishClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White
-                )
+                ),
+                modifier = Modifier.padding(end = 8.dp) // Additional padding to shift left
             ) {
-                Text(stringResource(R.string.finish))
+                Text(stringResource(R.string.save))
             }
         },
         modifier = modifier
@@ -307,7 +303,7 @@ fun WorkoutNavigationButtons(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_back),
+                painter = painterResource(id = R.drawable.ic_arrow_back),
                 contentDescription = stringResource(R.string.back),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
@@ -329,7 +325,7 @@ fun WorkoutNavigationButtons(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
+                painter = painterResource(id = R.drawable.ic_arrow_forward),
                 contentDescription = stringResource(R.string.next),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)

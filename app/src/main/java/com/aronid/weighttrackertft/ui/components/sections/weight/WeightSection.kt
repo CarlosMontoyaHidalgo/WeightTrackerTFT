@@ -1,5 +1,6 @@
 package com.aronid.weighttrackertft.ui.components.sections.weight
 
+//import com.aronid.weighttrackertft.ui.components.charts.lineCharts.CombinedWeightCaloriesBMIChart
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aronid.weighttrackertft.ui.components.charts.lineCharts.CombinedWeightCaloriesChart
-//import com.aronid.weighttrackertft.ui.components.charts.lineCharts.CombinedWeightCaloriesBMIChart
+import com.aronid.weighttrackertft.ui.components.charts.lineCharts.CombinedWeightCaloriesWeeklyChart
 import com.aronid.weighttrackertft.utils.formatToSinglePrecision
 
 @Composable
@@ -28,7 +29,8 @@ fun WeightSection(
     isLoading: Boolean,
     weightInput: String,
     onWeightChange: (String) -> Unit,
-    onSaveWeight: (Double) -> Unit
+    onSaveWeight: (Double) -> Unit,
+    rangeType: String
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Card(
@@ -61,8 +63,24 @@ fun WeightSection(
             CircularProgressIndicator()
         } else {
             //CombinedWeightCaloriesBMIChart(weightData = weightData, caloriesData = caloriesData, currentWeight = currentWeight, currentHeight = currentHeight, isLoading = isLoading)
-            CombinedWeightCaloriesChart(weightData = weightData, caloriesData = caloriesData, isLoading = isLoading)
+            when {
+                rangeType == "Anual" -> {
+                    CombinedWeightCaloriesWeeklyChart(
+                        weightData = weightData,
+                        caloriesData = caloriesData,
+                        isLoading = isLoading
+                    )
+                }
 
+                else -> {
+                    CombinedWeightCaloriesChart(
+                        weightData = weightData,
+                        caloriesData = caloriesData,
+                        isLoading = isLoading
+                    )
+
+                }
+            }
         }
     }
 }

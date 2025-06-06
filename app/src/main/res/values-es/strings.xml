@@ -304,4 +304,8 @@
     <string name="secondary_muscles_label">Músculos secundarios</string>
     <string name="error_loading_exercise">Error al cargar el ejercicio</string>
 
+    <string name="weight_required">Introduce tu peso</string>
+
+
+
 </resources>

@@ -305,4 +305,6 @@
     <string name="primary_muscle_label">Primary Muscle</string>
     <string name="secondary_muscles_label">Secondary Muscles</string>
     <string name="error_loading_exercise">Failed to load exercise</string>
+
+    <string name="weight_required">Introduce your weight</string>
 </resources>

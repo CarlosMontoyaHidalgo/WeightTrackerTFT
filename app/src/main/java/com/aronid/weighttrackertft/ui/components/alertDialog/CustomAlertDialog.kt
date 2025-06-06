@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +32,7 @@ fun CustomAlertDialog(
     dismissButtonText: String,
     imageUrl: String? = null,
     customContent: (@Composable () -> Unit)? = null,
-    @DrawableRes imageResId: Int? = null,  // Cambiado a resource ID
+    @DrawableRes imageResId: Int? = null,
 ) {
     Log.d("CustomAlertDialog", "showDialog: $imageResId")
     if (showDialog) {
@@ -58,13 +56,6 @@ fun CustomAlertDialog(
             text = {
                 Column {
                     Text(text = text, color = MaterialTheme.colorScheme.onBackground)
-                    /*if (imageUrl != null) {
-                        Image(
-                            painter = painterResource(/*imageUrl.toInt()*/ R.drawable.background),
-                            contentDescription = ""
-                        )
-                    }*/
-
                     if (imageResId != null) {
                         Image(
                             painter = painterResource(imageResId),
@@ -79,24 +70,23 @@ fun CustomAlertDialog(
                 }
             },
             confirmButton = {
-                Button(
-                    onClick = {
-                        onConfirm()
-                        onDismiss()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface
+                if (confirmButtonText.isNotEmpty()) {
+                    MyElevatedButton(
+                        text = confirmButtonText,
+                        onClick = {
+                            onConfirm()
+                            onDismiss()
+                        }
                     )
-                ) {
-                    Text(confirmButtonText)
                 }
             },
             dismissButton = {
-                MyElevatedButton(
-                    text = dismissButtonText,
-                    onClick = onDismiss,
-                )
+                if (dismissButtonText.isNotEmpty()) {
+                    MyElevatedButton(
+                        text = dismissButtonText,
+                        onClick = onDismiss
+                    )
+                }
             },
             properties = DialogProperties(
                 dismissOnBackPress = true,
