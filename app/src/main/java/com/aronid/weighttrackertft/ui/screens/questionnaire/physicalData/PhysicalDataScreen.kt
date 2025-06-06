@@ -100,7 +100,9 @@ fun PhysicalDataScreen(
                                 color = MaterialTheme.colorScheme.error
                             )
 
-                            displayedWeight.isEmpty() -> Text("R.string.error_required")
+                            displayedWeight.isEmpty() -> Text(
+                                text = stringResource(id = R.string.weight_required)
+                            )
                         }
                     }
                 )

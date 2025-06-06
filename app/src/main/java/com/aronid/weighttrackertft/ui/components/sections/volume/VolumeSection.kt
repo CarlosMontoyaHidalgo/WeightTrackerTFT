@@ -15,12 +15,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aronid.weighttrackertft.ui.components.charts.lineCharts.VolumeBarChartWithGridLines
 import com.aronid.weighttrackertft.ui.components.charts.lineCharts.VolumeLineChartWithGridLines
 
 
 @Composable
-fun VolumeSection(volumeData: Map<String, Int>, isLoading: Boolean) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun VolumeSection(
+    volumeData: Map<String, Int>,
+    isLoading: Boolean,
+    rangeType: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Tarjeta de volumen total
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -35,7 +46,11 @@ fun VolumeSection(volumeData: Map<String, Int>, isLoading: Boolean) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Volumen Total",
+                    text = when(rangeType) {
+                        "Anual" -> "Volumen Anual"
+                        "Mensual" -> "Volumen Mensual"
+                        else -> "Volumen Total"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -46,11 +61,16 @@ fun VolumeSection(volumeData: Map<String, Int>, isLoading: Boolean) {
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
         if (isLoading) {
             CircularProgressIndicator()
         } else {
-            VolumeLineChartWithGridLines(volumeData = volumeData)
+            when(rangeType) {
+                "Anual" -> VolumeLineChartWithGridLines(volumeData = volumeData, rangeType = rangeType)
+                else -> VolumeBarChartWithGridLines(volumeData = volumeData)
+            }
         }
     }
 }

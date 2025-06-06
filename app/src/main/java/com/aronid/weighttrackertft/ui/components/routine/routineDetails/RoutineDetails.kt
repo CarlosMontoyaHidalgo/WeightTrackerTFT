@@ -40,6 +40,8 @@ import com.aronid.weighttrackertft.ui.components.button.NewCustomButton
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseCard.ExerciseCard
 import com.aronid.weighttrackertft.ui.screens.routines.details.RoutineDetailsViewModel
 import com.aronid.weighttrackertft.utils.button.ButtonType
+import com.aronid.weighttrackertft.utils.getExerciseId
+import com.aronid.weighttrackertft.utils.getExerciseImageResource
 
 @Composable
 fun RoutineDetailsContent(
@@ -155,7 +157,7 @@ fun RoutineDetailsContent(
                         name = exercise.name,
                         primaryMuscle = exercise.primaryMuscle?.id ?: "",
                         secondaryMuscles = exercise.secondaryMuscle.map { it.id },
-                        imageUrl = R.drawable.background,
+                        imageResId = getExerciseImageResource(getExerciseId(exercise.name)),
                         onCardClick = {
                             navHostController.navigate(
                                 NavigationRoutes.ExerciseDetails.createRoute(exercise.id)

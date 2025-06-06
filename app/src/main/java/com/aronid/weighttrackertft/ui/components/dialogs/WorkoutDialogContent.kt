@@ -1,5 +1,7 @@
 package com.aronid.weighttrackertft.ui.components.dialogs
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,9 @@ import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.navigation.NavigationRoutes
+import com.aronid.weighttrackertft.utils.Translations
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun WorkoutDialogContent(workouts: List<WorkoutModel>, navHostController: NavHostController) {
@@ -41,11 +46,16 @@ fun WorkoutDialogContent(workouts: List<WorkoutModel>, navHostController: NavHos
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun WorkoutCardSummary(workout: WorkoutModel, index: Int? = null, navHostController: NavHostController) {
-    val dateString = workout.date?.toDate()?.toString()
-        ?: stringResource(R.string.not_available)
+    val locale = Locale("es", "ES")
+    val formatter = SimpleDateFormat("EEEE, dd 'de' MMMM 'de' yyyy 'a las' HH:mm", locale)
+    val dateString = workout.date?.toDate()?.let {
+        formatter.format(it).replaceFirstChar { char -> char.uppercase(locale) }
+    } ?: stringResource(R.string.not_available)
 
+    Log.d("WorkoutCardSummary", "workout: $workout")
     Card(
         modifier = Modifier.fillMaxWidth().clickable{
             navHostController.navigate(NavigationRoutes.WorkoutSummary.createRoute(workout.id))
@@ -63,11 +73,20 @@ fun WorkoutCardSummary(workout: WorkoutModel, index: Int? = null, navHostControl
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
+            Text("Calorías: ${workout.calories} kcal", style = MaterialTheme.typography.bodyMedium)
+            Text("Volumen: ${workout.volume} kg", style = MaterialTheme.typography.bodyMedium)
+            Text("Intensidad: ${String.format("%.2f", workout.intensity)}", style = MaterialTheme.typography.bodyMedium)
             Text("Tipo: ${workout.workoutType}", style = MaterialTheme.typography.bodyMedium)
-            Text("Calorías: ${workout.calories}", style = MaterialTheme.typography.bodyMedium)
-            Text("Volumen: ${workout.volume}", style = MaterialTheme.typography.bodyMedium)
-            Text("Intensidad: ${workout.intensity}", style = MaterialTheme.typography.bodyMedium)
             Text("Fecha: $dateString", style = MaterialTheme.typography.bodyMedium)
+            val translatedMuscles = workout.primaryMuscleIds.joinToString(", ") { muscle ->
+                Translations.translateAndFormat(muscle, Translations.muscleTranslations)
+            }
+
+            Text(
+                text = "Músculos principales: $translatedMuscles",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
         }
     }
 }

@@ -11,10 +11,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
+import com.aronid.weighttrackertft.R
 import com.aronid.weighttrackertft.ui.components.MyTopNavigationBar
+import com.aronid.weighttrackertft.ui.components.button.BackButton
 import com.aronid.weighttrackertft.ui.components.exercise.details.ExerciseDetailsContent
+import com.aronid.weighttrackertft.utils.Translations
 
 @Composable
 fun ExerciseDetailsScreen(
@@ -31,12 +35,14 @@ fun ExerciseDetailsScreen(
     LaunchedEffect(exerciseId) {
         exerciseId?.let { id -> viewModel.loadExerciseDetails(exerciseId = id) }
     }
-    Column(modifier = Modifier.padding(innerPadding)) {
+    Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
         Scaffold(
             topBar = {
                 MyTopNavigationBar(
-                    title = "${exercise?.name}",
-                    onBackClick = { navHostController.popBackStack() },
+                    title = Translations.translateAndFormat(
+                        exercise?.name ?: stringResource(R.string.exercise),
+                        Translations.exerciseTranslations
+                    ),
                     backgroundColor = Color.Transparent,
                     contentColor = Color.Black,
                 )
@@ -53,6 +59,7 @@ fun ExerciseDetailsScreen(
                     secondaryMuscleNames = secondaryMuscleNames,
                     innerPadding = innerPadding
                 )
+                BackButton(navHostController)
             }
         }
     }

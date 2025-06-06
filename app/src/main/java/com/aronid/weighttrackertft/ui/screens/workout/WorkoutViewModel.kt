@@ -272,7 +272,7 @@ class WorkoutViewModel @Inject constructor(
     }
 }
 
-
+/*Elegir el tipo de entrenamiento, ya sea relacionado con fuerza, resistencia o cardio.*/
 private fun determineWorkoutType(
     exercises: List<ExerciseWithSeries>,
     totalVolume: Double,
@@ -317,11 +317,11 @@ private fun calculateIntensity(
     val durationMinutes = durationSeconds / 60.0
 
     // Normalizar volumen relativo al peso del usuario
-    val volumeIntensity = (totalVolume / userWeight).coerceIn(0.0, 50.0) // Máx 50% de contribución
+    val volumeIntensity = (totalVolume / userWeight).coerceIn(0.0, 70.0) // Máx 50% de contribución
 
     // Intensidad por repeticiones y series completadas
     val effortIntensity =
-        (totalCompletedSeries * 2 + totalReps * 0.5).coerceIn(0.0, 30.0) // Máx 30%
+        (totalCompletedSeries * 2 + totalReps * 0.5).coerceIn(0.0, 20.0) // Máx 30%
 
     // Intensidad por duración (inversa: menos tiempo con más volumen = más intenso)
     val timeIntensity = if (durationMinutes > 0) {

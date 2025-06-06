@@ -14,6 +14,7 @@ import androidx.paging.cachedIn
 import com.aronid.weighttrackertft.data.user.UserRepository
 import com.aronid.weighttrackertft.data.workout.WorkoutModel
 import com.aronid.weighttrackertft.data.workout.WorkoutRepository
+import com.aronid.weighttrackertft.utils.Translations.muscleTranslations
 import com.google.firebase.Timestamp
 import com.itextpdf.kernel.colors.ColorConstants
 import com.itextpdf.kernel.geom.PageSize
@@ -238,10 +239,16 @@ class WorkoutListViewModel @Inject constructor(
                                     table.addCell("Duración").addCell("${workout.duration} minutos")
                                     table.addCell("Calorías").addCell("${workout.calories} kcal")
                                     table.addCell("Volumen").addCell("${workout.volume} kg")
-                                    table.addCell("Músculos Principales")
-                                        .addCell(workout.primaryMuscleIds.joinToString(", "))
-                                    table.addCell("Músculos Secundarios")
-                                        .addCell(workout.secondaryMuscleIds.joinToString(", "))
+
+                                    val translatedPrimaryMuscles = workout.primaryMuscleIds.joinToString(", ") { id ->
+                                        muscleTranslations[id]?.get("es") ?: id
+                                    }
+                                    val translatedSecondaryMuscles = workout.secondaryMuscleIds.joinToString(", ") { id ->
+                                        muscleTranslations[id]?.get("es") ?: id
+                                    }
+
+                                    table.addCell("Músculos Principales").addCell(translatedPrimaryMuscles)
+                                    table.addCell("Músculos Secundarios").addCell(translatedSecondaryMuscles)
 
                                     add(table.setMarginBottom(15f))
                                 }

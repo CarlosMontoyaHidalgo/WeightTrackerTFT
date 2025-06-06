@@ -297,4 +297,14 @@
     <string name="your_trainings">Your Trainings</string>
     <string name="workouts">Workouts</string>
     <string name="confirm">Confirm</string>
+
+    <string name="loading_exercise">Loading exercise…</string>
+    <string name="exercise_image_description">Image of %1$s</string>
+    <string name="description_label">Description: %1$s</string>
+    <string name="no_description">No description available</string>
+    <string name="primary_muscle_label">Primary Muscle</string>
+    <string name="secondary_muscles_label">Secondary Muscles</string>
+    <string name="error_loading_exercise">Failed to load exercise</string>
+
+    <string name="weight_required">Introduce your weight</string>
 </resources>

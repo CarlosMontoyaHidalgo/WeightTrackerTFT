@@ -25,7 +25,7 @@ import com.aronid.weighttrackertft.ui.components.button.types.BackButton
 fun MyTopNavigationBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    onBackClick: () -> Unit,
+    onBackClick: (() -> Unit)? = null,
     backgroundColor: Color = Color.White,
     contentColor: Color = Color.Black,
     shape: Shape = RoundedCornerShape(0.dp),
@@ -40,34 +40,36 @@ fun MyTopNavigationBar(
     ) {
         val (backButtonRef, titleTextRef) = createRefs()
 
-        BackButton(
-            onClick = onBackClick,
-            shape = RoundedCornerShape(8.dp),
-            containerColor = Color.Transparent,
-            contentColor = contentColor,
-            iconSize = 24.dp,
-            modifier = Modifier.constrainAs(backButtonRef) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            }
-        )
+        // Botón de retroceso solo si onBackClick no es nulo
+        onBackClick?.let {
+            BackButton(
+                onClick = it,
+                shape = RoundedCornerShape(8.dp),
+                containerColor = Color.Transparent,
+                contentColor = contentColor,
+                iconSize = 24.dp,
+                modifier = Modifier.constrainAs(backButtonRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+            )
+        }
 
         // Título centrado en la parte superior
         title?.let {
             Text(
                 text = it,
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontSize = 20.sp,
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Bold,
                     color = contentColor
                 ),
                 modifier = Modifier.constrainAs(titleTextRef) {
-                    start.linkTo(backButtonRef.end)
+                    start.linkTo(if (onBackClick != null) backButtonRef.end else parent.start)
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
                     width = Dimension.fillToConstraints
                 },
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -105,13 +107,10 @@ fun PreviewMyTopNavigationBar() {
         )
 
         MyTopNavigationBar(
-            onBackClick = { /* Acción */ },
+            title = "No Back Button",
+            onBackClick = null,
             backgroundColor = Color.LightGray,
             contentColor = Color.DarkGray,
         )
-
-
     }
-
 }
-

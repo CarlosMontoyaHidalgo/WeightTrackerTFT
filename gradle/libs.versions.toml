@@ -106,7 +106,6 @@ androidx-compose-animation = { group = "androidx.compose.animation", name = "ani
 open-csv = { module = "com.opencsv:opencsv", version.ref = "csv" }
 itext = { module = "com.itextpdf:itext7-core", version.ref = "itext" }
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }

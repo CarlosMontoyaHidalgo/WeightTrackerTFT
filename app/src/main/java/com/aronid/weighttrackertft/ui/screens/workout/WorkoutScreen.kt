@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aronid.weighttrackertft.R
@@ -55,7 +56,13 @@ import com.aronid.weighttrackertft.ui.components.alertDialog.CustomAlertDialog
 import com.aronid.weighttrackertft.ui.components.exercise.exerciseProgressIndicator.ExerciseProgressIndicator
 import com.aronid.weighttrackertft.ui.components.series.row.SeriesRow
 import com.aronid.weighttrackertft.ui.components.timer.WorkoutTimer
+import com.aronid.weighttrackertft.ui.screens.chatbot.ChatbotViewModel
+import com.aronid.weighttrackertft.ui.screens.routines.createRoutine.CreateRoutineViewModel
 import com.aronid.weighttrackertft.utils.Translations
+import com.aronid.weighttrackertft.utils.Translations.exerciseTranslations
+import com.aronid.weighttrackertft.utils.Translations.translateAndFormat
+import com.aronid.weighttrackertft.utils.getExerciseId
+import com.aronid.weighttrackertft.utils.getExerciseImageResource
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -65,7 +72,9 @@ fun WorkoutScreen(
     routineId: String?,
     isPredefined: Boolean,
     navHostController: NavHostController,
-    viewModel: WorkoutViewModel
+    viewModel: WorkoutViewModel,
+    chatbotViewModel: ChatbotViewModel = hiltViewModel(), // Added
+    createRoutineViewModel: CreateRoutineViewModel = hiltViewModel() // Added
 ) {
     val exercises by viewModel.exercisesWithSeries.collectAsState()
     val currentExerciseIndex by viewModel.currentExerciseIndex.collectAsState()
@@ -74,23 +83,21 @@ fun WorkoutScreen(
     var showDialog by remember { mutableStateOf(false) }
     var finishConfirmation by remember { mutableStateOf(false) }
     val workoutDuration by viewModel.workoutDuration.collectAsState()
-    val primaryMuscles by viewModel.primaryMuscles.collectAsState()
-    val secondaryMuscles by viewModel.secondaryMuscles.collectAsState()
-    Log.d("WorkoutScreen", "Exercises: $primaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $secondaryMuscles")
-    Log.d("WorkoutScreen", "Exercises: $currentExercise")
 
     LaunchedEffect(routineId) {
         routineId?.let { id -> viewModel.loadRoutineExercises(id, isPredefined) }
-currentExercise?.let { exercise ->
-    Log.d("WorkoutScreen", "Exercise: ${exercise.instructions}")
-}
+        currentExercise?.let { exercise ->
+            Log.d("WorkoutScreen", "Exercise: ${exercise.instructions}")
+        }
     }
 
-    ConstraintLayout(modifier = Modifier
-        .fillMaxSize()
-        .padding()) {
-        val (headerRef, seriesRef, timerRef, buttonsRef) = createRefs()
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding()
+    ) {
+        val (headerRef, seriesRef, timerRef, buttonsRef, fabRef) = createRefs()
+
         WorkoutHeader(
             currentExercise = currentExercise,
             onFinishClick = { finishConfirmation = true },
@@ -119,7 +126,7 @@ currentExercise?.let { exercise ->
                 },
                 title = stringResource(R.string.finish_workout),
                 text = stringResource(R.string.finish_workout_confirmation),
-                confirmButtonText = stringResource(R.string.finish),
+                confirmButtonText = stringResource(R.string.save),
                 dismissButtonText = stringResource(R.string.cancel)
             )
         }
@@ -129,21 +136,27 @@ currentExercise?.let { exercise ->
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
                 onConfirm = {},
-                title = "",
-                text = "${currentExercise?.description}",
+                title = translateAndFormat(
+                    currentExercise?.exerciseName ?: "",
+                    exerciseTranslations
+                ),
+                text = "",
                 imageUrl = (currentExercise?.imageUrl ?: R.drawable.background).toString(),
                 customContent = {
                     ExerciseInfo(currentExercise = currentExercise)
-
                 },
+                imageResId = currentExercise?.exerciseName?.let {
+                    getExerciseImageResource(getExerciseId(it))
+                } ?: R.drawable.background,
                 confirmButtonText = "",
                 dismissButtonText = stringResource(R.string.close)
             )
         }
-
-        ConstraintLayout(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .constrainAs(seriesRef) {
@@ -230,14 +243,20 @@ fun WorkoutHeader(
             ) {
                 currentExercise?.let { ex ->
                     Text(
-                        text = ex.exerciseName?.let { Translations.translateAndFormat(it, Translations.exerciseTranslations) }
-                            ?: stringResource(R.string.exercise),
+                        text = ex.exerciseName?.let {
+                            Translations.translateAndFormat(
+                                it,
+                                Translations.exerciseTranslations
+                            )
+                        } ?: stringResource(R.string.exercise),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f) // Constrain text width
+                            .padding(end = 8.dp) // Space between text and info button
                     )
-                    Spacer(Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
                         contentDescription = stringResource(id = R.string.info),
@@ -248,23 +267,17 @@ fun WorkoutHeader(
                 } ?: CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }
         },
-        navigationIcon = {
-//            IconButton(onClick = onBackClick) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_back),
-//                    contentDescription = "Volver"
-//                )
-//            }
-        },
         actions = {
+            Spacer(modifier = Modifier.width(8.dp)) // Add space before the Save button
             Button(
                 onClick = onFinishClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White
-                )
+                ),
+                modifier = Modifier.padding(end = 8.dp) // Additional padding to shift left
             ) {
-                Text(stringResource(R.string.finish))
+                Text(stringResource(R.string.save))
             }
         },
         modifier = modifier
@@ -290,7 +303,7 @@ fun WorkoutNavigationButtons(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_back),
+                painter = painterResource(id = R.drawable.ic_arrow_back),
                 contentDescription = stringResource(R.string.back),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
@@ -312,14 +325,16 @@ fun WorkoutNavigationButtons(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
+                painter = painterResource(id = R.drawable.ic_arrow_forward),
                 contentDescription = stringResource(R.string.next),
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
             )
         }
     }
-}@OptIn(ExperimentalLayoutApi::class)
+}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
     LazyColumn(
@@ -336,32 +351,14 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                         .padding(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Título con icono
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_dumbell),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = Translations.translateAndFormat(
-                                exercise.exerciseName ?: "Ejercicio sin nombre",
-                                Translations.exerciseTranslations
-                            ),
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
 
                     // Músculo principal
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = Translations.translateAndFormat("Primary Muscle", Translations.uiStrings),
+                            text = Translations.translateAndFormat(
+                                "Primary Muscle",
+                                Translations.uiStrings
+                            ),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -378,7 +375,10 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                     if (exercise.secondaryMuscleNames.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = Translations.translateAndFormat("Secondary Muscles", Translations.uiStrings),
+                                text = Translations.translateAndFormat(
+                                    "Secondary Muscles",
+                                    Translations.uiStrings
+                                ),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )
@@ -388,13 +388,39 @@ fun ExerciseInfo(currentExercise: ExerciseWithSeries?) {
                             ) {
                                 exercise.secondaryMuscleNames.forEach { muscle ->
                                     ChipComponent(
-                                        text = Translations.translateAndFormat(muscle, Translations.muscleTranslations),
+                                        text = Translations.translateAndFormat(
+                                            muscle,
+                                            Translations.muscleTranslations
+                                        ),
                                         color = MaterialTheme.colorScheme.secondaryContainer
                                     )
                                 }
                             }
                         }
                     }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        val language = Locale.getDefault().language
+                        val instructionText = currentExercise?.instructions?.get(language)
+                            ?: currentExercise?.instructions?.get("es")
+                            ?: ""
+
+                        Text(
+                            text = Translations.translateAndFormat(
+                                "Intrucciones",
+                                Translations.uiStrings
+                            ),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+
+                        Text(
+                            text = instructionText,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+
                 }
             }
         } ?: item {

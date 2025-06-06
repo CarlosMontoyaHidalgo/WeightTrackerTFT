@@ -45,7 +45,8 @@ object Translations {
         "forearms" to mapOf("en" to "Forearms", "es" to "Antebrazos"),
         "full_body" to mapOf("en" to "Full Body", "es" to "Cuerpo Completo"),
         "quads" to mapOf("en" to "Quads", "es" to "Cuádriceps"),
-        "hip_flexors" to mapOf("en" to "Hip Flexors", "es" to "Flexores de Cadera")
+        "hip_flexors" to mapOf("en" to "Hip Flexors", "es" to "Flexores de Cadera"),
+        "calves" to mapOf("en" to "Calves", "es" to "Gemelos")
     )
 
     val uiStrings = mapOf(
